@@ -1,0 +1,35 @@
+{
+    "name": "icecave/manifold",
+    "description": "This package needs a description!",
+    "keywords": [],
+    "homepage": "https://github.com/IcecaveStudios/manifold",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "James Harris",
+            "email": "james.harris@icecave.com.au",
+            "homepage": "https://github.com/jmalloc"
+        }
+    ],
+    "require": {
+        "php": ">=5.3",
+        "eloquent/asplode": "~1"
+    },
+    "require-dev": {
+        "eloquent/typhoon": "~0.9",
+        "icecave/archer": "~0.3"
+    },
+    "autoload": {
+        "psr-0": {
+            "Icecave\\Manifold": "lib",
+            "Icecave\\Manifold\\TypeCheck": "lib-typhoon"
+        }
+    },
+    "extra": {
+        "typhoon": {
+            "output-path": "lib-typhoon",
+            "validator-namespace": "Icecave\\Manifold\\TypeCheck",
+            "use-native-callable": false
+        }
+    }
+}
