@@ -1,6 +1,6 @@
 {
     "name": "icecave/manifold",
-    "description": "This package needs a description!",
+    "description": "A PDO compatible facade for multi-tiered MySQL replication sets.",
     "keywords": [],
     "homepage": "https://github.com/IcecaveStudios/manifold",
     "license": "MIT",
@@ -12,10 +12,10 @@
         }
     ],
     "require": {
-        "php": ">=5.3",
-        "eloquent/asplode": "~1"
+        "php": ">=5.3"
     },
     "require-dev": {
+        "eloquent/liberator": "~1",
         "eloquent/typhoon": "~0.9",
         "icecave/archer": "~0.3"
     },

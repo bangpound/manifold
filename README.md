@@ -3,11 +3,10 @@
 [![Build Status]](http://travis-ci.org/IcecaveStudios/manifold)
 [![Test Coverage]](http://icecave.com.au/manifold/artifacts/tests/coverage)
 
-**Manifold** needs a description!
+**Manifold** is PDO compatible facade for multi-tiered MySQL replication sets.
 
-## Installation
-
-Available as [Composer](http://getcomposer.org) package [icecave/manifold](https://packagist.org/packages/icecave/manifold).
+* Install via [Composer](http://getcomposer.org) package [icecave/manifold](https://packagist.org/packages/icecave/manifold)
+* Read the [API documentation](http://icecave.com.au/manifold/artifacts/documentation/api/)
 
 <!-- references -->
 [Build Status]: https://raw.github.com/IcecaveStudios/manifold/gh-pages/artifacts/images/icecave/regular/build-status.png
