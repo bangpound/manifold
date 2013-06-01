@@ -1,0 +1,14 @@
+
+
+Code Coverage Report 
+  2013-06-01 00:10:30
+
+ Summary: 
+  Classes: 100.00% (2/2)
+  Methods: 100.00% (18/18)
+  Lines:   100.00% (32/32)
+
+\Icecave\Manifold\Proxy::AbstractProxy
+  Methods:  93.33% (14/15)   Lines: 100.00% ( 18/ 18)
+\Icecave\Manifold\Proxy::LazyConnector
+  Methods: 100.00% ( 4/ 4)   Lines: 100.00% ( 14/ 14)

@@ -1,0 +1,18 @@
+TAP version 13
+ok 1 - Icecave\Manifold\Proxy\AbstractProxyTest::testExec
+ok 2 - Icecave\Manifold\Proxy\AbstractProxyTest::testPrepare
+ok 3 - Icecave\Manifold\Proxy\AbstractProxyTest::testQuery
+ok 4 - Icecave\Manifold\Proxy\AbstractProxyTest::testQuote
+ok 5 - Icecave\Manifold\Proxy\AbstractProxyTest::testLastInsertId
+ok 6 - Icecave\Manifold\Proxy\AbstractProxyTest::testBeginTransaction
+ok 7 - Icecave\Manifold\Proxy\AbstractProxyTest::testCommit
+ok 8 - Icecave\Manifold\Proxy\AbstractProxyTest::testRollBack
+ok 9 - Icecave\Manifold\Proxy\AbstractProxyTest::testInTransaction
+ok 10 - Icecave\Manifold\Proxy\AbstractProxyTest::testErrorCode
+ok 11 - Icecave\Manifold\Proxy\AbstractProxyTest::testErrorInfo
+ok 12 - Icecave\Manifold\Proxy\AbstractProxyTest::testGetAttribute
+ok 13 - Icecave\Manifold\Proxy\AbstractProxyTest::testSetAttribute
+ok 14 - Icecave\Manifold\Proxy\LazyConnectorTest::testConstructorDefaults
+ok 15 - Icecave\Manifold\Proxy\LazyConnectorTest::testInnerConnection
+ok 16 - Icecave\Manifold\Proxy\LazyConnectorTest::testIsConnected
+1..16
