@@ -1,5 +1,5 @@
 <?php
-namespace Icecave\Manifold;
+namespace Icecave\Manifold\Replication;
 
 use PDO;
 

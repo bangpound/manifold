@@ -3,9 +3,67 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "aebfe8a9e9863c106ba8072d4312bb6b",
+    "hash": "449d49590209918fe8a2f910e550ecf3",
     "packages": [
-
+        {
+            "name": "icecave/chrono",
+            "version": "0.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/IcecaveStudios/chrono.git",
+                "reference": "0.2.0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/IcecaveStudios/chrono/zipball/0.2.0",
+                "reference": "0.2.0",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "require-dev": {
+                "eloquent/liberator": ">=1.0,<2.0",
+                "eloquent/typhoon": ">=0.9,<1.0",
+                "icecave/archer": ">=0.3,<1.0"
+            },
+            "type": "library",
+            "extra": {
+                "typhoon": {
+                    "output-path": "lib-typhoon",
+                    "validator-namespace": "Icecave\\Chrono\\TypeCheck",
+                    "use-native-callable": false
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Icecave\\Chrono": "lib",
+                    "Icecave\\Chrono\\TypeCheck": "lib-typhoon"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "James Harris",
+                    "email": "james.harris@icecave.com.au",
+                    "homepage": "https://github.com/jmalloc"
+                }
+            ],
+            "description": "PHP date and time abstractions that are decoupled from the system clock.",
+            "homepage": "https://github.com/IcecaveStudios/chrono",
+            "keywords": [
+                "chrono",
+                "clock",
+                "date",
+                "iso",
+                "time",
+                "timer"
+            ],
+            "time": "2013-05-13 23:38:20"
+        }
     ],
     "packages-dev": [
         {

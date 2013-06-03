@@ -1,8 +1,7 @@
 <?php
-namespace Icecave\Manifold;
+namespace Icecave\Manifold\Replication;
 
 use Icecave\Chrono\TimePointInterface;
-use Icecave\Chrono\TimeSpan\Duration;
 use PDO;
 
 /**
@@ -13,27 +12,33 @@ use PDO;
 interface ReplicationPoolInterface
 {
     /**
-     * The connection that is the replication master for all connections in the pool.
+     * Get the connection that is the replication master for all connections in the pool.
      *
-     * @return PDO
+     * @return PDO The connection that is the replication master for all connections in the pool.
      */
     public function replicationMaster();
 
     /**
-     * @return array<PDO>
+     * Get the connections in the pool.
+     *
+     * @return array<PDO> An array containing the connections in the pool.
      */
     public function connections();
 
     /**
      * Get the database connection from the pool with the lowest replication delay.
      *
+     * @param integer|null $maximumDelay The maximum replication delay allowed in seconds, or null to allow any.
+     *
      * @return PDO
      * @throws Exception\NoConnectionAvailableException
      */
-    public function acquire();
+    public function acquire($maximumDelay = null);
 
     /**
-     * Get a single database connection from the pool without a specific replication delay requirement.
+     * Get a single database connection from the pool.
+     *
+     * No replication delay threshold is enforced, but replication must be running.
      *
      * @return PDO
      * @throws Exception\NoConnectionAvailableException
@@ -43,12 +48,12 @@ interface ReplicationPoolInterface
     /**
      * Get a single database connection from the pool with a replication delay no greater than the given threshold.
      *
-     * @param Duration $maximumDelay The maximum replication delay.
+     * @param integer $maximumDelay The maximum replication delay in seconds.
      *
      * @return PDO
      * @throws Exception\NoConnectionAvailableException
      */
-    public function acquireWithMaximumDelay(Duration $maximumDelay)
+    public function acquireWithMaximumDelay($maximumDelay);
 
     /**
      * Get a single database connection from the pool with a replication delay no earlier than the given threshold.
