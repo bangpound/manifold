@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="robots" content="index, follow, all" />
+        <title>Icecave\Manifold\Replication\ReplicationPool | Manifold API</title>
+                    <link rel="stylesheet" type="text/css" href="../../../stylesheet.css">
+                            </head>
+        <body id="class">
+            <div class="header">
+        <ul>
+            <li><a href="../../../classes.html">Classes</a></li>
+                            <li><a href="../../../namespaces.html">Namespaces</a></li>
+                        <li><a href="../../../interfaces.html">Interfaces</a></li>
+            <li><a href="../../../doc-index.html">Index</a></li>
+            
+        </ul>
+
+        <div id="title">Manifold API</div>
+
+            <div class="type">Class</div>
+    <h1><a href="../../../Icecave/Manifold/Replication.html">Icecave\Manifold\Replication</a>\ReplicationPool</h1>
+    </div>
+        <div class="content">
+                <p>class    <strong>ReplicationPool</strong>        implements
+        <a href="../../../Icecave/Manifold/Replication/ReplicationPoolInterface.html"><abbr title="Icecave\Manifold\Replication\ReplicationPoolInterface">ReplicationPoolInterface</abbr></a></p>
+
+            <div class="description">
+            <p>Represents a pool of connections with a common replication master.</p>
+            <p>All connections in a replication pool may be used interchangeably.</p>
+        </div>
+    
+    
+    
+            <h2>Methods</h2>
+
+            <table>
+                    <tr>
+                <td class="type">
+                    
+                </td>
+                <td class="last">
+                    <a href="#method___construct">__construct</a>(<a href="../../../Icecave/Manifold/Connection.html"><abbr title="Icecave\Manifold\Connection">Connection</abbr></a> $replicationMaster, array $connections, <abbr title="Icecave\Chrono\Clock\ClockInterface">ClockInterface</abbr> $clock = null)
+                    <p></p>
+                </td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type">
+                    <a href="../../../Icecave/Manifold/Connection.html"><abbr title="Icecave\Manifold\Connection">Connection</abbr></a>
+                </td>
+                <td class="last">
+                    <a href="#method_replicationMaster">replicationMaster</a>()
+                    <p>Get the connection that is the replication master for all connections in the pool.</p>
+                </td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type">
+                    <abbr title="Icecave\Manifold\Replication\array&lt;Connection&gt;">array&lt;Connection&gt;</abbr>
+                </td>
+                <td class="last">
+                    <a href="#method_connections">connections</a>()
+                    <p>Get the connections in the pool.</p>
+                </td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type">
+                    <a href="../../../Icecave/Manifold/Connection.html"><abbr title="Icecave\Manifold\Connection">Connection</abbr></a>
+                </td>
+                <td class="last">
+                    <a href="#method_acquire">acquire</a>(integer|null $maximumDelay = null)
+                    <p>Get the database connection from the pool with the lowest replication delay.</p>
+                </td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type">
+                    <a href="../../../Icecave/Manifold/Connection.html"><abbr title="Icecave\Manifold\Connection">Connection</abbr></a>
+                </td>
+                <td class="last">
+                    <a href="#method_acquireAny">acquireAny</a>()
+                    <p>Get a single database connection from the pool.</p>
+                </td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type">
+                    <a href="../../../Icecave/Manifold/Connection.html"><abbr title="Icecave\Manifold\Connection">Connection</abbr></a>
+                </td>
+                <td class="last">
+                    <a href="#method_acquireWithMaximumDelay">acquireWithMaximumDelay</a>(integer $maximumDelay)
+                    <p>Get a single database connection from the pool with a replication delay no greater than the given threshold.</p>
+                </td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type">
+                    <a href="../../../Icecave/Manifold/Connection.html"><abbr title="Icecave\Manifold\Connection">Connection</abbr></a>
+                </td>
+                <td class="last">
+                    <a href="#method_acquireForTime">acquireForTime</a>(<abbr title="Icecave\Chrono\TimePointInterface">TimePointInterface</abbr> $timePoint)
+                    <p>Get a single database connection from the pool with a replication delay no earlier than the given threshold.</p>
+                </td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type">
+                    <abbr title="Icecave\Manifold\Replication\array&lt;Connection&gt;">array&lt;Connection&gt;</abbr>
+                </td>
+                <td class="last">
+                    <a href="#method_orderedConnections">orderedConnections</a>()
+                    <p></p>
+                </td>
+                <td></td>
+            </tr>
+            </table>
+
+
+        <h2>Details</h2>
+
+                        <h3 id="method___construct">
+        <div class="location">at line 20</div>
+        <code>            public            
+    <strong>__construct</strong>(<a href="../../../Icecave/Manifold/Connection.html"><abbr title="Icecave\Manifold\Connection">Connection</abbr></a> $replicationMaster, array $connections, <abbr title="Icecave\Chrono\Clock\ClockInterface">ClockInterface</abbr> $clock = null)</code>
+    </h3>
+    <div class="details">
+        <p></p>
+        <p></p>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table>
+                    <tr>
+                <td><a href="../../../Icecave/Manifold/Connection.html"><abbr title="Icecave\Manifold\Connection">Connection</abbr></a></td>
+                <td>$replicationMaster</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>array</td>
+                <td>$connections</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Icecave\Chrono\Clock\ClockInterface">ClockInterface</abbr></td>
+                <td>$clock</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+                <h3 id="method_replicationMaster">
+        <div class="location">at line 36</div>
+        <code>            public            <a href="../../../Icecave/Manifold/Connection.html"><abbr title="Icecave\Manifold\Connection">Connection</abbr></a>
+    <strong>replicationMaster</strong>()</code>
+    </h3>
+    <div class="details">
+        <p>Get the connection that is the replication master for all connections in the pool.</p>
+        <p></p>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table>
+        <tr>
+            <td><a href="../../../Icecave/Manifold/Connection.html"><abbr title="Icecave\Manifold\Connection">Connection</abbr></a></td>
+            <td>The connection that is the replication master for all connections in the pool.</td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+                <h3 id="method_connections">
+        <div class="location">at line 46</div>
+        <code>            public            <abbr title="Icecave\Manifold\Replication\array&lt;Connection&gt;">array&lt;Connection&gt;</abbr>
+    <strong>connections</strong>()</code>
+    </h3>
+    <div class="details">
+        <p>Get the connections in the pool.</p>
+        <p></p>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table>
+        <tr>
+            <td><abbr title="Icecave\Manifold\Replication\array&lt;Connection&gt;">array&lt;Connection&gt;</abbr></td>
+            <td>An array containing the connections in the pool.</td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+                <h3 id="method_acquire">
+        <div class="location">at line 59</div>
+        <code>            public            <a href="../../../Icecave/Manifold/Connection.html"><abbr title="Icecave\Manifold\Connection">Connection</abbr></a>
+    <strong>acquire</strong>(integer|null $maximumDelay = null)</code>
+    </h3>
+    <div class="details">
+        <p>Get the database connection from the pool with the lowest replication delay.</p>
+        <p></p>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table>
+                    <tr>
+                <td>integer|null</td>
+                <td>$maximumDelay</td>
+                <td>The maximum replication delay allowed in seconds, or null to allow any.</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table>
+        <tr>
+            <td><a href="../../../Icecave/Manifold/Connection.html"><abbr title="Icecave\Manifold\Connection">Connection</abbr></a></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+                            <h4>Exceptions</h4>
+
+                    <table>
+                    <tr>
+                <td><abbr title="Exception\NoConnectionAvailableException">NoConnectionAvailableException</abbr></td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                    </div>
+    </div>
+
+                <h3 id="method_acquireAny">
+        <div class="location">at line 104</div>
+        <code>            public            <a href="../../../Icecave/Manifold/Connection.html"><abbr title="Icecave\Manifold\Connection">Connection</abbr></a>
+    <strong>acquireAny</strong>()</code>
+    </h3>
+    <div class="details">
+        <p>Get a single database connection from the pool.</p>
+        <p>No replication delay threshold is enforced, but replication must be running.</p>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table>
+        <tr>
+            <td><a href="../../../Icecave/Manifold/Connection.html"><abbr title="Icecave\Manifold\Connection">Connection</abbr></a></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+                            <h4>Exceptions</h4>
+
+                    <table>
+                    <tr>
+                <td><abbr title="Exception\NoConnectionAvailableException">NoConnectionAvailableException</abbr></td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                    </div>
+    </div>
+
+                <h3 id="method_acquireWithMaximumDelay">
+        <div class="location">at line 125</div>
+        <code>            public            <a href="../../../Icecave/Manifold/Connection.html"><abbr title="Icecave\Manifold\Connection">Connection</abbr></a>
+    <strong>acquireWithMaximumDelay</strong>(integer $maximumDelay)</code>
+    </h3>
+    <div class="details">
+        <p>Get a single database connection from the pool with a replication delay no greater than the given threshold.</p>
+        <p></p>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table>
+                    <tr>
+                <td>integer</td>
+                <td>$maximumDelay</td>
+                <td>The maximum replication delay in seconds.</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table>
+        <tr>
+            <td><a href="../../../Icecave/Manifold/Connection.html"><abbr title="Icecave\Manifold\Connection">Connection</abbr></a></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+                            <h4>Exceptions</h4>
+
+                    <table>
+                    <tr>
+                <td><abbr title="Exception\NoConnectionAvailableException">NoConnectionAvailableException</abbr></td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                    </div>
+    </div>
+
+                <h3 id="method_acquireForTime">
+        <div class="location">at line 155</div>
+        <code>            public            <a href="../../../Icecave/Manifold/Connection.html"><abbr title="Icecave\Manifold\Connection">Connection</abbr></a>
+    <strong>acquireForTime</strong>(<abbr title="Icecave\Chrono\TimePointInterface">TimePointInterface</abbr> $timePoint)</code>
+    </h3>
+    <div class="details">
+        <p>Get a single database connection from the pool with a replication delay no earlier than the given threshold.</p>
+        <p></p>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table>
+                    <tr>
+                <td><abbr title="Icecave\Chrono\TimePointInterface">TimePointInterface</abbr></td>
+                <td>$timePoint</td>
+                <td>The minimum cut-off time for replication delay.</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table>
+        <tr>
+            <td><a href="../../../Icecave/Manifold/Connection.html"><abbr title="Icecave\Manifold\Connection">Connection</abbr></a></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+                            <h4>Exceptions</h4>
+
+                    <table>
+                    <tr>
+                <td><abbr title="Exception\NoConnectionAvailableException">NoConnectionAvailableException</abbr></td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                    </div>
+    </div>
+
+                <h3 id="method_orderedConnections">
+        <div class="location">at line 170</div>
+        <code>            public            <abbr title="Icecave\Manifold\Replication\array&lt;Connection&gt;">array&lt;Connection&gt;</abbr>
+    <strong>orderedConnections</strong>()</code>
+    </h3>
+    <div class="details">
+        <p></p>
+        <p></p>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table>
+        <tr>
+            <td><abbr title="Icecave\Manifold\Replication\array&lt;Connection&gt;">array&lt;Connection&gt;</abbr></td>
+            <td>The connections in the pool, in order of preference.</td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+    
+            </div>
+            <div id="footer">
+        Generated by <a href="http://sami.sensiolabs.org/" target="_top">Sami, the API Documentation Generator</a>.
+    </div>
+    </body>
+</html>

@@ -12,7 +12,14 @@ ok 10 - Icecave\Manifold\Proxy\AbstractProxyTest::testErrorCode
 ok 11 - Icecave\Manifold\Proxy\AbstractProxyTest::testErrorInfo
 ok 12 - Icecave\Manifold\Proxy\AbstractProxyTest::testGetAttribute
 ok 13 - Icecave\Manifold\Proxy\AbstractProxyTest::testSetAttribute
-ok 14 - Icecave\Manifold\Proxy\LazyConnectorTest::testConstructorDefaults
-ok 15 - Icecave\Manifold\Proxy\LazyConnectorTest::testInnerConnection
-ok 16 - Icecave\Manifold\Proxy\LazyConnectorTest::testIsConnected
-1..16
+ok 14 - Icecave\Manifold\Proxy\LazyConnectProxyTest::testConstructorDefaults
+ok 15 - Icecave\Manifold\Proxy\LazyConnectProxyTest::testInnerConnection
+ok 16 - Icecave\Manifold\Proxy\LazyConnectProxyTest::testIsConnected
+ok 17 - Icecave\Manifold\Proxy\LazyConnectProxyTest::testConnect
+ok 18 - Icecave\Manifold\Proxy\LazyConnectProxyTest::testGetAttribute
+ok 19 - Icecave\Manifold\Proxy\LazyConnectProxyTest::testGetAttributeWhenConnected
+ok 20 - Icecave\Manifold\Proxy\LazyConnectProxyTest::testSetAttribute
+ok 21 - Icecave\Manifold\Proxy\LazyConnectProxyTest::testSetAttributeBeforeConnected
+ok 22 - Icecave\Manifold\Proxy\LazyConnectProxyTest::testSetAttributeWhenConnected
+ok 23 - Icecave\Manifold\Proxy\ProxyTest::testInnerConnection
+1..23
