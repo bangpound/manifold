@@ -1,7 +1,7 @@
 # Manifold
 
 [![Build Status]](http://travis-ci.org/IcecaveStudios/manifold)
-[![Test Coverage]](http://icecave.com.au/manifold/artifacts/tests/coverage)
+[![Test Coverage]](http://icecavestudios.github.io/manifold/artifacts/tests/coverage)
 
 **Manifold** is a PDO compatible facade for multi-tiered MySQL replication sets.
 

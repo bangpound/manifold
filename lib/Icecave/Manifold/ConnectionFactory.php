@@ -9,7 +9,8 @@ class ConnectionFactory implements ConnectionFactoryInterface
 
         $this->driverOptions += array(
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_AUTOCOMMIT => false
+            PDO::ATTR_PERSISTENT => false,
+            PDO::ATTR_AUTOCOMMIT => false,
         );
     }
 
