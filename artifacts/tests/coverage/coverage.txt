@@ -1,12 +1,12 @@
 
 
 Code Coverage Report 
-  2013-06-03 04:03:07
+  2013-06-06 01:23:31
 
  Summary: 
   Classes: 50.00% (3/6)
   Methods: 64.86% (24/37)
-  Lines:   39.75% (97/244)
+  Lines:   41.99% (97/231)
 
 \Icecave\Manifold\Proxy::AbstractProxy
   Methods:  93.33% (14/15)   Lines: 100.00% ( 57/ 57)
