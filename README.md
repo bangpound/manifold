@@ -1,7 +1,8 @@
 # Manifold
 
-[![Build Status]](http://travis-ci.org/IcecaveStudios/manifold)
-[![Test Coverage]](http://icecavestudios.github.io/manifold/artifacts/tests/coverage)
+[![Build Status]](https://travis-ci.org/IcecaveStudios/manifold)
+[![Test Coverage]](https://coveralls.io/r/IcecaveStudios/manifold?branch=develop)
+[![SemVer]](http://semver.org)
 
 **Manifold** is a PDO compatible facade for multi-tiered MySQL replication sets.
 
@@ -17,5 +18,6 @@ but should be suitable in most situations where a single `PDO` instance is used.
 * Read the [API documentation](http://icecavestudios.github.io/manifold/artifacts/documentation/api/)
 
 <!-- references -->
-[Build Status]: https://raw.github.com/IcecaveStudios/manifold/gh-pages/artifacts/images/icecave/regular/build-status.png
-[Test Coverage]: https://raw.github.com/IcecaveStudios/manifold/gh-pages/artifacts/images/icecave/regular/coverage.png
+[Build Status]: https://travis-ci.org/IcecaveStudios/manifold.png?branch=develop
+[Test Coverage]: https://coveralls.io/repos/IcecaveStudios/manifold/badge.png?branch=develop
+[SemVer]: http://calm-shore-6115.herokuapp.com/?label=semver&value=0.0.0&color=red
