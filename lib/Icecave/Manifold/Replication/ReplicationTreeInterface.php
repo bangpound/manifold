@@ -13,6 +13,13 @@ interface ReplicationTreeInterface
     public function replicationRoot();
 
     /**
+     * Fetch an array containing all connections im the tree that are replication masters.
+     *
+     * @return array<PDO>
+     */
+    public function replicationMasters();
+
+    /**
      * Fetch the database connections that use the replication root as their master, if any.
      *
      * @return array<PDO>
