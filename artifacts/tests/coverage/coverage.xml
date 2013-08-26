@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="1377480052">
+  <project timestamp="1377480052">
+    <package name="Icecave\Manifold\PDO">
+      <file name="/home/travis/build/IcecaveLabs/manifold/lib/Icecave/Manifold/PDO/AbstractPDOProxy.php">
+        <class name="AbstractPDOProxy" namespace="Icecave\Manifold\PDO">
+          <metrics methods="15" coveredmethods="14" conditionals="0" coveredconditionals="0" statements="67" coveredstatements="67" elements="82" coveredelements="81"/>
+        </class>
+        <line num="10" type="method" name="__construct" crap="1" count="13"/>
+        <line num="12" type="stmt" count="13"/>
+        <line num="15" type="stmt" count="13"/>
+        <line num="24" type="method" name="exec" crap="1" count="1"/>
+        <line num="26" type="stmt" count="1"/>
+        <line num="28" type="stmt" count="1"/>
+        <line num="29" type="stmt" count="1"/>
+        <line num="30" type="stmt" count="1"/>
+        <line num="31" type="stmt" count="1"/>
+        <line num="42" type="method" name="prepare" crap="1" count="1"/>
+        <line num="44" type="stmt" count="1"/>
+        <line num="46" type="stmt" count="1"/>
+        <line num="47" type="stmt" count="1"/>
+        <line num="48" type="stmt" count="1"/>
+        <line num="49" type="stmt" count="1"/>
+        <line num="61" type="method" name="query" crap="1" count="1"/>
+        <line num="64" type="stmt" count="1"/>
+        <line num="65" type="stmt" count="1"/>
+        <line num="66" type="stmt" count="1"/>
+        <line num="67" type="stmt" count="1"/>
+        <line num="78" type="method" name="quote" crap="1" count="1"/>
+        <line num="80" type="stmt" count="1"/>
+        <line num="82" type="stmt" count="1"/>
+        <line num="83" type="stmt" count="1"/>
+        <line num="84" type="stmt" count="1"/>
+        <line num="85" type="stmt" count="1"/>
+        <line num="95" type="method" name="lastInsertId" crap="1" count="1"/>
+        <line num="97" type="stmt" count="1"/>
+        <line num="99" type="stmt" count="1"/>
+        <line num="100" type="stmt" count="1"/>
+        <line num="101" type="stmt" count="1"/>
+        <line num="102" type="stmt" count="1"/>
+        <line num="110" type="method" name="beginTransaction" crap="1" count="1"/>
+        <line num="112" type="stmt" count="1"/>
+        <line num="114" type="stmt" count="1"/>
+        <line num="115" type="stmt" count="1"/>
+        <line num="116" type="stmt" count="1"/>
+        <line num="117" type="stmt" count="1"/>
+        <line num="125" type="method" name="commit" crap="1" count="1"/>
+        <line num="127" type="stmt" count="1"/>
+        <line num="129" type="stmt" count="1"/>
+        <line num="130" type="stmt" count="1"/>
+        <line num="131" type="stmt" count="1"/>
+        <line num="132" type="stmt" count="1"/>
+        <line num="140" type="method" name="rollBack" crap="1" count="1"/>
+        <line num="142" type="stmt" count="1"/>
+        <line num="144" type="stmt" count="1"/>
+        <line num="145" type="stmt" count="1"/>
+        <line num="146" type="stmt" count="1"/>
+        <line num="147" type="stmt" count="1"/>
+        <line num="155" type="method" name="inTransaction" crap="1" count="1"/>
+        <line num="157" type="stmt" count="1"/>
+        <line num="159" type="stmt" count="1"/>
+        <line num="160" type="stmt" count="1"/>
+        <line num="161" type="stmt" count="1"/>
+        <line num="162" type="stmt" count="1"/>
+        <line num="170" type="method" name="errorCode" crap="1" count="1"/>
+        <line num="172" type="stmt" count="1"/>
+        <line num="174" type="stmt" count="1"/>
+        <line num="175" type="stmt" count="1"/>
+        <line num="176" type="stmt" count="1"/>
+        <line num="177" type="stmt" count="1"/>
+        <line num="185" type="method" name="errorInfo" crap="1" count="1"/>
+        <line num="187" type="stmt" count="1"/>
+        <line num="189" type="stmt" count="1"/>
+        <line num="190" type="stmt" count="1"/>
+        <line num="191" type="stmt" count="1"/>
+        <line num="192" type="stmt" count="1"/>
+        <line num="202" type="method" name="getAttribute" crap="1" count="1"/>
+        <line num="204" type="stmt" count="1"/>
+        <line num="206" type="stmt" count="1"/>
+        <line num="207" type="stmt" count="1"/>
+        <line num="208" type="stmt" count="1"/>
+        <line num="209" type="stmt" count="1"/>
+        <line num="218" type="method" name="setAttribute" crap="1" count="1"/>
+        <line num="220" type="stmt" count="1"/>
+        <line num="222" type="stmt" count="1"/>
+        <line num="223" type="stmt" count="1"/>
+        <line num="224" type="stmt" count="1"/>
+        <line num="225" type="stmt" count="1"/>
+        <line num="226" type="stmt" count="1"/>
+        <line num="228" type="method" name="innerConnection" crap="1" count="0"/>
+        <line num="232" type="stmt" count="0"/>
+        <metrics loc="231" ncloc="145" classes="1" methods="14" coveredmethods="14" conditionals="0" coveredconditionals="0" statements="67" coveredstatements="67" elements="81" coveredelements="81"/>
+      </file>
+      <file name="/home/travis/build/IcecaveLabs/manifold/lib/Icecave/Manifold/PDO/LazyPDO.php">
+        <class name="LazyPDO" namespace="Icecave\Manifold\PDO">
+          <metrics methods="8" coveredmethods="7" conditionals="0" coveredconditionals="0" statements="29" coveredstatements="29" elements="37" coveredelements="36"/>
+        </class>
+        <line num="18" type="method" name="__construct" crap="1" count="7"/>
+        <line num="24" type="stmt" count="7"/>
+        <line num="26" type="stmt" count="7"/>
+        <line num="27" type="stmt" count="7"/>
+        <line num="28" type="stmt" count="7"/>
+        <line num="29" type="stmt" count="7"/>
+        <line num="30" type="stmt" count="7"/>
+        <line num="33" type="stmt" count="7"/>
+        <line num="44" type="method" name="getAttribute" crap="3" count="3"/>
+        <line num="46" type="stmt" count="3"/>
+        <line num="54" type="stmt" count="2"/>
+        <line num="55" type="stmt" count="2"/>
+        <line num="57" type="stmt" count="1"/>
+        <line num="69" type="method" name="setAttribute" crap="2" count="3"/>
+        <line num="71" type="stmt" count="3"/>
+        <line num="79" type="stmt" count="2"/>
+        <line num="80" type="stmt" count="2"/>
+        <line num="87" type="method" name="isConnected" crap="1" count="7"/>
+        <line num="89" type="stmt" count="7"/>
+        <line num="91" type="stmt" count="7"/>
+        <line num="97" type="method" name="connect" crap="2" count="5"/>
+        <line num="99" type="stmt" count="5"/>
+        <line num="101" type="stmt" count="5"/>
+        <line num="102" type="stmt" count="5"/>
+        <line num="104" type="stmt" count="5"/>
+        <line num="105" type="stmt" count="5"/>
+        <line num="107" type="stmt" count="5"/>
+        <line num="108" type="stmt" count="5"/>
+        <line num="109" type="stmt" count="1"/>
+        <line num="111" type="stmt" count="5"/>
+        <line num="118" type="method" name="beforeConnect" crap="1" count="5"/>
+        <line num="120" type="stmt" count="5"/>
+        <line num="121" type="stmt" count="5"/>
+        <line num="128" type="method" name="afterConnect" crap="1" count="5"/>
+        <line num="130" type="stmt" count="5"/>
+        <line num="131" type="stmt" count="5"/>
+        <line num="161" type="stmt" count="0"/>
+        <metrics loc="160" ncloc="94" classes="1" methods="7" coveredmethods="7" conditionals="0" coveredconditionals="0" statements="29" coveredstatements="29" elements="36" coveredelements="36"/>
+      </file>
+    </package>
+    <metrics files="2" loc="391" ncloc="239" classes="2" methods="21" coveredmethods="21" conditionals="0" coveredconditionals="0" statements="96" coveredstatements="96" elements="117" coveredelements="117"/>
+  </project>
+</coverage>

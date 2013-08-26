@@ -1,17 +1,7 @@
 var tree = [["Icecave",,"",
-                [["Manifold","Icecave\/Manifold.html","",
-                [["Proxy","Icecave\/Manifold\/Proxy.html","",
-                [["AbstractProxy","Icecave\/Manifold\/Proxy\/AbstractProxy.html"," < PDO",
-                [        ]],["LazyConnectProxy","Icecave\/Manifold\/Proxy\/LazyConnectProxy.html"," < AbstractProxy",
-                [        ]],["Proxy","Icecave\/Manifold\/Proxy\/Proxy.html"," < AbstractProxy",
-                [        ]]        ]],["QueryInspector","Icecave\/Manifold\/QueryInspector.html","",
-                [["QueryInspectorInterface","Icecave\/Manifold\/QueryInspector\/QueryInspectorInterface.html","",
-                [        ]]        ]],["Replication","Icecave\/Manifold\/Replication.html","",
-                [["ReplicationPool","Icecave\/Manifold\/Replication\/ReplicationPool.html","",
-                [        ]],["ReplicationPoolInterface","Icecave\/Manifold\/Replication\/ReplicationPoolInterface.html","",
-                [        ]],["ReplicationTreeInterface","Icecave\/Manifold\/Replication\/ReplicationTreeInterface.html","",
-                [        ]]        ]],["Connection","Icecave\/Manifold\/Connection.html"," < LazyConnectProxy",
-                [        ]],["ConnectionFactory","Icecave\/Manifold\/ConnectionFactory.html","",
-                [        ]],["ConnectionFactoryInterface","Icecave\/Manifold\/ConnectionFactoryInterface.html","",
-                [        ]]        ]]        ]]        ]
+                [["Manifold",,"",
+                [["PDO","Icecave\/Manifold\/PDO.html","",
+                [["AbstractPDOProxy","Icecave\/Manifold\/PDO\/AbstractPDOProxy.html"," < PDO",
+                [        ]],["LazyPDO","Icecave\/Manifold\/PDO\/LazyPDO.html"," < PDO",
+                [        ]]        ]]        ]]        ]]        ]
 

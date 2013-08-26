@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="robots" content="index, follow, all" />
+        <title>Icecave\Manifold\PDO\LazyPDO | Manifold API</title>
+                    <link rel="stylesheet" type="text/css" href="../../../stylesheet.css">
+                            </head>
+        <body id="class">
+            <div class="header">
+        <ul>
+            <li><a href="../../../classes.html">Classes</a></li>
+                            <li><a href="../../../namespaces.html">Namespaces</a></li>
+                        <li><a href="../../../interfaces.html">Interfaces</a></li>
+            <li><a href="../../../doc-index.html">Index</a></li>
+            
+        </ul>
+
+        <div id="title">Manifold API</div>
+
+            <div class="type">Class</div>
+    <h1><a href="../../../Icecave/Manifold/PDO.html">Icecave\Manifold\PDO</a>\LazyPDO</h1>
+    </div>
+        <div class="content">
+                <p>class    <strong>LazyPDO</strong>        extends <a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a></p>
+
+            <div class="description">
+            <p>A PDO connection with lazy-connection semantics.</p>
+            <p>
+</p>
+        </div>
+    
+    
+    
+            <h2>Methods</h2>
+
+            <table>
+                    <tr>
+                <td class="type">
+                    
+                </td>
+                <td class="last">
+                    <a href="#method___construct">__construct</a>(string $dsn, string|null $username = null, string|null $password = null, array $driverOptions = array())
+                    <p>
+</p>
+                </td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type">
+                    mixed
+                </td>
+                <td class="last">
+                    <a href="#method_getAttribute">getAttribute</a>(mixed $attribute)
+                    <p>Get an attribute of the connection.</p>
+                </td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type">
+                    
+                </td>
+                <td class="last">
+                    <a href="#method_setAttribute">setAttribute</a>(mixed $attribute, mixed $value)
+                    <p>Set an attribute on the connection.</p>
+                </td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type">
+                    boolean
+                </td>
+                <td class="last">
+                    <a href="#method_isConnected">isConnected</a>()
+                    <p>Check if a connection has been established.</p>
+                </td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type">
+                    
+                </td>
+                <td class="last">
+                    <a href="#method_connect">connect</a>()
+                    <p>Establish a connection to the database, if not already connected.</p>
+                </td>
+                <td></td>
+            </tr>
+            </table>
+
+
+        <h2>Details</h2>
+
+                        <h3 id="method___construct">
+        <div class="location">at line 18</div>
+        <code>            public            
+    <strong>__construct</strong>(string $dsn, string|null $username = null, string|null $password = null, array $driverOptions = array())</code>
+    </h3>
+    <div class="details">
+        <p>
+</p>
+        <p>
+</p>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table>
+                    <tr>
+                <td>string</td>
+                <td>$dsn</td>
+                <td>The connection data-source name.</td>
+            </tr>
+                    <tr>
+                <td>string|null</td>
+                <td>$username</td>
+                <td>The database username, this parameter is optional for some PDO drivers.</td>
+            </tr>
+                    <tr>
+                <td>string|null</td>
+                <td>$password</td>
+                <td>The database password, this parameter is optional for some PDO drivers.</td>
+            </tr>
+                    <tr>
+                <td>array</td>
+                <td>$driverOptions</td>
+                <td>An associative array of driver-specific options.</td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+                <h3 id="method_getAttribute">
+        <div class="location">at line 44</div>
+        <code>            public            mixed
+    <strong>getAttribute</strong>(mixed $attribute)</code>
+    </h3>
+    <div class="details">
+        <p>Get an attribute of the connection.</p>
+        <p>If a connection has not yet been established, the attribute is taken from the driver options provided upon construction.</p>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table>
+                    <tr>
+                <td>mixed</td>
+                <td>$attribute</td>
+                <td>The key of the attribute.</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table>
+        <tr>
+            <td>mixed</td>
+            <td>The value of the attribute specified by $attribute.</td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+                <h3 id="method_setAttribute">
+        <div class="location">at line 69</div>
+        <code>            public            
+    <strong>setAttribute</strong>(mixed $attribute, mixed $value)</code>
+    </h3>
+    <div class="details">
+        <p>Set an attribute on the connection.</p>
+        <p>If a connection has not yet been established, the attribute is set on the driver options array.</p>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table>
+                    <tr>
+                <td>mixed</td>
+                <td>$attribute</td>
+                <td>The key of the attribute.</td>
+            </tr>
+                    <tr>
+                <td>mixed</td>
+                <td>$value</td>
+                <td>The value of the attribute specified by $attribute.</td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+                <h3 id="method_isConnected">
+        <div class="location">at line 87</div>
+        <code>            public            boolean
+    <strong>isConnected</strong>()</code>
+    </h3>
+    <div class="details">
+        <p>Check if a connection has been established.</p>
+        <p>
+</p>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table>
+        <tr>
+            <td>boolean</td>
+            <td>True if a connection has been established; otherwise false.</td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+                <h3 id="method_connect">
+        <div class="location">at line 97</div>
+        <code>            public            
+    <strong>connect</strong>()</code>
+    </h3>
+    <div class="details">
+        <p>Establish a connection to the database, if not already connected.</p>
+        <p>
+</p>
+        <div class="tags">
+            
+            
+            
+                    </div>
+    </div>
+
+    
+            </div>
+            <div id="footer">
+        Generated by <a href="http://sami.sensiolabs.org/" target="_top">Sami, the API Documentation Generator</a>.
+    </div>
+    </body>
+</html>
