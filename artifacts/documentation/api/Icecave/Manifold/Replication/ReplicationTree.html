@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="robots" content="index, follow, all" />
+        <title>Icecave\Manifold\Replication\ReplicationTree | Manifold API</title>
+                    <link rel="stylesheet" type="text/css" href="../../../stylesheet.css">
+                            </head>
+        <body id="class">
+            <div class="header">
+        <ul>
+            <li><a href="../../../classes.html">Classes</a></li>
+                            <li><a href="../../../namespaces.html">Namespaces</a></li>
+                        <li><a href="../../../interfaces.html">Interfaces</a></li>
+            <li><a href="../../../doc-index.html">Index</a></li>
+            
+        </ul>
+
+        <div id="title">Manifold API</div>
+
+            <div class="type">Class</div>
+    <h1><a href="../../../Icecave/Manifold/Replication.html">Icecave\Manifold\Replication</a>\ReplicationTree</h1>
+    </div>
+        <div class="content">
+                <p>class    <strong>ReplicationTree</strong></p>
+
+            <div class="description">
+            <p>Represents a tree of replicating databases.</p>
+            <p>
+</p>
+        </div>
+    
+    
+    
+            <h2>Methods</h2>
+
+            <table>
+                    <tr>
+                <td class="type">
+                    
+                </td>
+                <td class="last">
+                    <a href="#method___construct">__construct</a>(<a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a> $replicationRoot)
+                    <p>
+</p>
+                </td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type">
+                    <a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a>
+                </td>
+                <td class="last">
+                    <a href="#method_replicationRoot">replicationRoot</a>()
+                    <p>Fetch the root database of the replication hierarchy.</p>
+                </td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type">
+                    boolean
+                </td>
+                <td class="last">
+                    <a href="#method_hasConnection">hasConnection</a>(<a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a> $connection)
+                    <p>Check if this tree contains a given connection.</p>
+                </td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type">
+                    boolean
+                </td>
+                <td class="last">
+                    <a href="#method_isRoot">isRoot</a>(<a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a> $connection)
+                    <p>Check if a connection is the root of this tree.</p>
+                </td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type">
+                    boolean
+                </td>
+                <td class="last">
+                    <a href="#method_isLeaf">isLeaf</a>(<a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a> $connection)
+                    <p>Check if a connection is a leaf in this tree.</p>
+                </td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type">
+                    boolean
+                </td>
+                <td class="last">
+                    <a href="#method_isMaster">isMaster</a>(<a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a> $connection)
+                    <p>Check if a connection is a replication master in this tree.</p>
+                </td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type">
+                    boolean
+                </td>
+                <td class="last">
+                    <a href="#method_isSlave">isSlave</a>(<a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a> $connection)
+                    <p>Check if a connection is a replication slave in this tree.</p>
+                </td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type">
+                    <a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a>|null
+                </td>
+                <td class="last">
+                    <a href="#method_masterOf">masterOf</a>(<a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a> $connection)
+                    <p>Get the replication master for a given slave connection.</p>
+                </td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type">
+                    <abbr title="Icecave\Manifold\Replication\Set&lt;PDO&gt;">Set&lt;PDO&gt;</abbr>
+                </td>
+                <td class="last">
+                    <a href="#method_slavesOf">slavesOf</a>(<a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a> $connection)
+                    <p>Get the replication slaves for a given master connection.</p>
+                </td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type">
+                    boolean
+                </td>
+                <td class="last">
+                    <a href="#method_isReplicatingTo">isReplicatingTo</a>(<a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a> $masterConnection, <a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a> $slaveConnection)
+                    <p>Check if a given master is replicating to a given slave.</p>
+                </td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type">
+                    boolean
+                </td>
+                <td class="last">
+                    <a href="#method_isMasterOf">isMasterOf</a>(<a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a> $masterConnection, <a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a> $slaveConnection)
+                    <p>Check if a given connection is the replication master of another connection.</p>
+                </td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type">
+                    integer|null
+                </td>
+                <td class="last">
+                    <a href="#method_countHops">countHops</a>(<a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a> $masterConnection, <a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a> $slaveConnection)
+                    <p>Count the number of hops between a master and slave connection.</p>
+                </td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type">
+                    
+                </td>
+                <td class="last">
+                    <a href="#method_addSlave">addSlave</a>(<a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a> $masterConnection, <a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a> $slaveConnection)
+                    <p>Add a slave connection.</p>
+                </td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type">
+                    
+                </td>
+                <td class="last">
+                    <a href="#method_removeSlave">removeSlave</a>(<a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a> $connection)
+                    <p>Remove a slave connection.</p>
+                </td>
+                <td></td>
+            </tr>
+            </table>
+
+
+        <h2>Details</h2>
+
+                        <h3 id="method___construct">
+        <div class="location">at line 21</div>
+        <code>            public            
+    <strong>__construct</strong>(<a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a> $replicationRoot)</code>
+    </h3>
+    <div class="details">
+        <p>
+</p>
+        <p>
+</p>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table>
+                    <tr>
+                <td><a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a></td>
+                <td>$replicationRoot</td>
+                <td>The root database of the replication hierarchy.</td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+                <h3 id="method_replicationRoot">
+        <div class="location">at line 35</div>
+        <code>            public            <a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a>
+    <strong>replicationRoot</strong>()</code>
+    </h3>
+    <div class="details">
+        <p>Fetch the root database of the replication hierarchy.</p>
+        <p>
+</p>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table>
+        <tr>
+            <td><a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a></td>
+            <td>The root database of the replication hierarchy.</td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+                <h3 id="method_hasConnection">
+        <div class="location">at line 49</div>
+        <code>            public            boolean
+    <strong>hasConnection</strong>(<a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a> $connection)</code>
+    </h3>
+    <div class="details">
+        <p>Check if this tree contains a given connection.</p>
+        <p>
+</p>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table>
+                    <tr>
+                <td><a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a></td>
+                <td>$connection</td>
+                <td>The connection to check.</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table>
+        <tr>
+            <td>boolean</td>
+            <td>True if the given connection is present in this tree; otherwise, false.</td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+                <h3 id="method_isRoot">
+        <div class="location">at line 63</div>
+        <code>            public            boolean
+    <strong>isRoot</strong>(<a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a> $connection)</code>
+    </h3>
+    <div class="details">
+        <p>Check if a connection is the root of this tree.</p>
+        <p>
+</p>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table>
+                    <tr>
+                <td><a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a></td>
+                <td>$connection</td>
+                <td>The connection to check.</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table>
+        <tr>
+            <td>boolean</td>
+            <td>True if the given connection is the root of this tree; otherwise, false.</td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+                <h3 id="method_isLeaf">
+        <div class="location">at line 81</div>
+        <code>            public            boolean
+    <strong>isLeaf</strong>(<a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a> $connection)</code>
+    </h3>
+    <div class="details">
+        <p>Check if a connection is a leaf in this tree.</p>
+        <p>
+</p>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table>
+                    <tr>
+                <td><a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a></td>
+                <td>$connection</td>
+                <td>The connection to check.</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table>
+        <tr>
+            <td>boolean</td>
+            <td>True if the given connection is a leaf of this tree; otherwise, false.</td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+                <h3 id="method_isMaster">
+        <div class="location">at line 95</div>
+        <code>            public            boolean
+    <strong>isMaster</strong>(<a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a> $connection)</code>
+    </h3>
+    <div class="details">
+        <p>Check if a connection is a replication master in this tree.</p>
+        <p>
+</p>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table>
+                    <tr>
+                <td><a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a></td>
+                <td>$connection</td>
+                <td>The connection to check.</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table>
+        <tr>
+            <td>boolean</td>
+            <td>True if the given connection is a replication master in this tree; otherwise, false.</td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+                <h3 id="method_isSlave">
+        <div class="location">at line 109</div>
+        <code>            public            boolean
+    <strong>isSlave</strong>(<a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a> $connection)</code>
+    </h3>
+    <div class="details">
+        <p>Check if a connection is a replication slave in this tree.</p>
+        <p>
+</p>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table>
+                    <tr>
+                <td><a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a></td>
+                <td>$connection</td>
+                <td>The connection to check.</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table>
+        <tr>
+            <td>boolean</td>
+            <td>True if the given connection is a replication slave in this tree; otherwise, false.</td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+                <h3 id="method_masterOf">
+        <div class="location">at line 123</div>
+        <code>            public            <a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a>|null
+    <strong>masterOf</strong>(<a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a> $connection)</code>
+    </h3>
+    <div class="details">
+        <p>Get the replication master for a given slave connection.</p>
+        <p>
+</p>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table>
+                    <tr>
+                <td><a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a></td>
+                <td>$connection</td>
+                <td>The slave connection.</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table>
+        <tr>
+            <td><a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a>|null</td>
+            <td>The replication master for the given slave, or null if it is the replication root.</td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+                <h3 id="method_slavesOf">
+        <div class="location">at line 137</div>
+        <code>            public            <abbr title="Icecave\Manifold\Replication\Set&lt;PDO&gt;">Set&lt;PDO&gt;</abbr>
+    <strong>slavesOf</strong>(<a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a> $connection)</code>
+    </h3>
+    <div class="details">
+        <p>Get the replication slaves for a given master connection.</p>
+        <p>
+</p>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table>
+                    <tr>
+                <td><a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a></td>
+                <td>$connection</td>
+                <td>The master connection.</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table>
+        <tr>
+            <td><abbr title="Icecave\Manifold\Replication\Set&lt;PDO&gt;">Set&lt;PDO&gt;</abbr></td>
+            <td>The replication slaves for the given master.</td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+                <h3 id="method_isReplicatingTo">
+        <div class="location">at line 152</div>
+        <code>            public            boolean
+    <strong>isReplicatingTo</strong>(<a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a> $masterConnection, <a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a> $slaveConnection)</code>
+    </h3>
+    <div class="details">
+        <p>Check if a given master is replicating to a given slave.</p>
+        <p>
+</p>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table>
+                    <tr>
+                <td><a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a></td>
+                <td>$masterConnection</td>
+                <td>The master connection.</td>
+            </tr>
+                    <tr>
+                <td><a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a></td>
+                <td>$slaveConnection</td>
+                <td>The slave connection.</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table>
+        <tr>
+            <td>boolean</td>
+            <td>True if $masterConnection is anywhere above $slaveConnection in the replication hierarchy; otherwise, false.</td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+                <h3 id="method_isMasterOf">
+        <div class="location">at line 167</div>
+        <code>            public            boolean
+    <strong>isMasterOf</strong>(<a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a> $masterConnection, <a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a> $slaveConnection)</code>
+    </h3>
+    <div class="details">
+        <p>Check if a given connection is the replication master of another connection.</p>
+        <p>
+</p>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table>
+                    <tr>
+                <td><a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a></td>
+                <td>$masterConnection</td>
+                <td>The master connection.</td>
+            </tr>
+                    <tr>
+                <td><a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a></td>
+                <td>$slaveConnection</td>
+                <td>The slave connection.</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table>
+        <tr>
+            <td>boolean</td>
+            <td>True if $masterConnection is the replication master of $slaveConnection; otherwise, false.</td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+                <h3 id="method_countHops">
+        <div class="location">at line 186</div>
+        <code>            public            integer|null
+    <strong>countHops</strong>(<a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a> $masterConnection, <a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a> $slaveConnection)</code>
+    </h3>
+    <div class="details">
+        <p>Count the number of hops between a master and slave connection.</p>
+        <p>
+</p>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table>
+                    <tr>
+                <td><a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a></td>
+                <td>$masterConnection</td>
+                <td>The master connection.</td>
+            </tr>
+                    <tr>
+                <td><a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a></td>
+                <td>$slaveConnection</td>
+                <td>The slave connection.</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table>
+        <tr>
+            <td>integer|null</td>
+            <td>The number of hops (difference in depth) between $masterConnection and $slaveConnection, or null if $masterConnection is not replicating to $slaveConnection.</td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+                <h3 id="method_addSlave">
+        <div class="location">at line 215</div>
+        <code>            public            
+    <strong>addSlave</strong>(<a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a> $masterConnection, <a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a> $slaveConnection)</code>
+    </h3>
+    <div class="details">
+        <p>Add a slave connection.</p>
+        <p>The given master must have already been added to the tree.</p>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table>
+                    <tr>
+                <td><a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a></td>
+                <td>$masterConnection</td>
+                <td>The master connection.</td>
+            </tr>
+                    <tr>
+                <td><a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a></td>
+                <td>$slaveConnection</td>
+                <td>The slave connection to add.</td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+                <h3 id="method_removeSlave">
+        <div class="location">at line 229</div>
+        <code>            public            
+    <strong>removeSlave</strong>(<a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a> $connection)</code>
+    </h3>
+    <div class="details">
+        <p>Remove a slave connection.</p>
+        <p>
+</p>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table>
+                    <tr>
+                <td><a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a></td>
+                <td>$connection</td>
+                <td>The connection to remove.</td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+    
+            </div>
+            <div id="footer">
+        Generated by <a href="http://sami.sensiolabs.org/" target="_top">Sami, the API Documentation Generator</a>.
+    </div>
+    </body>
+</html>

@@ -1,7 +1,15 @@
 var tree = [["Icecave",,"",
                 [["Manifold",,"",
-                [["PDO","Icecave\/Manifold\/PDO.html","",
+                [["Connection","Icecave\/Manifold\/Connection.html","",
+                [["ConnectionFactory","Icecave\/Manifold\/Connection\/ConnectionFactory.html","",
+                [        ]],["ConnectionFactoryInterface","Icecave\/Manifold\/Connection\/ConnectionFactoryInterface.html","",
+                [        ]]        ]],["Exception","Icecave\/Manifold\/Exception.html","",
+                [["UnknownDatabaseException","Icecave\/Manifold\/Exception\/UnknownDatabaseException.html"," < LogicException",
+                [        ]]        ]],["PDO","Icecave\/Manifold\/PDO.html","",
                 [["AbstractPDOProxy","Icecave\/Manifold\/PDO\/AbstractPDOProxy.html"," < PDO",
                 [        ]],["LazyPDO","Icecave\/Manifold\/PDO\/LazyPDO.html"," < PDO",
+                [        ]]        ]],["Replication","Icecave\/Manifold\/Replication.html","",
+                [["ReplicationManagerInterface","Icecave\/Manifold\/Replication\/ReplicationManagerInterface.html","",
+                [        ]],["ReplicationTree","Icecave\/Manifold\/Replication\/ReplicationTree.html","",
                 [        ]]        ]]        ]]        ]]        ]
 

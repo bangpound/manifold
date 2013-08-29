@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="robots" content="index, follow, all" />
+        <title>Icecave\Manifold\Replication\ReplicationManagerInterface | Manifold API</title>
+                    <link rel="stylesheet" type="text/css" href="../../../stylesheet.css">
+                            </head>
+        <body id="class">
+            <div class="header">
+        <ul>
+            <li><a href="../../../classes.html">Classes</a></li>
+                            <li><a href="../../../namespaces.html">Namespaces</a></li>
+                        <li><a href="../../../interfaces.html">Interfaces</a></li>
+            <li><a href="../../../doc-index.html">Index</a></li>
+            
+        </ul>
+
+        <div id="title">Manifold API</div>
+
+            <div class="type">Interface</div>
+    <h1><a href="../../../Icecave/Manifold/Replication.html">Icecave\Manifold\Replication</a>\ReplicationManagerInterface</h1>
+    </div>
+        <div class="content">
+                <p>interface    <strong>ReplicationManagerInterface</strong></p>
+
+    
+    
+    
+            <h2>Methods</h2>
+
+            <table>
+                    <tr>
+                <td class="type">
+                    integer
+                </td>
+                <td class="last">
+                    <a href="#method_replicationDelay">replicationDelay</a>(<a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a> $slave, <a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a> $master = null)
+                    <p>Fetch a replication slave's delay.</p>
+                </td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type">
+                    boolean
+                </td>
+                <td class="last">
+                    <a href="#method_isReplicating">isReplicating</a>(<a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a> $slave, <a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a> $master = null)
+                    <p>Check if a slave is replicating.</p>
+                </td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type">
+                    boolean
+                </td>
+                <td class="last">
+                    <a href="#method_waitForReplication">waitForReplication</a>(<a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a> $slave, <a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a> $master = null, integer|null $timeout = null)
+                    <p>Wait for a slave replication to catch up to the current point on the given master.</p>
+                </td>
+                <td></td>
+            </tr>
+            </table>
+
+
+        <h2>Details</h2>
+
+                        <h3 id="method_replicationDelay">
+        <div class="location">at line 17</div>
+        <code>            public            integer
+    <strong>replicationDelay</strong>(<a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a> $slave, <a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a> $master = null)</code>
+    </h3>
+    <div class="details">
+        <p>Fetch a replication slave's delay.</p>
+        <p>
+</p>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table>
+                    <tr>
+                <td><a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a></td>
+                <td>$slave</td>
+                <td>The replication slave.</td>
+            </tr>
+                    <tr>
+                <td><a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a></td>
+                <td>$master</td>
+                <td>The replication master to check against, or null to use the replication root.</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table>
+        <tr>
+            <td>integer</td>
+            <td>The replication delay between $master and $slave, in seconds.</td>
+        </tr>
+    </table>
+
+            
+                            <h4>Exceptions</h4>
+
+                    <table>
+                    <tr>
+                <td><abbr title="Exception\NotReplicatingException">NotReplicatingException</abbr></td>
+                <td>If $slave is not replicating from $master.</td>
+            </tr>
+            </table>
+
+            
+                    </div>
+    </div>
+
+                <h3 id="method_isReplicating">
+        <div class="location">at line 27</div>
+        <code>            public            boolean
+    <strong>isReplicating</strong>(<a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a> $slave, <a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a> $master = null)</code>
+    </h3>
+    <div class="details">
+        <p>Check if a slave is replicating.</p>
+        <p>
+</p>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table>
+                    <tr>
+                <td><a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a></td>
+                <td>$slave</td>
+                <td>The replication slave to check.</td>
+            </tr>
+                    <tr>
+                <td><a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a></td>
+                <td>$master</td>
+                <td>The master to check against.</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table>
+        <tr>
+            <td>boolean</td>
+            <td>True if $slave is replicating (from $master if provided); otherwise, false.</td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+                <h3 id="method_waitForReplication">
+        <div class="location">at line 38</div>
+        <code>            public            boolean
+    <strong>waitForReplication</strong>(<a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a> $slave, <a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a> $master = null, integer|null $timeout = null)</code>
+    </h3>
+    <div class="details">
+        <p>Wait for a slave replication to catch up to the current point on the given master.</p>
+        <p>
+</p>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table>
+                    <tr>
+                <td><a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a></td>
+                <td>$slave</td>
+                <td>The replication slave on which to wait.</td>
+            </tr>
+                    <tr>
+                <td><a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a></td>
+                <td>$master</td>
+                <td>The replication master to check against, or null to use the replication root.</td>
+            </tr>
+                    <tr>
+                <td>integer|null</td>
+                <td>$timeout</td>
+                <td>The maximum time to wait in seconds, or null to wait indefinitely.</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table>
+        <tr>
+            <td>boolean</td>
+            <td>False if the wait operation times out before complection; otherwise, true.</td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+    
+            </div>
+            <div id="footer">
+        Generated by <a href="http://sami.sensiolabs.org/" target="_top">Sami, the API Documentation Generator</a>.
+    </div>
+    </body>
+</html>
