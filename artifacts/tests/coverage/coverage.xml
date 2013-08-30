@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1377748778">
-  <project timestamp="1377748778">
+<coverage generated="1377823026">
+  <project timestamp="1377823026">
     <package name="Icecave\Manifold\Connection">
       <file name="/home/travis/build/IcecaveLabs/manifold/lib/Icecave/Manifold/Connection/ConnectionFactory.php">
         <class name="ConnectionFactory" namespace="Icecave\Manifold\Connection">
@@ -178,7 +178,7 @@
       </file>
     </package>
     <file name="/home/travis/build/IcecaveLabs/manifold/lib/Icecave/Manifold/Replication/ReplicationManagerInterface.php">
-      <metrics loc="39" ncloc="13" classes="0" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="0" coveredelements="0"/>
+      <metrics loc="46" ncloc="15" classes="0" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="0" coveredelements="0"/>
     </file>
     <package name="Icecave\Manifold\Replication">
       <file name="/home/travis/build/IcecaveLabs/manifold/lib/Icecave/Manifold/Replication/ReplicationTree.php">
@@ -269,6 +269,6 @@
         <metrics loc="281" ncloc="172" classes="1" methods="16" coveredmethods="16" conditionals="0" coveredconditionals="0" statements="63" coveredstatements="63" elements="79" coveredelements="79"/>
       </file>
     </package>
-    <metrics files="7" loc="794" ncloc="483" classes="5" methods="40" coveredmethods="37" conditionals="0" coveredconditionals="0" statements="176" coveredstatements="159" elements="216" coveredelements="196"/>
+    <metrics files="7" loc="801" ncloc="485" classes="5" methods="40" coveredmethods="37" conditionals="0" coveredconditionals="0" statements="176" coveredstatements="159" elements="216" coveredelements="196"/>
   </project>
 </coverage>
