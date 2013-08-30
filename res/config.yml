@@ -1,0 +1,45 @@
+# Define the available connections.
+connections:
+    master1:    mysql:host=master1;port=3306
+    master2:    mysql:host=master2;port=3306
+    reporting1: mysql:host=reporting1;port=3306
+    slave101:   mysql:host=slave101;port=3306
+    slave102:   mysql:host=slave102;port=3306
+    reporting2: mysql:host=reporting2;port=3306
+    slave201:   mysql:host=slave201;port=3306
+    slave202:   mysql:host=slave202;port=3306
+
+# Define the replication structure.
+replication:
+    master1:
+        master2: {}
+        reporting1:
+            slave101: {}
+            slave102: {}
+        reporting2:
+            slave201: {}
+            slave202: {}
+
+# Define connection pools.
+pools:
+    pool1:
+        - slave101
+        - slave102
+    pool2:
+        - slave201
+        - slave202
+
+# Define available schema and read/write connections to use.
+schema:
+    default:
+        write: reporting1
+        read:  pool1
+    app_data:
+        write: master1
+        read:  pool1
+    app_reporting:
+        write: reporting2
+        read:  pool2
+    app_temp:
+        write: pool2
+        read:  pool2

@@ -6,6 +6,13 @@ use PDO;
 interface ReplicationManagerInterface
 {
     /**
+     * Fetch the replication tree upon which this manager operates.
+     *
+     * @return ReplicationTree The replication tree upon which this manager operates.
+     */
+    public function replicationTree();
+
+    /**
      * Fetch a replication slave's delay.
      *
      * @param PDO      $slave  The replication slave.
