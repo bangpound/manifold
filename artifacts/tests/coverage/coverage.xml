@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1377823026">
-  <project timestamp="1377823026">
+<coverage generated="1378189148">
+  <project timestamp="1378189148">
     <package name="Icecave\Manifold\Connection">
       <file name="/home/travis/build/IcecaveLabs/manifold/lib/Icecave/Manifold/Connection/ConnectionFactory.php">
         <class name="ConnectionFactory" namespace="Icecave\Manifold\Connection">
@@ -183,15 +183,15 @@
     <package name="Icecave\Manifold\Replication">
       <file name="/home/travis/build/IcecaveLabs/manifold/lib/Icecave/Manifold/Replication/ReplicationTree.php">
         <class name="ReplicationTree" namespace="Icecave\Manifold\Replication">
-          <metrics methods="16" coveredmethods="16" conditionals="0" coveredconditionals="0" statements="63" coveredstatements="63" elements="79" coveredelements="79"/>
+          <metrics methods="17" coveredmethods="17" conditionals="0" coveredconditionals="0" statements="76" coveredstatements="76" elements="93" coveredelements="93"/>
         </class>
         <line num="0" type="stmt" count="0"/>
-        <line num="21" type="method" name="__construct" crap="1" count="27"/>
-        <line num="23" type="stmt" count="27"/>
-        <line num="25" type="stmt" count="27"/>
-        <line num="26" type="stmt" count="27"/>
-        <line num="27" type="stmt" count="27"/>
-        <line num="28" type="stmt" count="27"/>
+        <line num="21" type="method" name="__construct" crap="1" count="30"/>
+        <line num="23" type="stmt" count="30"/>
+        <line num="25" type="stmt" count="30"/>
+        <line num="26" type="stmt" count="30"/>
+        <line num="27" type="stmt" count="30"/>
+        <line num="28" type="stmt" count="30"/>
         <line num="35" type="method" name="replicationRoot" crap="1" count="1"/>
         <line num="37" type="stmt" count="1"/>
         <line num="39" type="stmt" count="1"/>
@@ -237,38 +237,52 @@
         <line num="201" type="stmt" count="2"/>
         <line num="202" type="stmt" count="2"/>
         <line num="204" type="stmt" count="2"/>
-        <line num="215" type="method" name="addSlave" crap="1" count="27"/>
-        <line num="217" type="stmt" count="27"/>
-        <line num="219" type="stmt" count="27"/>
-        <line num="220" type="stmt" count="27"/>
-        <line num="221" type="stmt" count="27"/>
-        <line num="222" type="stmt" count="27"/>
-        <line num="229" type="method" name="removeSlave" crap="3" count="3"/>
-        <line num="231" type="stmt" count="3"/>
-        <line num="233" type="stmt" count="3"/>
-        <line num="234" type="stmt" count="1"/>
+        <line num="217" type="method" name="replicationPath" crap="4" count="3"/>
+        <line num="219" type="stmt" count="3"/>
+        <line num="222" type="stmt" count="3"/>
+        <line num="223" type="stmt" count="2"/>
+        <line num="225" type="stmt" count="1"/>
+        <line num="226" type="stmt" count="1"/>
+        <line num="229" type="stmt" count="1"/>
+        <line num="232" type="stmt" count="1"/>
+        <line num="233" type="stmt" count="1"/>
+        <line num="236" type="stmt" count="1"/>
         <line num="237" type="stmt" count="1"/>
         <line num="238" type="stmt" count="1"/>
         <line num="239" type="stmt" count="1"/>
         <line num="241" type="stmt" count="1"/>
-        <line num="242" type="stmt" count="1"/>
-        <line num="243" type="stmt" count="1"/>
-        <line num="244" type="stmt" count="1"/>
-        <line num="251" type="method" name="createEntry" crap="1" count="27"/>
-        <line num="253" type="stmt" count="27"/>
-        <line num="255" type="stmt" count="27"/>
-        <line num="256" type="stmt" count="27"/>
-        <line num="257" type="stmt" count="27"/>
-        <line num="259" type="stmt" count="27"/>
-        <line num="267" type="method" name="getEntry" crap="2" count="27"/>
-        <line num="269" type="stmt" count="27"/>
-        <line num="272" type="stmt" count="27"/>
-        <line num="273" type="stmt" count="10"/>
-        <line num="274" type="stmt" count="10"/>
-        <line num="282" type="stmt" count="0"/>
-        <metrics loc="281" ncloc="172" classes="1" methods="16" coveredmethods="16" conditionals="0" coveredconditionals="0" statements="63" coveredstatements="63" elements="79" coveredelements="79"/>
+        <line num="252" type="method" name="addSlave" crap="1" count="30"/>
+        <line num="254" type="stmt" count="30"/>
+        <line num="256" type="stmt" count="30"/>
+        <line num="257" type="stmt" count="30"/>
+        <line num="258" type="stmt" count="30"/>
+        <line num="259" type="stmt" count="30"/>
+        <line num="266" type="method" name="removeSlave" crap="3" count="3"/>
+        <line num="268" type="stmt" count="3"/>
+        <line num="270" type="stmt" count="3"/>
+        <line num="271" type="stmt" count="1"/>
+        <line num="274" type="stmt" count="1"/>
+        <line num="275" type="stmt" count="1"/>
+        <line num="276" type="stmt" count="1"/>
+        <line num="278" type="stmt" count="1"/>
+        <line num="279" type="stmt" count="1"/>
+        <line num="280" type="stmt" count="1"/>
+        <line num="281" type="stmt" count="1"/>
+        <line num="288" type="method" name="createEntry" crap="1" count="30"/>
+        <line num="290" type="stmt" count="30"/>
+        <line num="292" type="stmt" count="30"/>
+        <line num="293" type="stmt" count="30"/>
+        <line num="294" type="stmt" count="30"/>
+        <line num="296" type="stmt" count="30"/>
+        <line num="304" type="method" name="getEntry" crap="2" count="30"/>
+        <line num="306" type="stmt" count="30"/>
+        <line num="309" type="stmt" count="30"/>
+        <line num="310" type="stmt" count="12"/>
+        <line num="311" type="stmt" count="12"/>
+        <line num="319" type="stmt" count="0"/>
+        <metrics loc="318" ncloc="197" classes="1" methods="17" coveredmethods="17" conditionals="0" coveredconditionals="0" statements="76" coveredstatements="76" elements="93" coveredelements="93"/>
       </file>
     </package>
-    <metrics files="7" loc="801" ncloc="485" classes="5" methods="40" coveredmethods="37" conditionals="0" coveredconditionals="0" statements="176" coveredstatements="159" elements="216" coveredelements="196"/>
+    <metrics files="7" loc="838" ncloc="510" classes="5" methods="41" coveredmethods="38" conditionals="0" coveredconditionals="0" statements="189" coveredstatements="172" elements="230" coveredelements="210"/>
   </project>
 </coverage>

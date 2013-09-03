@@ -43,8 +43,11 @@ ok 41 - Icecave\Manifold\Replication\ReplicationTreeTest::testIsMasterOfWithUnkn
 ok 42 - Icecave\Manifold\Replication\ReplicationTreeTest::testCountHops
 ok 43 - Icecave\Manifold\Replication\ReplicationTreeTest::testCountHopsWithUnknownMaster
 ok 44 - Icecave\Manifold\Replication\ReplicationTreeTest::testCountHopsWithUnknownSlave
-ok 45 - Icecave\Manifold\Replication\ReplicationTreeTest::testAddSlaveWithUnknownMaster
-ok 46 - Icecave\Manifold\Replication\ReplicationTreeTest::testRemoveSlave
-ok 47 - Icecave\Manifold\Replication\ReplicationTreeTest::testRemoveSlaveWithReplicationRoot
-ok 48 - Icecave\Manifold\Replication\ReplicationTreeTest::testRemoveSlaveWithUnknownSlave
-1..48
+ok 45 - Icecave\Manifold\Replication\ReplicationTreeTest::testReplicationPath
+ok 46 - Icecave\Manifold\Replication\ReplicationTreeTest::testReplicationPathWithUnknownMaster
+ok 47 - Icecave\Manifold\Replication\ReplicationTreeTest::testReplicationPathWithUnknownSlave
+ok 48 - Icecave\Manifold\Replication\ReplicationTreeTest::testAddSlaveWithUnknownMaster
+ok 49 - Icecave\Manifold\Replication\ReplicationTreeTest::testRemoveSlave
+ok 50 - Icecave\Manifold\Replication\ReplicationTreeTest::testRemoveSlaveWithReplicationRoot
+ok 51 - Icecave\Manifold\Replication\ReplicationTreeTest::testRemoveSlaveWithUnknownSlave
+1..51

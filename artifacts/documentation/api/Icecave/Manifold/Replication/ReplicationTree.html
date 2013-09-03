@@ -158,6 +158,16 @@
             </tr>
                     <tr>
                 <td class="type">
+                    <abbr title="Icecave\Manifold\Replication\array&lt;tuple&lt;PDO,PDO&gt;&gt;">array&lt;tuple&lt;PDO,PDO&gt;&gt;</abbr>
+                </td>
+                <td class="last">
+                    <a href="#method_replicationPath">replicationPath</a>(<a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a> $masterConnection, <a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a> $slaveConnection)
+                    <p>Compute the replication path between a master and slave connection.</p>
+                </td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type">
                     
                 </td>
                 <td class="last">
@@ -598,8 +608,47 @@
                     </div>
     </div>
 
+                <h3 id="method_replicationPath">
+        <div class="location">at line 217</div>
+        <code>            public            <abbr title="Icecave\Manifold\Replication\array&lt;tuple&lt;PDO,PDO&gt;&gt;">array&lt;tuple&lt;PDO,PDO&gt;&gt;</abbr>
+    <strong>replicationPath</strong>(<a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a> $masterConnection, <a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a> $slaveConnection)</code>
+    </h3>
+    <div class="details">
+        <p>Compute the replication path between a master and slave connection.</p>
+        <p>The result is an array containing 2-tuples of master and slave for each step in the replication hierarchy.</p>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table>
+                    <tr>
+                <td><a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a></td>
+                <td>$masterConnection</td>
+                <td>The master connection.</td>
+            </tr>
+                    <tr>
+                <td><a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a></td>
+                <td>$slaveConnection</td>
+                <td>The slave connection.</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table>
+        <tr>
+            <td><abbr title="Icecave\Manifold\Replication\array&lt;tuple&lt;PDO,PDO&gt;&gt;">array&lt;tuple&lt;PDO,PDO&gt;&gt;</abbr></td>
+            <td>The replication path between the master and slave connection.</td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
                 <h3 id="method_addSlave">
-        <div class="location">at line 215</div>
+        <div class="location">at line 252</div>
         <code>            public            
     <strong>addSlave</strong>(<a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a> $masterConnection, <a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a> $slaveConnection)</code>
     </h3>
@@ -629,7 +678,7 @@
     </div>
 
                 <h3 id="method_removeSlave">
-        <div class="location">at line 229</div>
+        <div class="location">at line 266</div>
         <code>            public            
     <strong>removeSlave</strong>(<a href="http://php.net/PDO"><abbr title="PDO">PDO</abbr></a> $connection)</code>
     </h3>
