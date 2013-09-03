@@ -129,6 +129,19 @@ class ReplicationTreeTypeCheck extends \Icecave\Manifold\TypeCheck\AbstractValid
         }
     }
 
+    public function replicationPath(array $arguments)
+    {
+        $argumentCount = \count($arguments);
+        if ($argumentCount < 2) {
+            if ($argumentCount < 1) {
+                throw new \Icecave\Manifold\TypeCheck\Exception\MissingArgumentException('masterConnection', 0, 'PDO');
+            }
+            throw new \Icecave\Manifold\TypeCheck\Exception\MissingArgumentException('slaveConnection', 1, 'PDO');
+        } elseif ($argumentCount > 2) {
+            throw new \Icecave\Manifold\TypeCheck\Exception\UnexpectedArgumentException(2, $arguments[2]);
+        }
+    }
+
     public function addSlave(array $arguments)
     {
         $argumentCount = \count($arguments);

@@ -197,6 +197,64 @@ class ReplicationTreeTest extends PHPUnit_Framework_TestCase
         $this->tree->countHops($this->connection1, $this->connection5);
     }
 
+    public function testReplicationPath()
+    {
+        $this->assertEquals(array(), $this->tree->replicationPath($this->connection1, $this->connection1));
+
+        $this->assertEquals(
+            array(
+                array($this->connection1, $this->connection2),
+            ),
+            $this->tree->replicationPath($this->connection1, $this->connection2)
+        );
+
+        $this->assertEquals(
+            array(
+                array($this->connection1, $this->connection2),
+                array($this->connection2, $this->connection3),
+            ),
+            $this->tree->replicationPath($this->connection1, $this->connection3)
+        );
+
+        $this->assertEquals(
+            array(
+                array($this->connection1, $this->connection2),
+                array($this->connection2, $this->connection4),
+            ),
+            $this->tree->replicationPath($this->connection1, $this->connection4)
+        );
+
+        $this->assertEquals(array(), $this->tree->replicationPath($this->connection2, $this->connection1));
+
+        $this->assertEquals(array(), $this->tree->replicationPath($this->connection2, $this->connection2));
+
+        $this->assertEquals(
+            array(
+                array($this->connection2, $this->connection3),
+            ),
+            $this->tree->replicationPath($this->connection2, $this->connection3)
+        );
+
+        $this->assertEquals(
+            array(
+                array($this->connection2, $this->connection4)
+            ),
+            $this->tree->replicationPath($this->connection2, $this->connection4)
+        );
+    }
+
+    public function testReplicationPathWithUnknownMaster()
+    {
+        $this->setExpectedException(UnknownDatabaseException::CLASS);
+        $this->tree->replicationPath($this->connection5, $this->connection1);
+    }
+
+    public function testReplicationPathWithUnknownSlave()
+    {
+        $this->setExpectedException(UnknownDatabaseException::CLASS);
+        $this->tree->replicationPath($this->connection1, $this->connection5);
+    }
+
     public function testAddSlaveWithUnknownMaster()
     {
         $tree = new ReplicationTree($this->connection1);

@@ -6,9 +6,9 @@ use Icecave\Collections\Map;
 use Icecave\Collections\Set;
 use Icecave\Manifold\Exception\UnknownDatabaseException;
 use Icecave\Manifold\TypeCheck\TypeCheck;
+use InvalidArgumentException;
 use PDO;
 use stdClass;
-use InvalidArgumentException;
 
 /**
  * Represents a tree of replicating databases.
@@ -202,6 +202,43 @@ class ReplicationTree
         } while ($slaveConnection);
 
         return null;
+    }
+
+    /**
+     * Compute the replication path between a master and slave connection.
+     *
+     * The result is an array containing 2-tuples of master and slave for each step in the replication hierarchy.
+     *
+     * @param PDO $masterConnection The master connection.
+     * @param PDO $slaveConnection  The slave connection.
+     *
+     * @return array<tuple<PDO,PDO>> The replication path between the master and slave connection.
+     */
+    public function replicationPath(PDO $masterConnection, PDO $slaveConnection)
+    {
+        $this->typeCheck->replicationPath(func_get_args());
+
+        // Ensure connections are in the tree ...
+        $this->getEntry($masterConnection);
+        $this->getEntry($slaveConnection);
+
+        if ($masterConnection === $slaveConnection) {
+            return array();
+        }
+
+        $path = array();
+
+        do {
+            if ($masterConnection === $slaveConnection) {
+                return array_reverse($path);
+            }
+
+            $master = $this->connections[$slaveConnection]->master;
+            $path[] = array($master, $slaveConnection);
+            $slaveConnection = $master;
+        } while ($slaveConnection);
+
+        return array();
     }
 
     /**
