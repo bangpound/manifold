@@ -1,16 +1,18 @@
 
 
 Code Coverage Report 
-  2013-09-03 06:19:08
+  2013-09-05 00:02:56
 
  Summary: 
-  Classes: 60.00% (3/5)
-  Methods: 92.68% (38/41)
-  Lines:   91.01% (172/189)
+  Classes: 50.00% (3/6)
+  Methods: 83.33% (40/48)
+  Lines:   73.44% (177/241)
 
 \Icecave\Manifold\PDO::AbstractPDOProxy
   Methods:  93.33% (14/15)   Lines: 100.00% ( 67/ 67)
 \Icecave\Manifold\PDO::LazyPDO
   Methods:  87.50% ( 7/ 8)   Lines: 100.00% ( 29/ 29)
+\Icecave\Manifold\Replication::ReplicationManager
+  Methods:  28.57% ( 2/ 7)   Lines:   9.62% (  5/ 52)
 \Icecave\Manifold\Replication::ReplicationTree
   Methods: 100.00% (17/17)   Lines: 100.00% ( 76/ 76)

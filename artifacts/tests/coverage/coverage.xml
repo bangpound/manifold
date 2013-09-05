@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1378189148">
-  <project timestamp="1378189148">
+<coverage generated="1378339376">
+  <project timestamp="1378339376">
     <package name="Icecave\Manifold\Connection">
       <file name="/home/travis/build/IcecaveLabs/manifold/lib/Icecave/Manifold/Connection/ConnectionFactory.php">
         <class name="ConnectionFactory" namespace="Icecave\Manifold\Connection">
@@ -177,10 +177,73 @@
         <metrics loc="160" ncloc="94" classes="1" methods="7" coveredmethods="7" conditionals="0" coveredconditionals="0" statements="29" coveredstatements="29" elements="36" coveredelements="36"/>
       </file>
     </package>
-    <file name="/home/travis/build/IcecaveLabs/manifold/lib/Icecave/Manifold/Replication/ReplicationManagerInterface.php">
-      <metrics loc="46" ncloc="15" classes="0" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="0" coveredelements="0"/>
-    </file>
     <package name="Icecave\Manifold\Replication">
+      <file name="/home/travis/build/IcecaveLabs/manifold/lib/Icecave/Manifold/Replication/ReplicationManager.php">
+        <class name="ReplicationManager" namespace="Icecave\Manifold\Replication">
+          <metrics methods="7" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="52" coveredstatements="5" elements="59" coveredelements="7"/>
+        </class>
+        <line num="12" type="method" name="__construct" crap="1" count="1"/>
+        <line num="14" type="stmt" count="1"/>
+        <line num="16" type="stmt" count="1"/>
+        <line num="17" type="stmt" count="1"/>
+        <line num="24" type="method" name="replicationTree" crap="1" count="1"/>
+        <line num="26" type="stmt" count="1"/>
+        <line num="28" type="stmt" count="1"/>
+        <line num="40" type="method" name="replicationDelay" crap="20" count="0"/>
+        <line num="42" type="stmt" count="0"/>
+        <line num="44" type="stmt" count="0"/>
+        <line num="46" type="stmt" count="0"/>
+        <line num="47" type="stmt" count="0"/>
+        <line num="50" type="stmt" count="0"/>
+        <line num="52" type="stmt" count="0"/>
+        <line num="53" type="stmt" count="0"/>
+        <line num="54" type="stmt" count="0"/>
+        <line num="56" type="stmt" count="0"/>
+        <line num="57" type="stmt" count="0"/>
+        <line num="60" type="stmt" count="0"/>
+        <line num="61" type="stmt" count="0"/>
+        <line num="63" type="stmt" count="0"/>
+        <line num="76" type="method" name="replicationDelayWithin" crap="30" count="0"/>
+        <line num="78" type="stmt" count="0"/>
+        <line num="80" type="stmt" count="0"/>
+        <line num="82" type="stmt" count="0"/>
+        <line num="83" type="stmt" count="0"/>
+        <line num="86" type="stmt" count="0"/>
+        <line num="87" type="stmt" count="0"/>
+        <line num="88" type="stmt" count="0"/>
+        <line num="90" type="stmt" count="0"/>
+        <line num="91" type="stmt" count="0"/>
+        <line num="94" type="stmt" count="0"/>
+        <line num="96" type="stmt" count="0"/>
+        <line num="97" type="stmt" count="0"/>
+        <line num="99" type="stmt" count="0"/>
+        <line num="101" type="stmt" count="0"/>
+        <line num="115" type="method" name="isReplicating" crap="20" count="0"/>
+        <line num="117" type="stmt" count="0"/>
+        <line num="119" type="stmt" count="0"/>
+        <line num="121" type="stmt" count="0"/>
+        <line num="122" type="stmt" count="0"/>
+        <line num="125" type="stmt" count="0"/>
+        <line num="126" type="stmt" count="0"/>
+        <line num="127" type="stmt" count="0"/>
+        <line num="128" type="stmt" count="0"/>
+        <line num="130" type="stmt" count="0"/>
+        <line num="132" type="stmt" count="0"/>
+        <line num="145" type="method" name="waitForReplication" crap="2" count="0"/>
+        <line num="147" type="stmt" count="0"/>
+        <line num="148" type="stmt" count="0"/>
+        <line num="155" type="method" name="secondsBehindMaster" crap="12" count="0"/>
+        <line num="157" type="stmt" count="0"/>
+        <line num="159" type="stmt" count="0"/>
+        <line num="160" type="stmt" count="0"/>
+        <line num="162" type="stmt" count="0"/>
+        <line num="163" type="stmt" count="0"/>
+        <line num="164" type="stmt" count="0"/>
+        <line num="165" type="stmt" count="0"/>
+        <line num="168" type="stmt" count="0"/>
+        <line num="173" type="stmt" count="0"/>
+        <metrics loc="172" ncloc="119" classes="1" methods="7" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="52" coveredstatements="5" elements="59" coveredelements="7"/>
+      </file>
       <file name="/home/travis/build/IcecaveLabs/manifold/lib/Icecave/Manifold/Replication/ReplicationTree.php">
         <class name="ReplicationTree" namespace="Icecave\Manifold\Replication">
           <metrics methods="17" coveredmethods="17" conditionals="0" coveredconditionals="0" statements="76" coveredstatements="76" elements="93" coveredelements="93"/>
@@ -283,6 +346,10 @@
         <metrics loc="318" ncloc="197" classes="1" methods="17" coveredmethods="17" conditionals="0" coveredconditionals="0" statements="76" coveredstatements="76" elements="93" coveredelements="93"/>
       </file>
     </package>
-    <metrics files="7" loc="838" ncloc="510" classes="5" methods="41" coveredmethods="38" conditionals="0" coveredconditionals="0" statements="189" coveredstatements="172" elements="230" coveredelements="210"/>
+    <file name="/home/travis/build/IcecaveLabs/manifold/lib/Icecave/Manifold/Replication/ReplicationManagerInterface.php">
+      <line num="64" type="stmt" count="0"/>
+      <metrics loc="63" ncloc="17" classes="0" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="0" coveredelements="0"/>
+    </file>
+    <metrics files="8" loc="1027" ncloc="631" classes="6" methods="48" coveredmethods="40" conditionals="0" coveredconditionals="0" statements="241" coveredstatements="177" elements="289" coveredelements="217"/>
   </project>
 </coverage>

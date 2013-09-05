@@ -9,7 +9,8 @@ var tree = [["Icecave",,"",
                 [["AbstractPDOProxy","Icecave\/Manifold\/PDO\/AbstractPDOProxy.html"," < PDO",
                 [        ]],["LazyPDO","Icecave\/Manifold\/PDO\/LazyPDO.html"," < PDO",
                 [        ]]        ]],["Replication","Icecave\/Manifold\/Replication.html","",
-                [["ReplicationManagerInterface","Icecave\/Manifold\/Replication\/ReplicationManagerInterface.html","",
+                [["ReplicationManager","Icecave\/Manifold\/Replication\/ReplicationManager.html","",
+                [        ]],["ReplicationManagerInterface","Icecave\/Manifold\/Replication\/ReplicationManagerInterface.html","",
                 [        ]],["ReplicationTree","Icecave\/Manifold\/Replication\/ReplicationTree.html","",
                 [        ]]        ]]        ]]        ]]        ]
 
