@@ -15,32 +15,49 @@ interface ReplicationManagerInterface
     /**
      * Fetch a replication slave's delay.
      *
-     * @param PDO      $slave  The replication slave.
-     * @param PDO|null $master The replication master to check against, or null to use the replication root.
+     * @param PDO $masterConnection The replication master to check against.
+     * @param PDO $slaveConnection  The replication slave.
      *
-     * @return integer                           The replication delay between $master and $slave, in seconds.
-     * @throws Exception\NotReplicatingException If $slave is not replicating from $master.
+     * @return integer                           The replication delay between $masterConnection and $slaveConnection, in seconds.
+     * @throws Exception\NotReplicatingException If $slaveConnection is not replicating from $masterConnection.
      */
-    public function replicationDelay(PDO $slave, PDO $master = null);
+    public function replicationDelay(PDO $masterConnection, PDO $slaveConnection);
+
+    /**
+     * Check if a slave's replication delay is within the given threshold.
+     *
+     * @param integer $threshold        The threshold delay (in seconds).
+     * @param PDO     $masterConnection The replication master to check against.
+     * @param PDO     $slaveConnection  The replication slave.
+     *
+     * @return boolean                           True if the slave's replication delay is less than or equal to $threshold.
+     * @throws Exception\NotReplicatingException If $slaveConnection is not replicating from $masterConnection.
+     */
+    public function replicationDelayWithin($threshold, PDO $masterConnection, PDO $slaveConnection);
 
     /**
      * Check if a slave is replicating.
      *
-     * @param PDO      $slave  The replication slave to check.
-     * @param PDO|null $master The master to check against.
+     * This function will return false if any of the 'links' in the replication path between $masterConnection and $slaveConnection are not
+     * replicating.
      *
-     * @return boolean True if $slave is replicating (from $master if provided); otherwise, false.
+     * @param PDO $masterConnection The replication master to check against.
+     * @param PDO $slaveConnection  The replication slave.
+     *
+     * @return boolean                           True if $slaveConnection is replicating; otherwise, false.
+     * @throws Exception\NotReplicatingException If $slaveConnection is not a replication slave of $masterConnection.
      */
-    public function isReplicating(PDO $slave, PDO $master = null);
+    public function isReplicating(PDO $masterConnection, PDO $slaveConnection);
 
     /**
      * Wait for a slave replication to catch up to the current point on the given master.
      *
-     * @param PDO          $slave   The replication slave on which to wait.
-     * @param PDO|null     $master  The replication master to check against, or null to use the replication root.
-     * @param integer|null $timeout The maximum time to wait in seconds, or null to wait indefinitely.
+     * @param PDO          $masterConnection The replication master to check against.
+     * @param PDO          $slaveConnection  The replication slave.
+     * @param integer|null $timeout          The maximum time to wait in seconds, or null to wait indefinitely.
      *
-     * @return boolean False if the wait operation times out before complection; otherwise, true.
+     * @return boolean                           False if the wait operation times out before complection; otherwise, true.
+     * @throws Exception\NotReplicatingException If $slaveConnection is not replicating from $masterConnection.
      */
-    public function waitForReplication(PDO $slave, PDO $master = null, $timeout = null);
+    public function waitForReplication(PDO $masterConnection, PDO $slaveConnection, $timeout = null);
 }

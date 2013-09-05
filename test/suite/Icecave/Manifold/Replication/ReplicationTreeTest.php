@@ -224,7 +224,7 @@ class ReplicationTreeTest extends PHPUnit_Framework_TestCase
             $this->tree->replicationPath($this->connection1, $this->connection4)
         );
 
-        $this->assertEquals(array(), $this->tree->replicationPath($this->connection2, $this->connection1));
+        $this->assertNull($this->tree->replicationPath($this->connection2, $this->connection1));
 
         $this->assertEquals(array(), $this->tree->replicationPath($this->connection2, $this->connection2));
 

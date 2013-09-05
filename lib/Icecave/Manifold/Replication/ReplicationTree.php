@@ -212,7 +212,7 @@ class ReplicationTree
      * @param PDO $masterConnection The master connection.
      * @param PDO $slaveConnection  The slave connection.
      *
-     * @return array<tuple<PDO,PDO>> The replication path between the master and slave connection.
+     * @return array<tuple<PDO,PDO>>|null The replication path between the master and slave connection, or null if $slaveConnection is not replicating from $masterConnection.
      */
     public function replicationPath(PDO $masterConnection, PDO $slaveConnection)
     {
@@ -238,7 +238,7 @@ class ReplicationTree
             $slaveConnection = $master;
         } while ($slaveConnection);
 
-        return array();
+        return null;
     }
 
     /**
