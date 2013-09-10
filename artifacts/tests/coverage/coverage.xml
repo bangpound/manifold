@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1378339376">
-  <project timestamp="1378339376">
+<coverage generated="1378782305">
+  <project timestamp="1378782305">
     <package name="Icecave\Manifold\Connection">
-      <file name="/home/travis/build/IcecaveLabs/manifold/lib/Icecave/Manifold/Connection/ConnectionFactory.php">
+      <file name="/home/travis/build/IcecaveLabs/manifold/src/Icecave/Manifold/Connection/ConnectionFactory.php">
         <class name="ConnectionFactory" namespace="Icecave\Manifold\Connection">
           <metrics methods="2" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="14" coveredstatements="0" elements="16" coveredelements="0"/>
         </class>
@@ -26,12 +26,12 @@
         <metrics loc="48" ncloc="36" classes="1" methods="2" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="14" coveredstatements="0" elements="16" coveredelements="0"/>
       </file>
     </package>
-    <file name="/home/travis/build/IcecaveLabs/manifold/lib/Icecave/Manifold/Connection/ConnectionFactoryInterface.php">
+    <file name="/home/travis/build/IcecaveLabs/manifold/src/Icecave/Manifold/Connection/ConnectionFactoryInterface.php">
       <line num="17" type="stmt" count="0"/>
       <metrics loc="16" ncloc="7" classes="0" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="0" coveredelements="0"/>
     </file>
     <package name="Icecave\Manifold\Exception">
-      <file name="/home/travis/build/IcecaveLabs/manifold/lib/Icecave/Manifold/Exception/UnknownDatabaseException.php">
+      <file name="/home/travis/build/IcecaveLabs/manifold/src/Icecave/Manifold/Exception/UnknownDatabaseException.php">
         <class name="UnknownDatabaseException" namespace="Icecave\Manifold\Exception">
           <metrics methods="1" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="3" coveredstatements="0" elements="4" coveredelements="0"/>
         </class>
@@ -44,7 +44,7 @@
       </file>
     </package>
     <package name="Icecave\Manifold\PDO">
-      <file name="/home/travis/build/IcecaveLabs/manifold/lib/Icecave/Manifold/PDO/AbstractPDOProxy.php">
+      <file name="/home/travis/build/IcecaveLabs/manifold/src/Icecave/Manifold/PDO/AbstractPDOProxy.php">
         <class name="AbstractPDOProxy" namespace="Icecave\Manifold\PDO">
           <metrics methods="15" coveredmethods="14" conditionals="0" coveredconditionals="0" statements="67" coveredstatements="67" elements="82" coveredelements="81"/>
         </class>
@@ -133,7 +133,7 @@
         <line num="232" type="stmt" count="0"/>
         <metrics loc="231" ncloc="145" classes="1" methods="14" coveredmethods="14" conditionals="0" coveredconditionals="0" statements="67" coveredstatements="67" elements="81" coveredelements="81"/>
       </file>
-      <file name="/home/travis/build/IcecaveLabs/manifold/lib/Icecave/Manifold/PDO/LazyPDO.php">
+      <file name="/home/travis/build/IcecaveLabs/manifold/src/Icecave/Manifold/PDO/LazyPDO.php">
         <class name="LazyPDO" namespace="Icecave\Manifold\PDO">
           <metrics methods="8" coveredmethods="7" conditionals="0" coveredconditionals="0" statements="29" coveredstatements="29" elements="37" coveredelements="36"/>
         </class>
@@ -178,9 +178,9 @@
       </file>
     </package>
     <package name="Icecave\Manifold\Replication">
-      <file name="/home/travis/build/IcecaveLabs/manifold/lib/Icecave/Manifold/Replication/ReplicationManager.php">
+      <file name="/home/travis/build/IcecaveLabs/manifold/src/Icecave/Manifold/Replication/ReplicationManager.php">
         <class name="ReplicationManager" namespace="Icecave\Manifold\Replication">
-          <metrics methods="7" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="52" coveredstatements="5" elements="59" coveredelements="7"/>
+          <metrics methods="7" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="51" coveredstatements="5" elements="58" coveredelements="7"/>
         </class>
         <line num="12" type="method" name="__construct" crap="1" count="1"/>
         <line num="14" type="stmt" count="1"/>
@@ -216,7 +216,6 @@
         <line num="94" type="stmt" count="0"/>
         <line num="96" type="stmt" count="0"/>
         <line num="97" type="stmt" count="0"/>
-        <line num="99" type="stmt" count="0"/>
         <line num="101" type="stmt" count="0"/>
         <line num="115" type="method" name="isReplicating" crap="20" count="0"/>
         <line num="117" type="stmt" count="0"/>
@@ -242,9 +241,9 @@
         <line num="165" type="stmt" count="0"/>
         <line num="168" type="stmt" count="0"/>
         <line num="173" type="stmt" count="0"/>
-        <metrics loc="172" ncloc="119" classes="1" methods="7" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="52" coveredstatements="5" elements="59" coveredelements="7"/>
+        <metrics loc="172" ncloc="119" classes="1" methods="7" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="51" coveredstatements="5" elements="58" coveredelements="7"/>
       </file>
-      <file name="/home/travis/build/IcecaveLabs/manifold/lib/Icecave/Manifold/Replication/ReplicationTree.php">
+      <file name="/home/travis/build/IcecaveLabs/manifold/src/Icecave/Manifold/Replication/ReplicationTree.php">
         <class name="ReplicationTree" namespace="Icecave\Manifold\Replication">
           <metrics methods="17" coveredmethods="17" conditionals="0" coveredconditionals="0" statements="76" coveredstatements="76" elements="93" coveredelements="93"/>
         </class>
@@ -346,10 +345,10 @@
         <metrics loc="318" ncloc="197" classes="1" methods="17" coveredmethods="17" conditionals="0" coveredconditionals="0" statements="76" coveredstatements="76" elements="93" coveredelements="93"/>
       </file>
     </package>
-    <file name="/home/travis/build/IcecaveLabs/manifold/lib/Icecave/Manifold/Replication/ReplicationManagerInterface.php">
+    <file name="/home/travis/build/IcecaveLabs/manifold/src/Icecave/Manifold/Replication/ReplicationManagerInterface.php">
       <line num="64" type="stmt" count="0"/>
       <metrics loc="63" ncloc="17" classes="0" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="0" coveredelements="0"/>
     </file>
-    <metrics files="8" loc="1027" ncloc="631" classes="6" methods="48" coveredmethods="40" conditionals="0" coveredconditionals="0" statements="241" coveredstatements="177" elements="289" coveredelements="217"/>
+    <metrics files="8" loc="1027" ncloc="631" classes="6" methods="48" coveredmethods="40" conditionals="0" coveredconditionals="0" statements="240" coveredstatements="177" elements="288" coveredelements="217"/>
   </project>
 </coverage>
