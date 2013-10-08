@@ -1,0 +1,15 @@
+connections:
+    foo:
+        dsn: mysql:host=foo
+    bar:
+        dsn: mysql:host=bar
+
+pools:
+    pool1:
+        - foo
+        - bar
+
+selection:
+    default:
+        read:  pool1
+        write: pool2

@@ -13,7 +13,7 @@ use stdClass;
 /**
  * Represents a tree of replicating databases.
  */
-class ReplicationTree
+class ReplicationTree implements ReplicationTreeInterface
 {
     /**
      * @param PDO $replicationRoot The root database of the replication hierarchy.

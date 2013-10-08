@@ -1,26 +1,30 @@
 <?php
 namespace Icecave\Manifold\Connection;
 
-use Icecave\Manifold\PDO\LazyPDO;
+use Icecave\Manifold\Pdo\LazyPdo;
 use Icecave\Manifold\TypeCheck\TypeCheck;
 use PDO;
 
 class ConnectionFactory implements ConnectionFactoryInterface
 {
     /**
-     * @param array $driverOptions Options to bass to the connection upon creation.
+     * @param array|null $driverOptions Options to pass to the connection upon creation.
      */
-    public function __construct(array $driverOptions = array())
+    public function __construct(array $driverOptions = null)
     {
         $this->typeCheck = TypeCheck::get(__CLASS__, func_get_args());
 
         $this->driverOptions = $driverOptions;
+    }
 
-        $this->driverOptions += array(
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_PERSISTENT => false,
-            PDO::ATTR_AUTOCOMMIT => false,
-        );
+    /**
+     * Get the driver-specific options passed to the connection upon creation.
+     *
+     * @return array|null The driver-specific options.
+     */
+    public function driverOptions()
+    {
+        return $this->driverOptions;
     }
 
     /**
@@ -36,13 +40,14 @@ class ConnectionFactory implements ConnectionFactoryInterface
     {
         $this->typeCheck->createConnection(func_get_args());
 
-        return new LazyPDO(
+        return new LazyPdo(
             $dsn,
             $username,
             $password,
-            $this->driverOptions
+            $this->driverOptions()
         );
     }
 
+    private $driverOptions;
     private $typeCheck;
 }

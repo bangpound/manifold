@@ -1,0 +1,79 @@
+title: Manifold configuration
+description: A complete set of configuration settings for Manifold.
+
+definitions:
+    connection:
+        type: object
+        required:
+            - dsn
+        additionalProperties: false
+        properties:
+            dsn:
+                type: string
+                format: uri
+            username:
+                type: string
+            password:
+                type: string
+
+    connectionPool:
+        type: array
+        additionalItems:
+            type: string
+
+    readWritePair:
+        type: object
+        additionalProperties: false
+        minProperties: 1
+        properties:
+            read:
+                type: string
+            write:
+                type: string
+
+    replicationNode:
+        type: object
+        default: {}
+        minProperties: 1
+        additionalProperties:
+            anyOf:
+                - type: 'null'
+                - $ref: '#/definitions/replicationNode'
+
+type: object
+default: {}
+additionalProperties: false
+required:
+    - connections
+
+properties:
+    connections:
+        type: object
+        default: {}
+        minProperties: 1
+        additionalProperties:
+            $ref: '#/definitions/connection'
+
+    pools:
+        type: object
+        default: {}
+        additionalProperties:
+            $ref: '#/definitions/connectionPool'
+
+    selection:
+        type: object
+        default:
+            databases: {}
+        additionalProperties: false
+        properties:
+            default:
+                $ref: '#/definitions/readWritePair'
+            databases:
+                type: object
+                default: {}
+                additionalProperties:
+                    $ref: '#/definitions/readWritePair'
+
+    replication:
+        $ref: '#/definitions/replicationNode'
+
