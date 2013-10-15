@@ -1,11 +1,11 @@
 <?php
-namespace Icecave\Manifold\PDO;
+namespace Icecave\Manifold\Pdo;
 
 use Icecave\Manifold\TypeCheck\TypeCheck;
 use PDO;
 use PDOStatement;
 
-abstract class AbstractPDOProxy extends PDO
+abstract class AbstractPdoProxy extends PDO
 {
     public function __construct()
     {

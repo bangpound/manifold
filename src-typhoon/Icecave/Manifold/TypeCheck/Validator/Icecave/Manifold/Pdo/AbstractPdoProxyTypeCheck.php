@@ -1,7 +1,7 @@
 <?php
-namespace Icecave\Manifold\TypeCheck\Validator\Icecave\Manifold\PDO;
+namespace Icecave\Manifold\TypeCheck\Validator\Icecave\Manifold\Pdo;
 
-class AbstractPDOProxyTypeCheck extends \Icecave\Manifold\TypeCheck\AbstractValidator
+class AbstractPdoProxyTypeCheck extends \Icecave\Manifold\TypeCheck\AbstractValidator
 {
     public function validateConstruct(array $arguments)
     {

@@ -1,0 +1,8 @@
+connections:
+    foo:
+        dsn: mysql:host=foo
+
+pools:
+    pool1:
+        - foo
+        - bar

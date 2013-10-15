@@ -1,9 +1,6 @@
 <?php
 namespace Icecave\Manifold\Replication;
 
-use Icecave\Collections\Set;
-use Icecave\Manifold\Exception\UnknownDatabaseException;
-use InvalidArgumentException;
 use PDO;
 use Phake;
 use PHPUnit_Framework_TestCase;

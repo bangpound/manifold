@@ -1,5 +1,5 @@
 <?php
-namespace Icecave\Manifold\PDO;
+namespace Icecave\Manifold\Pdo;
 
 use Icecave\Manifold\TypeCheck\TypeCheck;
 use PDO;
@@ -7,21 +7,29 @@ use PDO;
 /**
  * A PDO connection with lazy-connection semantics.
  */
-class LazyPDO extends PDO
+class LazyPdo extends PDO
 {
     /**
      * @param string      $dsn           The connection data-source name.
      * @param string|null $username      The database username, this parameter is optional for some PDO drivers.
      * @param string|null $password      The database password, this parameter is optional for some PDO drivers.
-     * @param array       $driverOptions An associative array of driver-specific options.
+     * @param array|null  $driverOptions The driver-specific options.
      */
     public function __construct(
         $dsn,
         $username = null,
         $password = null,
-        array $driverOptions = array()
+        array $driverOptions = null
     ) {
         $this->typeCheck = TypeCheck::get(__CLASS__, func_get_args());
+
+        if (null === $driverOptions) {
+            $driverOptions = array(
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_PERSISTENT => false,
+                PDO::ATTR_AUTOCOMMIT => false,
+            );
+        }
 
         $this->dsn = $dsn;
         $this->username = $username;

@@ -1,0 +1,66 @@
+connections:
+    master1:
+        dsn: mysql:host=master1
+        username: username
+        password: password
+    master2:
+        dsn: mysql:host=master2
+    master3:
+        dsn: mysql:host=master3
+    reporting1:
+        dsn: mysql:host=reporting1
+    slave101:
+        dsn: mysql:host=slave101
+    slave102:
+        dsn: mysql:host=slave102
+    reporting2:
+        dsn: mysql:host=reporting2
+    slave201:
+        dsn: mysql:host=slave201
+    slave202:
+        dsn: mysql:host=slave202
+    reporting3:
+        dsn: mysql:host=reporting3
+    slave301:
+        dsn: mysql:host=slave301
+    slave302:
+        dsn: mysql:host=slave302
+
+pools:
+    pool1:
+        - slave101
+        - slave102
+    pool2:
+        - slave201
+        - slave202
+
+selection:
+    default:
+        read:  pool1
+        write: reporting1
+    databases:
+        app_data:
+            read:  pool1
+            write: master1
+        app_reporting:
+            read:  pool2
+            write: reporting2
+        app_temp:
+            read:  pool2
+            write: pool2
+        app_read_only:
+            read: master2
+        app_write_only:
+            write: master2
+
+replication:
+    master1:
+        master2: null
+        reporting1:
+            pool1: null
+        reporting2:
+            pool2: null
+        reporting3:
+            slave301: null
+            slave302: null
+    master3: null

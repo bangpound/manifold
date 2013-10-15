@@ -1,16 +1,16 @@
 <?php
-namespace Icecave\Manifold\PDO;
+namespace Icecave\Manifold\Pdo;
 
 use PDO;
 use Phake;
 use PHPUnit_Framework_TestCase;
 
-class LazyPDOTest extends PHPUnit_Framework_TestCase
+class LazyPdoTest extends PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
         $this->proxy = Phake::partialMock(
-            __NAMESPACE__ . '\LazyPDO',
+            __NAMESPACE__ . '\LazyPdo',
             'dsn',
             'username',
             'password',

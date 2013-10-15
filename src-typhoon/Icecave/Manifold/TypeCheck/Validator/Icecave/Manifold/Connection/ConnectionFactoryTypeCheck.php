@@ -11,6 +11,13 @@ class ConnectionFactoryTypeCheck extends \Icecave\Manifold\TypeCheck\AbstractVal
         }
     }
 
+    public function driverOptions(array $arguments)
+    {
+        if (\count($arguments) > 0) {
+            throw new \Icecave\Manifold\TypeCheck\Exception\UnexpectedArgumentException(0, $arguments[0]);
+        }
+    }
+
     public function createConnection(array $arguments)
     {
         $argumentCount = \count($arguments);

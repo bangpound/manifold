@@ -1,17 +1,17 @@
 <?php
-namespace Icecave\Manifold\PDO;
+namespace Icecave\Manifold\Pdo;
 
 use PDO;
 use Phake;
 use PHPUnit_Framework_TestCase;
 
-class AbstractPDOProxyTest extends PHPUnit_Framework_TestCase
+class AbstractPdoProxyTest extends PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
         $this->connection = Phake::mock('PDO');
 
-        $this->proxy = Phake::partialMock(__NAMESPACE__ . '\AbstractPDOProxy');
+        $this->proxy = Phake::partialMock(__NAMESPACE__ . '\AbstractPdoProxy');
 
         Phake::when($this->proxy)
             ->innerConnection()
