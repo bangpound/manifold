@@ -1,16 +1,19 @@
 <?php
 namespace Icecave\Manifold\Connection;
 
+/**
+ * The interface implemented by connection factories.
+ */
 interface ConnectionFactoryInterface
 {
     /**
      * Create a connection.
      *
-     * @param string      $dsn
-     * @param string|null $username
-     * @param string|null $password
+     * @param string      $dsn      The data source name.
+     * @param string|null $username The username.
+     * @param string|null $password The password.
      *
-     * @return PDO
+     * @return PDO The newly created connection.
      */
-    public function createConnection($dsn, $username = null, $password = null);
+    public function create($dsn, $username = null, $password = null);
 }

@@ -30,7 +30,8 @@ interface ReplicationTreeInterface
      *
      * @param PDO $connection The connection to check.
      *
-     * @return boolean True if the given connection is the root of this tree; otherwise, false.
+     * @return boolean                              True if the given connection is the root of this tree; otherwise, false.
+     * @throws Exception\UnknownConnectionException If the connection is not found in this tree.
      */
     public function isRoot(PDO $connection);
 
@@ -39,7 +40,8 @@ interface ReplicationTreeInterface
      *
      * @param PDO $connection The connection to check.
      *
-     * @return boolean True if the given connection is a leaf of this tree; otherwise, false.
+     * @return boolean                              True if the given connection is a leaf of this tree; otherwise, false.
+     * @throws Exception\UnknownConnectionException If the connection is not found in this tree.
      */
     public function isLeaf(PDO $connection);
 
@@ -48,7 +50,8 @@ interface ReplicationTreeInterface
      *
      * @param PDO $connection The connection to check.
      *
-     * @return boolean True if the given connection is a replication master in this tree; otherwise, false.
+     * @return boolean                              True if the given connection is a replication master in this tree; otherwise, false.
+     * @throws Exception\UnknownConnectionException If the connection is not found in this tree.
      */
     public function isMaster(PDO $connection);
 
@@ -57,7 +60,8 @@ interface ReplicationTreeInterface
      *
      * @param PDO $connection The connection to check.
      *
-     * @return boolean True if the given connection is a replication slave in this tree; otherwise, false.
+     * @return boolean                              True if the given connection is a replication slave in this tree; otherwise, false.
+     * @throws Exception\UnknownConnectionException If the connection is not found in this tree.
      */
     public function isSlave(PDO $connection);
 
@@ -66,7 +70,8 @@ interface ReplicationTreeInterface
      *
      * @param PDO $connection The slave connection.
      *
-     * @return PDO|null The replication master for the given slave, or null if it is the replication root.
+     * @return PDO|null                             The replication master for the given slave, or null if it is the replication root.
+     * @throws Exception\UnknownConnectionException If the connection is not found in this tree.
      */
     public function masterOf(PDO $connection);
 
@@ -75,7 +80,8 @@ interface ReplicationTreeInterface
      *
      * @param PDO $connection The master connection.
      *
-     * @return Set<PDO> The replication slaves for the given master.
+     * @return Set<PDO>                             The replication slaves for the given master.
+     * @throws Exception\UnknownConnectionException If the connection is not found in this tree.
      */
     public function slavesOf(PDO $connection);
 
@@ -85,7 +91,8 @@ interface ReplicationTreeInterface
      * @param PDO $masterConnection The master connection.
      * @param PDO $slaveConnection  The slave connection.
      *
-     * @return boolean True if $masterConnection is anywhere above $slaveConnection in the replication hierarchy; otherwise, false.
+     * @return boolean                              True if $masterConnection is anywhere above $slaveConnection in the replication hierarchy; otherwise, false.
+     * @throws Exception\UnknownConnectionException If either connection is not found in this tree.
      */
     public function isReplicatingTo(
         PDO $masterConnection,
@@ -98,7 +105,8 @@ interface ReplicationTreeInterface
      * @param PDO $masterConnection The master connection.
      * @param PDO $slaveConnection  The slave connection.
      *
-     * @return boolean True if $masterConnection is the replication master of $slaveConnection; otherwise, false.
+     * @return boolean                              True if $masterConnection is the replication master of $slaveConnection; otherwise, false.
+     * @throws Exception\UnknownConnectionException If the master connection is not found in this tree.
      */
     public function isMasterOf(PDO $masterConnection, PDO $slaveConnection);
 
@@ -108,7 +116,8 @@ interface ReplicationTreeInterface
      * @param PDO $masterConnection The master connection.
      * @param PDO $slaveConnection  The slave connection.
      *
-     * @return integer|null The number of hops (difference in depth) between $masterConnection and $slaveConnection, or null if $masterConnection is not replicating to $slaveConnection.
+     * @return integer|null                         The number of hops (difference in depth) between $masterConnection and $slaveConnection, or null if $masterConnection is not replicating to $slaveConnection.
+     * @throws Exception\UnknownConnectionException If either connection is not found in this tree.
      */
     public function countHops(PDO $masterConnection, PDO $slaveConnection);
 
@@ -120,7 +129,8 @@ interface ReplicationTreeInterface
      * @param PDO $masterConnection The master connection.
      * @param PDO $slaveConnection  The slave connection.
      *
-     * @return array<tuple<PDO,PDO>>|null The replication path between the master and slave connection, or null if $slaveConnection is not replicating from $masterConnection.
+     * @return array<tuple<PDO,PDO>>|null           The replication path between the master and slave connection, or null if $slaveConnection is not replicating from $masterConnection.
+     * @throws Exception\UnknownConnectionException If either connection is not found in this tree.
      */
     public function replicationPath(
         PDO $masterConnection,
@@ -134,6 +144,8 @@ interface ReplicationTreeInterface
      *
      * @param PDO $masterConnection The master connection.
      * @param PDO $slaveConnection  The slave connection to add.
+     *
+     * @throws Exception\UnknownConnectionException If the master connection is not found in this tree.
      */
     public function addSlave(PDO $masterConnection, PDO $slaveConnection);
 
@@ -141,6 +153,8 @@ interface ReplicationTreeInterface
      * Remove a slave connection.
      *
      * @param PDO $connection The connection to remove.
+     *
+     * @throws Exception\UnknownConnectionException If the connection is not found in this tree.
      */
     public function removeSlave(PDO $connection);
 }

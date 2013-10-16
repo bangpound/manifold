@@ -7,8 +7,8 @@ use Icecave\Isolator\Isolator;
 use Icecave\Manifold\Connection\ConnectionFactory;
 use Icecave\Manifold\Connection\ConnectionPool;
 use Icecave\Manifold\Connection\ConnectionSelector;
+use Icecave\Manifold\Connection\LazyPdoConnection;
 use Icecave\Manifold\Connection\ReadWritePair;
-use Icecave\Manifold\Pdo\LazyPdo;
 use Icecave\Manifold\Replication\ReplicationTree;
 use Icecave\Parity\Parity;
 use PHPUnit_Framework_TestCase;
@@ -69,7 +69,7 @@ EOD;
         $configuration = $this->reader->readString($string);
         $expectedConnections = new Map(
             array(
-                'foo' => new LazyPdo('mysql:host=foo'),
+                'foo' => new LazyPdoConnection('mysql:host=foo'),
             )
         );
         $expectedPools = new Map;
@@ -91,7 +91,7 @@ EOD;
         $configuration = $this->reader->readFile($this->fixturePath . '/valid-minimal.yml');
         $expectedConnections = new Map(
             array(
-                'foo' => new LazyPdo('mysql:host=foo'),
+                'foo' => new LazyPdoConnection('mysql:host=foo'),
             )
         );
         $expectedPools = new Map;
@@ -113,18 +113,18 @@ EOD;
         $configuration = $this->reader->readFile($this->fixturePath . '/valid-full.yml');
         $expectedConnections = new Map(
             array(
-                'master1' => new LazyPdo('mysql:host=master1', 'username', 'password'),
-                'master2' => new LazyPdo('mysql:host=master2'),
-                'master3' => new LazyPdo('mysql:host=master3'),
-                'reporting1' => new LazyPdo('mysql:host=reporting1'),
-                'slave101' => new LazyPdo('mysql:host=slave101'),
-                'slave102' => new LazyPdo('mysql:host=slave102'),
-                'reporting2' => new LazyPdo('mysql:host=reporting2'),
-                'slave201' => new LazyPdo('mysql:host=slave201'),
-                'slave202' => new LazyPdo('mysql:host=slave202'),
-                'reporting3' => new LazyPdo('mysql:host=reporting3'),
-                'slave301' => new LazyPdo('mysql:host=slave301'),
-                'slave302' => new LazyPdo('mysql:host=slave302'),
+                'master1' => new LazyPdoConnection('mysql:host=master1', 'username', 'password'),
+                'master2' => new LazyPdoConnection('mysql:host=master2'),
+                'master3' => new LazyPdoConnection('mysql:host=master3'),
+                'reporting1' => new LazyPdoConnection('mysql:host=reporting1'),
+                'slave101' => new LazyPdoConnection('mysql:host=slave101'),
+                'slave102' => new LazyPdoConnection('mysql:host=slave102'),
+                'reporting2' => new LazyPdoConnection('mysql:host=reporting2'),
+                'slave201' => new LazyPdoConnection('mysql:host=slave201'),
+                'slave202' => new LazyPdoConnection('mysql:host=slave202'),
+                'reporting3' => new LazyPdoConnection('mysql:host=reporting3'),
+                'slave301' => new LazyPdoConnection('mysql:host=slave301'),
+                'slave302' => new LazyPdoConnection('mysql:host=slave302'),
             )
         );
         $expectedPools = new Map(
@@ -243,8 +243,8 @@ EOD;
         $configuration = $this->reader->readString($string);
         $expectedConnections = new Map(
             array(
-                'foo' => new LazyPdo('mysql:host=foo', 'username', '$ESCAPED'),
-                'bar' => new LazyPdo('mysql:host=bar', '\\$ESCAPED', 'IG$NORED'),
+                'foo' => new LazyPdoConnection('mysql:host=foo', 'username', '$ESCAPED'),
+                'bar' => new LazyPdoConnection('mysql:host=bar', '\\$ESCAPED', 'IG$NORED'),
             )
         );
         $expectedPools = new Map;

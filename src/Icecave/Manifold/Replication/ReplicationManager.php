@@ -37,11 +37,16 @@ class ReplicationManager implements ReplicationManagerInterface
      * @return integer                           The replication delay between $masterConnection and $slaveConnection, in seconds.
      * @throws Exception\NotReplicatingException If $slaveConnection is not replicating from $masterConnection.
      */
-    public function replicationDelay(PDO $masterConnection, PDO $slaveConnection)
-    {
+    public function replicationDelay(
+        PDO $masterConnection,
+        PDO $slaveConnection
+    ) {
         $this->typeCheck->replicationDelay(func_get_args());
 
-        $path = $this->replicationTree()->replicationPath($masterConnection, $slaveConnection);
+        $path = $this->replicationTree()->replicationPath(
+            $masterConnection,
+            $slaveConnection
+        );
 
         if (null === $path) {
             throw new Exception\NotReplicatingException;
@@ -73,11 +78,17 @@ class ReplicationManager implements ReplicationManagerInterface
      * @return boolean                           True if the slave's replication delay is less than or equal to $threshold.
      * @throws Exception\NotReplicatingException If $slaveConnection is not replicating from $masterConnection.
      */
-    public function replicationDelayWithin($threshold, PDO $masterConnection, PDO $slaveConnection)
-    {
+    public function replicationDelayWithin(
+        $threshold,
+        PDO $masterConnection,
+        PDO $slaveConnection
+    ) {
         $this->typeCheck->replicationDelayWithin(func_get_args());
 
-        $path = $this->replicationTree()->replicationPath($masterConnection, $slaveConnection);
+        $path = $this->replicationTree()->replicationPath(
+            $masterConnection,
+            $slaveConnection
+        );
 
         if (null === $path) {
             throw new Exception\NotReplicatingException;
@@ -116,7 +127,10 @@ class ReplicationManager implements ReplicationManagerInterface
     {
         $this->typeCheck->isReplicating(func_get_args());
 
-        $path = $this->replicationTree()->replicationPath($masterConnection, $slaveConnection);
+        $path = $this->replicationTree()->replicationPath(
+            $masterConnection,
+            $slaveConnection
+        );
 
         if (null === $path) {
             return false;
@@ -142,8 +156,11 @@ class ReplicationManager implements ReplicationManagerInterface
      * @return boolean                           False if the wait operation times out before complection; otherwise, true.
      * @throws Exception\NotReplicatingException If $slaveConnection is not replicating from $masterConnection.
      */
-    public function waitForReplication(PDO $masterConnection, PDO $slaveConnection, $timeout = null)
-    {
+    public function waitForReplication(
+        PDO $masterConnection,
+        PDO $slaveConnection,
+        $timeout = null
+    ) {
         $this->typeCheck->waitForReplication(func_get_args());
     }
 

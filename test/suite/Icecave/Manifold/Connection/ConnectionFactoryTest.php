@@ -10,7 +10,7 @@ class ConnectionFactoryTest extends PHPUnit_Framework_TestCase
         $this->factory = new ConnectionFactory;
     }
 
-    public function testCreateConnection()
+    public function testCreate()
     {
         $this->markTestIncomplete();
     }

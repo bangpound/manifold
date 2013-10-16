@@ -1,13 +1,17 @@
 <?php
 namespace Icecave\Manifold\Connection;
 
-use Icecave\Manifold\Pdo\LazyPdo;
 use Icecave\Manifold\TypeCheck\TypeCheck;
 use PDO;
 
+/**
+ * Creates connections.
+ */
 class ConnectionFactory implements ConnectionFactoryInterface
 {
     /**
+     * Construct a new connection factory.
+     *
      * @param array|null $driverOptions Options to pass to the connection upon creation.
      */
     public function __construct(array $driverOptions = null)
@@ -30,17 +34,17 @@ class ConnectionFactory implements ConnectionFactoryInterface
     /**
      * Create a connection.
      *
-     * @param string      $dsn
-     * @param string|null $username
-     * @param string|null $password
+     * @param string      $dsn      The data source name.
+     * @param string|null $username The username.
+     * @param string|null $password The password.
      *
-     * @return PDO
+     * @return PDO The newly created connection.
      */
-    public function createConnection($dsn, $username = null, $password = null)
+    public function create($dsn, $username = null, $password = null)
     {
-        $this->typeCheck->createConnection(func_get_args());
+        $this->typeCheck->create(func_get_args());
 
-        return new LazyPdo(
+        return new LazyPdoConnection(
             $dsn,
             $username,
             $password,

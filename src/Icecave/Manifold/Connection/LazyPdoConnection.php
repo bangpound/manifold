@@ -1,5 +1,5 @@
 <?php
-namespace Icecave\Manifold\Pdo;
+namespace Icecave\Manifold\Connection;
 
 use Icecave\Manifold\TypeCheck\TypeCheck;
 use PDO;
@@ -7,10 +7,12 @@ use PDO;
 /**
  * A PDO connection with lazy-connection semantics.
  */
-class LazyPdo extends PDO
+class LazyPdoConnection extends PDO
 {
     /**
-     * @param string      $dsn           The connection data-source name.
+     * Construct a new lazy PDO connection.
+     *
+     * @param string      $dsn           The connection data source name.
      * @param string|null $username      The database username, this parameter is optional for some PDO drivers.
      * @param string|null $password      The database password, this parameter is optional for some PDO drivers.
      * @param array|null  $driverOptions The driver-specific options.
@@ -38,6 +40,36 @@ class LazyPdo extends PDO
         $this->connected = false;
 
         // Do not call PDO constructor ...
+    }
+
+    /**
+     * Get the data source name.
+     *
+     * @return string The data source name.
+     */
+    public function dsn()
+    {
+        return $this->dsn;
+    }
+
+    /**
+     * Get the username.
+     *
+     * @return string|null The username, or null if no username is in use.
+     */
+    public function username()
+    {
+        return $this->username;
+    }
+
+    /**
+     * Get the password.
+     *
+     * @return string The password, or null if no password is in use.
+     */
+    public function password()
+    {
+        return $this->password;
     }
 
     /**
@@ -113,8 +145,6 @@ class LazyPdo extends PDO
             $this->connected = true;
 
             $this->afterConnect();
-        } else {
-            strlen('COVERAGE');
         }
     }
 

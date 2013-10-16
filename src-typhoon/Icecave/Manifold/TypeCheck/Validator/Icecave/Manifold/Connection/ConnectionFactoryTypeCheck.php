@@ -18,7 +18,7 @@ class ConnectionFactoryTypeCheck extends \Icecave\Manifold\TypeCheck\AbstractVal
         }
     }
 
-    public function createConnection(array $arguments)
+    public function create(array $arguments)
     {
         $argumentCount = \count($arguments);
         if ($argumentCount < 1) {

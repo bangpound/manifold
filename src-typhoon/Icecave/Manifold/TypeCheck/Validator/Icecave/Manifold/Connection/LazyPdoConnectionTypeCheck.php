@@ -1,7 +1,7 @@
 <?php
-namespace Icecave\Manifold\TypeCheck\Validator\Icecave\Manifold\Pdo;
+namespace Icecave\Manifold\TypeCheck\Validator\Icecave\Manifold\Connection;
 
-class LazyPdoTypeCheck extends \Icecave\Manifold\TypeCheck\AbstractValidator
+class LazyPdoConnectionTypeCheck extends \Icecave\Manifold\TypeCheck\AbstractValidator
 {
     public function validateConstruct(array $arguments)
     {
@@ -41,6 +41,27 @@ class LazyPdoTypeCheck extends \Icecave\Manifold\TypeCheck\AbstractValidator
                     'string|null'
                 );
             }
+        }
+    }
+
+    public function dsn(array $arguments)
+    {
+        if (\count($arguments) > 0) {
+            throw new \Icecave\Manifold\TypeCheck\Exception\UnexpectedArgumentException(0, $arguments[0]);
+        }
+    }
+
+    public function username(array $arguments)
+    {
+        if (\count($arguments) > 0) {
+            throw new \Icecave\Manifold\TypeCheck\Exception\UnexpectedArgumentException(0, $arguments[0]);
+        }
+    }
+
+    public function password(array $arguments)
+    {
+        if (\count($arguments) > 0) {
+            throw new \Icecave\Manifold\TypeCheck\Exception\UnexpectedArgumentException(0, $arguments[0]);
         }
     }
 
