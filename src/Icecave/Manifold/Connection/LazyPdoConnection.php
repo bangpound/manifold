@@ -70,6 +70,16 @@ class LazyPdoConnection extends PDO
     }
 
     /**
+     * Get the driver-specific options for this connection.
+     *
+     * @return array The driver-specific options.
+     */
+    public function driverOptions()
+    {
+        return $this->driverOptions;
+    }
+
+    /**
      * Get an attribute of the connection.
      *
      * If a connection has not yet been established, the attribute is taken from the driver options provided upon construction.

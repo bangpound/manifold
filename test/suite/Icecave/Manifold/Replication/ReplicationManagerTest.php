@@ -21,30 +21,15 @@ class ReplicationManagerTest extends PHPUnit_Framework_TestCase
         $this->tree->addSlave($this->connection2, $this->connection4);
 
         $this->manager = Phake::partialMock(__NAMESPACE__ . '\ReplicationManager', $this->tree);
-
-        Phake::when($this->manager)
-            ->secondsBehindMaster($this->connection1)
-            ->thenReturn(null);
-
-        Phake::when($this->manager)
-            ->secondsBehindMaster($this->connection2)
-            ->thenReturn(5);
-
-        Phake::when($this->manager)
-            ->secondsBehindMaster($this->connection3)
-            ->thenReturn(10);
-
-        Phake::when($this->manager)
-            ->secondsBehindMaster($this->connection4)
-            ->thenReturn(20);
-
-        Phake::when($this->manager)
-            ->secondsBehindMaster($this->connection5)
-            ->thenReturn(null);
+        Phake::when($this->manager)->secondsBehindMaster($this->connection1)->thenReturn(null);
+        Phake::when($this->manager)->secondsBehindMaster($this->connection2)->thenReturn(5);
+        Phake::when($this->manager)->secondsBehindMaster($this->connection3)->thenReturn(10);
+        Phake::when($this->manager)->secondsBehindMaster($this->connection4)->thenReturn(20);
+        Phake::when($this->manager)->secondsBehindMaster($this->connection5)->thenReturn(null);
     }
 
-    public function testReplicationTree()
+    public function testConstructor()
     {
-        $this->assertSame($this->tree, $this->manager->replicationTree());
+        $this->assertSame($this->tree, $this->manager->tree());
     }
 }

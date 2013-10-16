@@ -6,11 +6,11 @@ use PDO;
 class ReplicationManager implements ReplicationManagerInterface
 {
     /**
-     * @param ReplicationTree $replicationTree The replication tree upon which this manager operates.
+     * @param ReplicationTree $tree The replication tree upon which this manager operates.
      */
-    public function __construct(ReplicationTree $replicationTree)
+    public function __construct(ReplicationTree $tree)
     {
-        $this->replicationTree = $replicationTree;
+        $this->tree = $tree;
     }
 
     /**
@@ -18,9 +18,9 @@ class ReplicationManager implements ReplicationManagerInterface
      *
      * @return ReplicationTree The replication tree upon which this manager operates.
      */
-    public function replicationTree()
+    public function tree()
     {
-        return $this->replicationTree;
+        return $this->tree;
     }
 
     /**
@@ -32,11 +32,9 @@ class ReplicationManager implements ReplicationManagerInterface
      * @return integer                           The replication delay between $masterConnection and $slaveConnection, in seconds.
      * @throws Exception\NotReplicatingException If $slaveConnection is not replicating from $masterConnection.
      */
-    public function replicationDelay(
-        PDO $masterConnection,
-        PDO $slaveConnection
-    ) {
-        $path = $this->replicationTree()->replicationPath(
+    public function delay(PDO $masterConnection, PDO $slaveConnection)
+    {
+        $path = $this->tree()->replicationPath(
             $masterConnection,
             $slaveConnection
         );
@@ -71,12 +69,12 @@ class ReplicationManager implements ReplicationManagerInterface
      * @return boolean                           True if the slave's replication delay is less than or equal to $threshold.
      * @throws Exception\NotReplicatingException If $slaveConnection is not replicating from $masterConnection.
      */
-    public function replicationDelayWithin(
+    public function delayWithin(
         $threshold,
         PDO $masterConnection,
         PDO $slaveConnection
     ) {
-        $path = $this->replicationTree()->replicationPath(
+        $path = $this->tree()->replicationPath(
             $masterConnection,
             $slaveConnection
         );
@@ -116,7 +114,7 @@ class ReplicationManager implements ReplicationManagerInterface
      */
     public function isReplicating(PDO $masterConnection, PDO $slaveConnection)
     {
-        $path = $this->replicationTree()->replicationPath(
+        $path = $this->tree()->replicationPath(
             $masterConnection,
             $slaveConnection
         );
@@ -145,7 +143,7 @@ class ReplicationManager implements ReplicationManagerInterface
      * @return boolean                           False if the wait operation times out before completion; otherwise, true.
      * @throws Exception\NotReplicatingException If $slaveConnection is not replicating from $masterConnection.
      */
-    public function waitForReplication(
+    public function wait(
         PDO $masterConnection,
         PDO $slaveConnection,
         $timeout = null
@@ -153,9 +151,11 @@ class ReplicationManager implements ReplicationManagerInterface
     }
 
     /**
-     * @param PDO $connection
+     * Determine how far the supplied connection is behind its master.
      *
-     * @return integer|null
+     * @param PDO $connection The slave connection.
+     *
+     * @return integer|null The number of seconds behind master.
      */
     protected function secondsBehindMaster(PDO $connection)
     {
@@ -170,4 +170,6 @@ class ReplicationManager implements ReplicationManagerInterface
 
         return intval($result->Seconds_Behind_Master);
     }
+
+    private $tree;
 }
