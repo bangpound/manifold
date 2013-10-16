@@ -1,7 +1,6 @@
 <?php
 namespace Icecave\Manifold\Replication;
 
-use Icecave\Manifold\TypeCheck\TypeCheck;
 use PDO;
 
 class ReplicationManager implements ReplicationManagerInterface
@@ -11,8 +10,6 @@ class ReplicationManager implements ReplicationManagerInterface
      */
     public function __construct(ReplicationTree $replicationTree)
     {
-        $this->typeCheck = TypeCheck::get(__CLASS__, func_get_args());
-
         $this->replicationTree = $replicationTree;
     }
 
@@ -23,8 +20,6 @@ class ReplicationManager implements ReplicationManagerInterface
      */
     public function replicationTree()
     {
-        $this->typeCheck->replicationTree(func_get_args());
-
         return $this->replicationTree;
     }
 
@@ -41,8 +36,6 @@ class ReplicationManager implements ReplicationManagerInterface
         PDO $masterConnection,
         PDO $slaveConnection
     ) {
-        $this->typeCheck->replicationDelay(func_get_args());
-
         $path = $this->replicationTree()->replicationPath(
             $masterConnection,
             $slaveConnection
@@ -83,8 +76,6 @@ class ReplicationManager implements ReplicationManagerInterface
         PDO $masterConnection,
         PDO $slaveConnection
     ) {
-        $this->typeCheck->replicationDelayWithin(func_get_args());
-
         $path = $this->replicationTree()->replicationPath(
             $masterConnection,
             $slaveConnection
@@ -125,8 +116,6 @@ class ReplicationManager implements ReplicationManagerInterface
      */
     public function isReplicating(PDO $masterConnection, PDO $slaveConnection)
     {
-        $this->typeCheck->isReplicating(func_get_args());
-
         $path = $this->replicationTree()->replicationPath(
             $masterConnection,
             $slaveConnection
@@ -153,7 +142,7 @@ class ReplicationManager implements ReplicationManagerInterface
      * @param PDO          $slaveConnection  The replication slave.
      * @param integer|null $timeout          The maximum time to wait in seconds, or null to wait indefinitely.
      *
-     * @return boolean                           False if the wait operation times out before complection; otherwise, true.
+     * @return boolean                           False if the wait operation times out before completion; otherwise, true.
      * @throws Exception\NotReplicatingException If $slaveConnection is not replicating from $masterConnection.
      */
     public function waitForReplication(
@@ -161,7 +150,6 @@ class ReplicationManager implements ReplicationManagerInterface
         PDO $slaveConnection,
         $timeout = null
     ) {
-        $this->typeCheck->waitForReplication(func_get_args());
     }
 
     /**
@@ -171,8 +159,6 @@ class ReplicationManager implements ReplicationManagerInterface
      */
     protected function secondsBehindMaster(PDO $connection)
     {
-        $this->typeCheck->secondsBehindMaster(func_get_args());
-
         $statement = $connection->query('SHOW SLAVE STATUS');
         $result = $statement->fetchObject();
 
@@ -184,6 +170,4 @@ class ReplicationManager implements ReplicationManagerInterface
 
         return intval($result->Seconds_Behind_Master);
     }
-
-    private $typeCheck;
 }

@@ -1,7 +1,6 @@
 <?php
 namespace Icecave\Manifold\Connection;
 
-use Icecave\Manifold\TypeCheck\TypeCheck;
 use PDO;
 
 /**
@@ -16,8 +15,6 @@ class ConnectionFactory implements ConnectionFactoryInterface
      */
     public function __construct(array $driverOptions = null)
     {
-        $this->typeCheck = TypeCheck::get(__CLASS__, func_get_args());
-
         $this->driverOptions = $driverOptions;
     }
 
@@ -42,8 +39,6 @@ class ConnectionFactory implements ConnectionFactoryInterface
      */
     public function create($dsn, $username = null, $password = null)
     {
-        $this->typeCheck->create(func_get_args());
-
         return new LazyPdoConnection(
             $dsn,
             $username,
@@ -53,5 +48,4 @@ class ConnectionFactory implements ConnectionFactoryInterface
     }
 
     private $driverOptions;
-    private $typeCheck;
 }

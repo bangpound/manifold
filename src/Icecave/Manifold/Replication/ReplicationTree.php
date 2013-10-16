@@ -4,7 +4,6 @@ namespace Icecave\Manifold\Replication;
 use Icecave\Collections\Exception\UnknownKeyException;
 use Icecave\Collections\Map;
 use Icecave\Collections\Set;
-use Icecave\Manifold\TypeCheck\TypeCheck;
 use InvalidArgumentException;
 use PDO;
 use stdClass;
@@ -19,8 +18,6 @@ class ReplicationTree implements ReplicationTreeInterface
      */
     public function __construct(PDO $replicationRoot)
     {
-        $this->typeCheck = TypeCheck::get(__CLASS__, func_get_args());
-
         $this->replicationRoot = $replicationRoot;
         $this->connections = new Map;
         $this->connections[$replicationRoot] = $this->createEntry();
@@ -33,8 +30,6 @@ class ReplicationTree implements ReplicationTreeInterface
      */
     public function replicationRoot()
     {
-        $this->typeCheck->replicationRoot(func_get_args());
-
         return $this->replicationRoot;
     }
 
@@ -47,8 +42,6 @@ class ReplicationTree implements ReplicationTreeInterface
      */
     public function hasConnection(PDO $connection)
     {
-        $this->typeCheck->hasConnection(func_get_args());
-
         return $this->connections->hasKey($connection);
     }
 
@@ -62,8 +55,6 @@ class ReplicationTree implements ReplicationTreeInterface
      */
     public function isRoot(PDO $connection)
     {
-        $this->typeCheck->isRoot(func_get_args());
-
         if (!$this->hasConnection($connection)) {
             throw new Exception\UnknownConnectionException($connection);
         }
@@ -81,8 +72,6 @@ class ReplicationTree implements ReplicationTreeInterface
      */
     public function isLeaf(PDO $connection)
     {
-        $this->typeCheck->isLeaf(func_get_args());
-
         return $this->getEntry($connection)->slaves->isEmpty();
     }
 
@@ -96,8 +85,6 @@ class ReplicationTree implements ReplicationTreeInterface
      */
     public function isMaster(PDO $connection)
     {
-        $this->typeCheck->isMaster(func_get_args());
-
         return !$this->isLeaf($connection);
     }
 
@@ -111,8 +98,6 @@ class ReplicationTree implements ReplicationTreeInterface
      */
     public function isSlave(PDO $connection)
     {
-        $this->typeCheck->isSlave(func_get_args());
-
         return !$this->isRoot($connection);
     }
 
@@ -126,8 +111,6 @@ class ReplicationTree implements ReplicationTreeInterface
      */
     public function masterOf(PDO $connection)
     {
-        $this->typeCheck->masterOf(func_get_args());
-
         return $this->getEntry($connection)->master;
     }
 
@@ -141,8 +124,6 @@ class ReplicationTree implements ReplicationTreeInterface
      */
     public function slavesOf(PDO $connection)
     {
-        $this->typeCheck->slavesOf(func_get_args());
-
         return clone $this->getEntry($connection)->slaves;
     }
 
@@ -157,8 +138,6 @@ class ReplicationTree implements ReplicationTreeInterface
      */
     public function isReplicatingTo(PDO $masterConnection, PDO $slaveConnection)
     {
-        $this->typeCheck->isReplicatingTo(func_get_args());
-
         return $this->countHops($masterConnection, $slaveConnection) > 0;
     }
 
@@ -173,8 +152,6 @@ class ReplicationTree implements ReplicationTreeInterface
      */
     public function isMasterOf(PDO $masterConnection, PDO $slaveConnection)
     {
-        $this->typeCheck->isMasterOf(func_get_args());
-
         if (!$this->hasConnection($masterConnection)) {
             throw new Exception\UnknownConnectionException($masterConnection);
         }
@@ -193,8 +170,6 @@ class ReplicationTree implements ReplicationTreeInterface
      */
     public function countHops(PDO $masterConnection, PDO $slaveConnection)
     {
-        $this->typeCheck->countHops(func_get_args());
-
         // Ensure connections are in the tree ...
         $this->getEntry($masterConnection);
         $this->getEntry($slaveConnection);
@@ -225,8 +200,6 @@ class ReplicationTree implements ReplicationTreeInterface
      */
     public function replicationPath(PDO $masterConnection, PDO $slaveConnection)
     {
-        $this->typeCheck->replicationPath(func_get_args());
-
         // Ensure connections are in the tree ...
         $this->getEntry($masterConnection);
         $this->getEntry($slaveConnection);
@@ -262,8 +235,6 @@ class ReplicationTree implements ReplicationTreeInterface
      */
     public function addSlave(PDO $masterConnection, PDO $slaveConnection)
     {
-        $this->typeCheck->addSlave(func_get_args());
-
         $masterEntry = $this->getEntry($masterConnection);
         $this->connections->add(
             $slaveConnection,
@@ -281,8 +252,6 @@ class ReplicationTree implements ReplicationTreeInterface
      */
     public function removeSlave(PDO $connection)
     {
-        $this->typeCheck->removeSlave(func_get_args());
-
         if ($this->isRoot($connection)) {
             throw new InvalidArgumentException(
                 'The root connection can not be removed from the tree.'
@@ -305,8 +274,6 @@ class ReplicationTree implements ReplicationTreeInterface
      */
     private function createEntry(PDO $masterConnection = null)
     {
-        $this->typeCheck->createEntry(func_get_args());
-
         $entry = new stdClass;
         $entry->master = $masterConnection;
         $entry->slaves = new Set;
@@ -321,8 +288,6 @@ class ReplicationTree implements ReplicationTreeInterface
      */
     private function getEntry(PDO $connection)
     {
-        $this->typeCheck->getEntry(func_get_args());
-
         try {
             return $this->connections[$connection];
         } catch (UnknownKeyException $e) {
@@ -330,7 +295,6 @@ class ReplicationTree implements ReplicationTreeInterface
         }
     }
 
-    private $typeCheck;
     private $replicationRoot;
     private $connections;
 }

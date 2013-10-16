@@ -2,7 +2,6 @@
 namespace Icecave\Manifold\Replication\Exception;
 
 use Exception;
-use Icecave\Manifold\TypeCheck\TypeCheck;
 use PDO;
 
 /**
@@ -18,8 +17,6 @@ class UnknownConnectionException extends Exception
      */
     public function __construct(PDO $connection, Exception $previous = null)
     {
-        TypeCheck::get(__CLASS__, func_get_args());
-
         $this->connection = $connection;
 
         parent::__construct('Unknown connection.', 0, $previous);

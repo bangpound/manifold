@@ -20,21 +20,12 @@
         "symfony/yaml": "~2"
     },
     "require-dev": {
-        "eloquent/typhoon": "~0.9.0",
         "icecave/archer": "~1",
         "icecave/parity": "~0.1.0"
     },
     "autoload": {
         "psr-0": {
-            "Icecave\\Manifold": "src",
-            "Icecave\\Manifold\\TypeCheck": "src-typhoon"
-        }
-    },
-    "extra": {
-        "typhoon": {
-            "output-path": "src-typhoon",
-            "validator-namespace": "Icecave\\Manifold\\TypeCheck",
-            "use-native-callable": false
+            "Icecave\\Manifold": "src"
         }
     }
 }

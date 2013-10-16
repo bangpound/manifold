@@ -1,7 +1,6 @@
 <?php
 namespace Icecave\Manifold\Connection;
 
-use Icecave\Manifold\TypeCheck\TypeCheck;
 use PDO;
 
 /**
@@ -23,8 +22,6 @@ class LazyPdoConnection extends PDO
         $password = null,
         array $driverOptions = null
     ) {
-        $this->typeCheck = TypeCheck::get(__CLASS__, func_get_args());
-
         if (null === $driverOptions) {
             $driverOptions = array(
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
@@ -37,7 +34,7 @@ class LazyPdoConnection extends PDO
         $this->username = $username;
         $this->password = $password;
         $this->driverOptions = $driverOptions;
-        $this->connected = false;
+        $this->isConnected = false;
 
         // Do not call PDO constructor ...
     }
@@ -83,8 +80,6 @@ class LazyPdoConnection extends PDO
      */
     public function getAttribute($attribute)
     {
-        $this->typeCheck->getAttribute(func_get_args());
-
         // @codeCoverageIgnoreStart
         if ($this->isConnected()) {
             return parent::getAttribute($attribute);
@@ -108,8 +103,6 @@ class LazyPdoConnection extends PDO
      */
     public function setAttribute($attribute, $value)
     {
-        $this->typeCheck->setAttribute(func_get_args());
-
         // @codeCoverageIgnoreStart
         if ($this->isConnected()) {
             parent::setAttribute($attribute, $value);
@@ -126,9 +119,7 @@ class LazyPdoConnection extends PDO
      */
     public function isConnected()
     {
-        $this->typeCheck->isConnected(func_get_args());
-
-        return $this->connected;
+        return $this->isConnected;
     }
 
     /**
@@ -136,13 +127,11 @@ class LazyPdoConnection extends PDO
      */
     public function connect()
     {
-        $this->typeCheck->connect(func_get_args());
-
         if (!$this->isConnected()) {
             $this->beforeConnect();
 
             $this->constructParent($this->dsn, $this->username, $this->password, $this->driverOptions);
-            $this->connected = true;
+            $this->isConnected = true;
 
             $this->afterConnect();
         }
@@ -155,7 +144,6 @@ class LazyPdoConnection extends PDO
      */
     protected function beforeConnect()
     {
-        $this->typeCheck->beforeConnect(func_get_args());
     }
 
     /**
@@ -165,7 +153,6 @@ class LazyPdoConnection extends PDO
      */
     protected function afterConnect()
     {
-        $this->typeCheck->afterConnect(func_get_args());
     }
 
     // @codeCoverageIgnoreStart
@@ -183,16 +170,13 @@ class LazyPdoConnection extends PDO
         $password = null,
         array $driverOptions = array()
     ) {
-        $this->typeCheck->constructParent(func_get_args());
-
         parent::__construct($dsn, $username, $password, $driverOptions);
     }
     // @codeCoverageIgnoreEnd
 
-    private $typeCheck;
     private $dsn;
     private $username;
     private $password;
     private $driverOptions;
-    private $connected;
+    private $isConnected;
 }

@@ -59,7 +59,10 @@ class LazyPdoConnectionTest extends PHPUnit_Framework_TestCase
 
         // We induce a failure to verify that the parent getAttribute method is called.
         // This fails because constructParent() is mocked.
-        $this->setExpectedException('ErrorException', 'SQLSTATE[00000]: No error: PDO constructor was not called');
+        $this->setExpectedException(
+            'PHPUnit_Framework_Error_Warning',
+            'SQLSTATE[00000]: No error: PDO constructor was not called'
+        );
         $this->assertNull($this->proxy->getAttribute(10101));
     }
 
@@ -87,7 +90,10 @@ class LazyPdoConnectionTest extends PHPUnit_Framework_TestCase
 
         // We induce a failure to verify that the parent getAttribute method is called.
         // This fails because constructParent() is mocked.
-        $this->setExpectedException('ErrorException', 'SQLSTATE[00000]: No error: PDO constructor was not called');
+        $this->setExpectedException(
+            'PHPUnit_Framework_Error_Warning',
+            'SQLSTATE[00000]: No error: PDO constructor was not called'
+        );
         $this->proxy->setAttribute(10101, 'bar');
     }
 }

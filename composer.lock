@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "5582c4bc346a29a733cf7177021b8422",
+    "hash": "c2cb655da4543b20415e01885f45c675",
     "packages": [
         {
             "name": "eloquent/asplode",
@@ -773,226 +773,6 @@
             "time": "2013-09-23 12:00:18"
         },
         {
-            "name": "eloquent/blox",
-            "version": "1.2.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/eloquent/blox.git",
-                "reference": "d3e51e6fc6fb1e722f17418eeb19ba674b267cf1"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/eloquent/blox/zipball/d3e51e6fc6fb1e722f17418eeb19ba674b267cf1",
-                "reference": "d3e51e6fc6fb1e722f17418eeb19ba674b267cf1",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.0"
-            },
-            "require-dev": {
-                "phake/phake": "1.*"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "Eloquent\\Blox": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Erin Millard",
-                    "email": "ezzatron@gmail.com",
-                    "homepage": "http://ezzatron.com/"
-                }
-            ],
-            "description": "A parser for block comment documentation.",
-            "homepage": "https://github.com/eloquent/blox",
-            "keywords": [
-                "annotation",
-                "block",
-                "comment",
-                "docblock",
-                "documentation",
-                "parser",
-                "phpDocumentor",
-                "phpdoc",
-                "tag"
-            ],
-            "time": "2012-08-05 06:40:35"
-        },
-        {
-            "name": "eloquent/cosmos",
-            "version": "2.3.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/eloquent/cosmos.git",
-                "reference": "0226b7aa39c629cdbb41bde759adff59d932d16d"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/eloquent/cosmos/zipball/0226b7aa39c629cdbb41bde759adff59d932d16d",
-                "reference": "0226b7aa39c629cdbb41bde759adff59d932d16d",
-                "shasum": ""
-            },
-            "require": {
-                "eloquent/equality": "~2",
-                "icecave/isolator": "~2",
-                "php": ">=5.3.0"
-            },
-            "require-dev": {
-                "icecave/archer": "~0.2"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "Eloquent\\Cosmos": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Erin Millard",
-                    "email": "ezzatron@gmail.com",
-                    "homepage": "http://ezzatron.com/"
-                }
-            ],
-            "description": "A library for representing and manipulating PHP class names.",
-            "homepage": "https://github.com/eloquent/cosmos",
-            "keywords": [
-                "class",
-                "classname",
-                "name",
-                "namespace",
-                "php",
-                "resolver",
-                "solver"
-            ],
-            "time": "2013-03-04 09:26:13"
-        },
-        {
-            "name": "eloquent/typhax",
-            "version": "0.9.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/eloquent/typhax.git",
-                "reference": "5ef82d0c72ad9a0bd1a3c3e624f67dc8c6c870ef"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/eloquent/typhax/zipball/5ef82d0c72ad9a0bd1a3c3e624f67dc8c6c870ef",
-                "reference": "5ef82d0c72ad9a0bd1a3c3e624f67dc8c6c870ef",
-                "shasum": ""
-            },
-            "require": {
-                "eloquent/cosmos": "~2",
-                "ext-mbstring": "*",
-                "php": ">=5.3.0"
-            },
-            "require-dev": {
-                "icecave/archer": "~0.2"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "Eloquent\\Typhax": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Erin Millard",
-                    "email": "ezzatron@gmail.com",
-                    "homepage": "http://ezzatron.com/"
-                }
-            ],
-            "description": "A flexible PHP type hinting syntax.",
-            "homepage": "https://github.com/eloquent/typhax",
-            "keywords": [
-                "check",
-                "checking",
-                "hint",
-                "hinting",
-                "parser",
-                "syntax",
-                "type"
-            ],
-            "time": "2013-03-04 10:28:53"
-        },
-        {
-            "name": "eloquent/typhoon",
-            "version": "0.9.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/eloquent/typhoon.git",
-                "reference": "12c32df4138229d8add4211da4adfc611e3b1f54"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/eloquent/typhoon/zipball/12c32df4138229d8add4211da4adfc611e3b1f54",
-                "reference": "12c32df4138229d8add4211da4adfc611e3b1f54",
-                "shasum": ""
-            },
-            "require": {
-                "eloquent/asplode": "~1",
-                "eloquent/blox": "~1",
-                "eloquent/cosmos": "~2",
-                "eloquent/enumeration": "~3",
-                "eloquent/typhax": "~0.9",
-                "icecave/isolator": "~2",
-                "icecave/pasta-ast": "~0.1",
-                "icecave/rasta": "~0.1",
-                "php": ">=5.3.0",
-                "symfony/console": "~2",
-                "symfony/filesystem": "~2"
-            },
-            "require-dev": {
-                "eloquent/liberator": "~1",
-                "ezzatron/phpunit-extensions": "~1",
-                "icecave/archer": "~0.1"
-            },
-            "bin": [
-                "bin/typhoon"
-            ],
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "Eloquent\\Typhoon\\TypeCheck": "src-typhoon",
-                    "Eloquent\\Typhoon": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Erin Millard",
-                    "email": "ezzatron@gmail.com",
-                    "homepage": "http://ezzatron.com/"
-                }
-            ],
-            "description": "Simple, flexible type-checking for PHP.",
-            "homepage": "https://github.com/eloquent/typhoon",
-            "keywords": [
-                "check",
-                "checking",
-                "hint",
-                "hinting",
-                "type"
-            ],
-            "time": "2013-02-18 23:16:04"
-        },
-        {
             "name": "guzzle/guzzle",
             "version": "v3.7.4",
             "source": {
@@ -1086,25 +866,25 @@
         },
         {
             "name": "icecave/archer",
-            "version": "1.0.1",
+            "version": "1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/IcecaveStudios/archer.git",
-                "reference": "b0152a3274a5a5e0b8bbac81baaaa74fe5a40290"
+                "reference": "5ab6803e2fbcb27cbad8624f7f137477a5ca0fb3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/IcecaveStudios/archer/zipball/b0152a3274a5a5e0b8bbac81baaaa74fe5a40290",
-                "reference": "b0152a3274a5a5e0b8bbac81baaaa74fe5a40290",
+                "url": "https://api.github.com/repos/IcecaveStudios/archer/zipball/5ab6803e2fbcb27cbad8624f7f137477a5ca0fb3",
+                "reference": "5ab6803e2fbcb27cbad8624f7f137477a5ca0fb3",
                 "shasum": ""
             },
             "require": {
                 "phake/phake": "~1",
                 "php": ">=5.3",
-                "sami/sami": "~1",
+                "sami/sami": "~1.1.0",
                 "satooshi/php-coveralls": "~0.6",
                 "symfony/console": "~2",
-                "symfony/process": "~2,<2.3.5"
+                "symfony/process": "~2"
             },
             "require-dev": {
                 "eloquent/liberator": "~1",
@@ -1154,103 +934,7 @@
                 "testing",
                 "unit"
             ],
-            "time": "2013-10-01 04:03:32"
-        },
-        {
-            "name": "icecave/pasta-ast",
-            "version": "0.1.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/IcecaveStudios/pasta-ast.git",
-                "reference": "e60498ac26189a50990b190d34a61b3677a14a69"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/IcecaveStudios/pasta-ast/zipball/e60498ac26189a50990b190d34a61b3677a14a69",
-                "reference": "e60498ac26189a50990b190d34a61b3677a14a69",
-                "shasum": ""
-            },
-            "require": {
-                "eloquent/enumeration": "3.*",
-                "php": ">=5.3.0"
-            },
-            "require-dev": {
-                "phake/phake": "1.*"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "Icecave\\Pasta\\AST": "lib"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "James Harris",
-                    "email": "james.harris@icecave.com.au",
-                    "homepage": "https://github.com/jmalloc"
-                }
-            ],
-            "description": "PHP AST implementation.",
-            "homepage": "https://github.com/IcecaveStudios/pasta-ast",
-            "keywords": [
-                "abstract",
-                "ast",
-                "parser",
-                "syntax",
-                "tree"
-            ],
-            "time": "2012-11-28 12:00:39"
-        },
-        {
-            "name": "icecave/rasta",
-            "version": "0.1.4",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/IcecaveStudios/rasta.git",
-                "reference": "aa384531bcab779af0fc25552287866b470ece00"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/IcecaveStudios/rasta/zipball/aa384531bcab779af0fc25552287866b470ece00",
-                "reference": "aa384531bcab779af0fc25552287866b470ece00",
-                "shasum": ""
-            },
-            "require": {
-                "icecave/collections": "*",
-                "icecave/pasta-ast": "0.1.*",
-                "php": ">=5.3.0"
-            },
-            "require-dev": {
-                "icecave/testing": "1.*"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "Icecave\\Rasta": "lib"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "James Harris",
-                    "email": "james.harris@icecave.com.au",
-                    "homepage": "https://github.com/jmalloc"
-                }
-            ],
-            "description": "PHP code generation library.",
-            "homepage": "https://github.com/IcecaveStudios/rasta",
-            "keywords": [
-                "ast",
-                "parser"
-            ],
-            "time": "2013-01-14 14:06:52"
+            "time": "2013-10-13 23:54:24"
         },
         {
             "name": "nikic/php-parser",
@@ -1426,16 +1110,16 @@
         },
         {
             "name": "sami/sami",
-            "version": "v1.2",
+            "version": "v1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/fabpot/Sami.git",
-                "reference": "8d6d896c48766e0cb08b651fb5aca77a1dd788e0"
+                "reference": "46c58957ce4823c613e8535626b81e2fd80a9865"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fabpot/Sami/zipball/8d6d896c48766e0cb08b651fb5aca77a1dd788e0",
-                "reference": "8d6d896c48766e0cb08b651fb5aca77a1dd788e0",
+                "url": "https://api.github.com/repos/fabpot/Sami/zipball/46c58957ce4823c613e8535626b81e2fd80a9865",
+                "reference": "46c58957ce4823c613e8535626b81e2fd80a9865",
                 "shasum": ""
             },
             "require": {
@@ -1456,7 +1140,7 @@
             "type": "application",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.2-dev"
+                    "dev-master": "1.0-dev"
                 }
             },
             "autoload": {
@@ -1479,7 +1163,7 @@
             "keywords": [
                 "phpdoc"
             ],
-            "time": "2013-09-27 17:24:21"
+            "time": "2013-08-04 13:56:41"
         },
         {
             "name": "satooshi/php-coveralls",
@@ -1800,17 +1484,17 @@
         },
         {
             "name": "symfony/process",
-            "version": "v2.3.4",
+            "version": "v2.3.6",
             "target-dir": "Symfony/Component/Process",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Process.git",
-                "reference": "1e91553e1cedd0b8fb1da6ea4f89b02e21713d5b"
+                "reference": "81191e354fe9dad0451036ccf0fdf283649d3f1e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Process/zipball/1e91553e1cedd0b8fb1da6ea4f89b02e21713d5b",
-                "reference": "1e91553e1cedd0b8fb1da6ea4f89b02e21713d5b",
+                "url": "https://api.github.com/repos/symfony/Process/zipball/81191e354fe9dad0451036ccf0fdf283649d3f1e",
+                "reference": "81191e354fe9dad0451036ccf0fdf283649d3f1e",
                 "shasum": ""
             },
             "require": {
@@ -1843,7 +1527,7 @@
             ],
             "description": "Symfony Process Component",
             "homepage": "http://symfony.com",
-            "time": "2013-08-22 06:42:25"
+            "time": "2013-10-09 21:17:57"
         },
         {
             "name": "symfony/stopwatch",
@@ -1894,16 +1578,16 @@
         },
         {
             "name": "twig/twig",
-            "version": "v1.14.0",
+            "version": "v1.14.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/fabpot/Twig.git",
-                "reference": "224fc55635d544a2ec8edb3592be18db5a093f59"
+                "reference": "8873d7593ad7c120004f177c0fd01459b383c9cb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fabpot/Twig/zipball/224fc55635d544a2ec8edb3592be18db5a093f59",
-                "reference": "224fc55635d544a2ec8edb3592be18db5a093f59",
+                "url": "https://api.github.com/repos/fabpot/Twig/zipball/8873d7593ad7c120004f177c0fd01459b383c9cb",
+                "reference": "8873d7593ad7c120004f177c0fd01459b383c9cb",
                 "shasum": ""
             },
             "require": {
@@ -1939,7 +1623,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2013-10-03 06:41:20"
+            "time": "2013-10-15 19:17:38"
         }
     ],
     "aliases": [

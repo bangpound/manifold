@@ -63,7 +63,7 @@ interface ReplicationManagerInterface
      * @param PDO          $slaveConnection  The replication slave.
      * @param integer|null $timeout          The maximum time to wait in seconds, or null to wait indefinitely.
      *
-     * @return boolean                           False if the wait operation times out before complection; otherwise, true.
+     * @return boolean                           False if the wait operation times out before completion; otherwise, true.
      * @throws Exception\NotReplicatingException If $slaveConnection is not replicating from $masterConnection.
      */
     public function waitForReplication(
