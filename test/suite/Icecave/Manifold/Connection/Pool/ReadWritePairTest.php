@@ -1,5 +1,5 @@
 <?php
-namespace Icecave\Manifold\Connection;
+namespace Icecave\Manifold\Connection\Pool;
 
 use Phake;
 use PHPUnit_Framework_TestCase;

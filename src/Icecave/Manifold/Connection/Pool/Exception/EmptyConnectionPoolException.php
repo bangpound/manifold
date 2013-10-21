@@ -1,5 +1,5 @@
 <?php
-namespace Icecave\Manifold\Connection\Exception;
+namespace Icecave\Manifold\Connection\Pool\Exception;
 
 use Exception;
 

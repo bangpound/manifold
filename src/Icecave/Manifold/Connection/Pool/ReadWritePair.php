@@ -1,5 +1,5 @@
 <?php
-namespace Icecave\Manifold\Connection;
+namespace Icecave\Manifold\Connection\Pool;
 
 /**
  * Represents a read/write pair of connection pools.

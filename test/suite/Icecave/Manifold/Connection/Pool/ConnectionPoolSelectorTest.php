@@ -1,11 +1,11 @@
 <?php
-namespace Icecave\Manifold\Connection;
+namespace Icecave\Manifold\Connection\Pool;
 
 use Icecave\Collections\Map;
 use Phake;
 use PHPUnit_Framework_TestCase;
 
-class ConnectionSelectorTest extends PHPUnit_Framework_TestCase
+class ConnectionPoolSelectorTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
@@ -26,7 +26,7 @@ class ConnectionSelectorTest extends PHPUnit_Framework_TestCase
                 'databaseD' => new ReadWritePair,
             )
         );
-        $this->selector = new ConnectionSelector($this->defaults, $this->databases);
+        $this->selector = new ConnectionPoolSelector($this->defaults, $this->databases);
     }
 
     public function testConstructor()
@@ -37,7 +37,7 @@ class ConnectionSelectorTest extends PHPUnit_Framework_TestCase
 
     public function testConstructorDefaults()
     {
-        $this->selector = new ConnectionSelector($this->defaults);
+        $this->selector = new ConnectionPoolSelector($this->defaults);
 
         $this->assertEquals(new Map, $this->selector->databases());
     }
@@ -47,7 +47,7 @@ class ConnectionSelectorTest extends PHPUnit_Framework_TestCase
         $this->defaults = new ReadWritePair;
 
         $this->setExpectedException(__NAMESPACE__ . '\Exception\InvalidDefaultReadWritePairException');
-        new ConnectionSelector($this->defaults);
+        new ConnectionPoolSelector($this->defaults);
     }
 
     public function selectionData()

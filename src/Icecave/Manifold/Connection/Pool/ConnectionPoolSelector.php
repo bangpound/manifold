@@ -1,16 +1,16 @@
 <?php
-namespace Icecave\Manifold\Connection;
+namespace Icecave\Manifold\Connection\Pool;
 
 use Icecave\Collections\Map;
 
 /**
- * Selects appropriate connections for reading and writing based upon
+ * Selects appropriate connection pools for reading and writing based upon
  * configuration.
  */
-class ConnectionSelector implements ConnectionSelectorInterface
+class ConnectionPoolSelector implements ConnectionPoolSelectorInterface
 {
     /**
-     * Construct a new connection selector.
+     * Construct a new connection pool selector.
      *
      * @param ReadWritePairInterface             $defaults  The default read/write pair.
      * @param Map<string,ReadWritePairInterface> $databases Read/write pairs for specific databases.

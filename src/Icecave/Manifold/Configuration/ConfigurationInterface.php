@@ -27,11 +27,11 @@ interface ConfigurationInterface
     public function connectionPools();
 
     /**
-     * Get the connection selector.
+     * Get the connection pool selector.
      *
-     * @return ConnectionSelectorInterface The connection selector.
+     * @return ConnectionSelectorInterface The connection pool selector.
      */
-    public function connectionSelector();
+    public function connectionPoolSelector();
 
     /**
      * Get the replication trees.

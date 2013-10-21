@@ -1,10 +1,10 @@
 <?php
-namespace Icecave\Manifold\Connection;
+namespace Icecave\Manifold\Connection\Pool;
 
 /**
- * The interface implemented by connection selectors.
+ * The interface implemented by connection pool selectors.
  */
-interface ConnectionSelectorInterface
+interface ConnectionPoolSelectorInterface
 {
     /**
      * Get the connection pool to use for writing the specified database.

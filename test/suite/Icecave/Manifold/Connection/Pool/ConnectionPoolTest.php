@@ -1,7 +1,8 @@
 <?php
-namespace Icecave\Manifold\Connection;
+namespace Icecave\Manifold\Connection\Pool;
 
 use Icecave\Collections\Vector;
+use Icecave\Manifold\Connection\LazyPdoConnection;
 use PHPUnit_Framework_TestCase;
 
 class ConnectionPoolTest extends PHPUnit_Framework_TestCase

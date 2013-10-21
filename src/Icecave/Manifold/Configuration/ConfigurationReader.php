@@ -15,12 +15,12 @@ use Icecave\Collections\Map;
 use Icecave\Collections\Vector;
 use Icecave\Manifold\Connection\ConnectionFactory;
 use Icecave\Manifold\Connection\ConnectionFactoryInterface;
-use Icecave\Manifold\Connection\ConnectionPool;
-use Icecave\Manifold\Connection\ConnectionPoolInterface;
-use Icecave\Manifold\Connection\ConnectionSelector;
-use Icecave\Manifold\Connection\ConnectionSelectorInterface;
-use Icecave\Manifold\Connection\ReadWritePair;
-use Icecave\Manifold\Connection\ReadWritePairInterface;
+use Icecave\Manifold\Connection\Pool\ConnectionPool;
+use Icecave\Manifold\Connection\Pool\ConnectionPoolInterface;
+use Icecave\Manifold\Connection\Pool\ConnectionPoolSelector;
+use Icecave\Manifold\Connection\Pool\ConnectionPoolSelectorInterface;
+use Icecave\Manifold\Connection\Pool\ReadWritePair;
+use Icecave\Manifold\Connection\Pool\ReadWritePairInterface;
 use Icecave\Manifold\Replication\ReplicationTree;
 use Icecave\Manifold\Replication\ReplicationTreeInterface;
 use PDO;
@@ -222,14 +222,14 @@ class ConfigurationReader implements ConfigurationReaderInterface
     }
 
     /**
-     * Creates a new connection selector from raw configuration data.
+     * Creates a new connection pool selector from raw configuration data.
      *
      * @param ObjectValue                         $value             The raw configuration data.
      * @param Map<string,PDO>                     $connections       The connection map.
      * @param Map<string,ConnectionPoolInterface> $pools             The connection pool map.
      * @param PDO                                 $defaultConnection The default connection.
      *
-     * @return ConnectionSelectorInterface The new connection selector.
+     * @return ConnectionPoolSelectorInterface The new connection pool selector.
      */
     protected function createSelector(
         ObjectValue $value,
@@ -261,7 +261,7 @@ class ConfigurationReader implements ConfigurationReaderInterface
             );
         }
 
-        return new ConnectionSelector($defaultPair, $databases);
+        return new ConnectionPoolSelector($defaultPair, $databases);
     }
 
     /**

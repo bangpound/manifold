@@ -1,7 +1,8 @@
 <?php
-namespace Icecave\Manifold\Connection;
+namespace Icecave\Manifold\Connection\Pool;
 
 use Icecave\Collections\Vector;
+use PDO;
 
 /**
  * The interface implemented by connection pools.
