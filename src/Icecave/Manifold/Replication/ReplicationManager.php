@@ -1,6 +1,8 @@
 <?php
 namespace Icecave\Manifold\Replication;
 
+use Icecave\Chrono\TimeSpan\Duration;
+use Icecave\Chrono\TimeSpan\TimeSpanInterface;
 use PDO;
 
 class ReplicationManager implements ReplicationManagerInterface
@@ -26,79 +28,87 @@ class ReplicationManager implements ReplicationManagerInterface
     /**
      * Fetch a replication slave's delay.
      *
-     * @param PDO $masterConnection The replication master to check against.
-     * @param PDO $slaveConnection  The replication slave.
+     * @param PDO $slaveConnection       The replication slave.
+     * @param PDO $masterConnection|null The replication master to check against, or null to use the slave's direct master.
      *
-     * @return integer                           The replication delay between $masterConnection and $slaveConnection, in seconds.
+     * @return Duration                          The replication delay between $masterConnection and $slaveConnection.
      * @throws Exception\NotReplicatingException If $slaveConnection is not replicating from $masterConnection.
      */
-    public function delay(PDO $masterConnection, PDO $slaveConnection)
+    public function delay(PDO $slaveConnection, PDO $masterConnection = null)
     {
-        $path = $this->tree()->replicationPath(
-            $masterConnection,
-            $slaveConnection
-        );
+        // if (null === $masterConnection) {
+        //     $masterConnection = $this->tree()->masterOf($slaveConnection);
+        // }
 
-        if (null === $path) {
-            throw new Exception\NotReplicatingException;
-        }
+        // $path = $this->tree()->replicationPath(
+        //     $masterConnection,
+        //     $slaveConnection
+        // );
 
-        $totalDelay = 0;
+        // if (null === $path) {
+        //     throw new Exception\NotReplicatingException;
+        // }
 
-        foreach ($path as $element) {
-            list(, $slaveConnection) = $element;
-            $delay = $this->secondsBehindMaster($slaveConnection);
+        // $totalDelay = 0;
 
-            if (null === $delay) {
-                throw new Exception\NotReplicatingException;
-            }
+        // foreach ($path as $element) {
+        //     list(, $slaveConnection) = $element;
+        //     $delay = $this->secondsBehindMaster($slaveConnection);
 
-            $totalDelay += $delay;
-        }
+        //     if (null === $delay) {
+        //         throw new Exception\NotReplicatingException;
+        //     }
 
-        return $totalDelay;
+        //     $totalDelay += $delay;
+        // }
+
+        // return $totalDelay;
     }
 
     /**
      * Check if a slave's replication delay is within the given threshold.
      *
-     * @param integer $threshold        The threshold delay (in seconds).
-     * @param PDO     $masterConnection The replication master to check against.
-     * @param PDO     $slaveConnection  The replication slave.
+     * @param TimeSpanInterface|integer $threshold             The threshold delay.
+     * @param PDO                       $slaveConnection       The replication slave.
+     * @param PDO                       $masterConnection|null The replication master to check against, or null to use the slave's direct master.
      *
      * @return boolean                           True if the slave's replication delay is less than or equal to $threshold.
      * @throws Exception\NotReplicatingException If $slaveConnection is not replicating from $masterConnection.
      */
     public function delayWithin(
         $threshold,
-        PDO $masterConnection,
-        PDO $slaveConnection
+        PDO $slaveConnection,
+        PDO $masterConnection = null
     ) {
-        $path = $this->tree()->replicationPath(
-            $masterConnection,
-            $slaveConnection
-        );
+        // if (null === $masterConnection) {
+        //     $masterConnection = $this->tree()->masterOf($slaveConnection);
+        // }
 
-        if (null === $path) {
-            throw new Exception\NotReplicatingException;
-        }
+        // $path = $this->tree()->replicationPath(
+        //     $masterConnection,
+        //     $slaveConnection
+        // );
 
-        for ($index = count($path) - 1; $index >= 0; --$index) {
-            list(, $slaveConnection) = $path[$index];
-            $delay = $this->secondsBehindMaster($s);
+        // if (null === $path) {
+        //     throw new Exception\NotReplicatingException;
+        // }
 
-            if (null === $delay) {
-                throw new Exception\NotReplicatingException;
-            }
+        // for ($index = count($path) - 1; $index >= 0; --$index) {
+        //     list(, $slaveConnection) = $path[$index];
+        //     $delay = $this->secondsBehindMaster($s);
 
-            $threshold -= $delay;
+        //     if (null === $delay) {
+        //         throw new Exception\NotReplicatingException;
+        //     }
 
-            if ($threshold < 0) {
-                return false;
-            }
-        }
+        //     $threshold -= $delay;
 
-        return true;
+        //     if ($threshold < 0) {
+        //         return false;
+        //     }
+        // }
+
+        // return true;
     }
 
     /**
@@ -107,47 +117,57 @@ class ReplicationManager implements ReplicationManagerInterface
      * This function will return false if any of the 'links' in the replication path between $masterConnection and $slaveConnection are not
      * replicating.
      *
-     * @param PDO $masterConnection The replication master to check against.
-     * @param PDO $slaveConnection  The replication slave.
+     * @param PDO      $slaveConnection  The replication slave.
+     * @param PDO|null $masterConnection The replication master to check against, or null to use the slave's direct master.
      *
-     * @return boolean True if $slaveConnection is replicating; otherwise, false.
+     * @return boolean                           True if $slaveConnection is replicating; otherwise, false.
+     * @throws Exception\NotReplicatingException If $slaveConnection is not a replication slave of $masterConnection.
      */
-    public function isReplicating(PDO $masterConnection, PDO $slaveConnection)
-    {
-        $path = $this->tree()->replicationPath(
-            $masterConnection,
-            $slaveConnection
-        );
+    public function isReplicating(
+        PDO $slaveConnection,
+        PDO $masterConnection = null
+    ) {
+        // if (null === $masterConnection) {
+        //     $masterConnection = $this->tree()->masterOf($slaveConnection);
+        // }
 
-        if (null === $path) {
-            return false;
-        }
+        // $path = $this->tree()->replicationPath(
+        //     $masterConnection,
+        //     $slaveConnection
+        // );
 
-        foreach ($path as $element) {
-            list(, $slaveConnection) = $element;
-            if (null === $this->secondsBehindMaster($slaveConnection)) {
-                return false;
-            }
-        }
+        // if (null === $path) {
+        //     return false;
+        // }
 
-        return true;
+        // foreach ($path as $element) {
+        //     list(, $slaveConnection) = $element;
+        //     if (null === $this->secondsBehindMaster($slaveConnection)) {
+        //         return false;
+        //     }
+        // }
+
+        // return true;
     }
 
     /**
      * Wait for a slave replication to catch up to the current point on the given master.
      *
-     * @param PDO          $masterConnection The replication master to check against.
-     * @param PDO          $slaveConnection  The replication slave.
-     * @param integer|null $timeout          The maximum time to wait in seconds, or null to wait indefinitely.
+     * @param PDO                            $slaveConnection       The replication slave.
+     * @param TimeSpanInterface|integer|null $timeout               The maximum time to wait, or null to wait indefinitely.
+     * @param PDO                            $masterConnection|null The replication master to check against, or null to use the slave's direct master.
      *
      * @return boolean                           False if the wait operation times out before completion; otherwise, true.
      * @throws Exception\NotReplicatingException If $slaveConnection is not replicating from $masterConnection.
      */
     public function wait(
-        PDO $masterConnection,
         PDO $slaveConnection,
-        $timeout = null
+        $timeout = null,
+        PDO $masterConnection = null
     ) {
+        // if (null === $masterConnection) {
+        //     $masterConnection = $this->tree()->masterOf($slaveConnection);
+        // }
     }
 
     /**
@@ -155,20 +175,20 @@ class ReplicationManager implements ReplicationManagerInterface
      *
      * @param PDO $connection The slave connection.
      *
-     * @return integer|null The number of seconds behind master.
+     * @return Duration|null The amount of time behind master.
      */
-    protected function secondsBehindMaster(PDO $connection)
+    protected function amountBehindMaster(PDO $connection)
     {
-        $statement = $connection->query('SHOW SLAVE STATUS');
-        $result = $statement->fetchObject();
+        // $statement = $connection->query('SHOW SLAVE STATUS');
+        // $result = $statement->fetchObject();
 
-        if (null === $result) {
-            return null;
-        } elseif (null === $result->Seconds_Behind_Master) {
-            return null;
-        }
+        // if (null === $result) {
+        //     return null;
+        // } elseif (null === $result->Seconds_Behind_Master) {
+        //     return null;
+        // }
 
-        return intval($result->Seconds_Behind_Master);
+        // return intval($result->Seconds_Behind_Master);
     }
 
     private $tree;
