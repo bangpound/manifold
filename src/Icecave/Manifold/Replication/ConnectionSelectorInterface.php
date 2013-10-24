@@ -6,6 +6,9 @@ use Icecave\Chrono\TimeSpan\TimeSpanInterface;
 use Icecave\Manifold\Connection\Pool\ConnectionPoolInterface;
 use PDO;
 
+/**
+ * The interface implemented by connection selectors.
+ */
 interface ConnectionSelectorInterface
 {
     /**

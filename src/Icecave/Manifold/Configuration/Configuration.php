@@ -9,12 +9,12 @@ use Icecave\Manifold\Replication\ReplicationTreeInterface;
 use PDO;
 
 /**
- * The interface implemented by Manifold configuration instances.
+ * Represents a complete set of configuration settings.
  */
 class Configuration implements ConfigurationInterface
 {
     /**
-     * Construct a new Manifold configuration.
+     * Construct a new configuration.
      *
      * @param Map<string,PDO>                     $connections            The defined connections.
      * @param Map<string,ConnectionPoolInterface> $connectionPools        The defined connection pools.

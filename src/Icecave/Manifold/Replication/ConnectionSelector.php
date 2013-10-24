@@ -10,6 +10,10 @@ use Icecave\Chrono\TimeSpan\TimeSpanInterface;
 use Icecave\Manifold\Connection\Pool\ConnectionPoolInterface;
 use PDO;
 
+/**
+ * Selects single connections from candidate connection pools according to
+ * various strategies.
+ */
 class ConnectionSelector implements ConnectionSelectorInterface
 {
     /**

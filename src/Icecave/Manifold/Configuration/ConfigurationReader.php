@@ -26,7 +26,7 @@ use Icecave\Manifold\Replication\ReplicationTreeInterface;
 use PDO;
 
 /**
- * Reads Manifold configuration.
+ * Reads configuration from files and strings.
  */
 class ConfigurationReader implements ConfigurationReaderInterface
 {

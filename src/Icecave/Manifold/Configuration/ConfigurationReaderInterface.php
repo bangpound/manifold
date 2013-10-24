@@ -2,7 +2,7 @@
 namespace Icecave\Manifold\Configuration;
 
 /**
- * The interface implemented by Manifold configuration readers.
+ * The interface implemented by configuration readers.
  */
 interface ConfigurationReaderInterface
 {

@@ -8,7 +8,7 @@ use Icecave\Manifold\Replication\ReplicationTreeInterface;
 use PDO;
 
 /**
- * The interface implemented by Manifold configuration instances.
+ * The interface implemented by configuration instances.
  */
 interface ConfigurationInterface
 {
