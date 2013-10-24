@@ -124,20 +124,20 @@ class ReplicationTreeTest extends PHPUnit_Framework_TestCase
     public function testIsReplicatingTo()
     {
         $this->assertSame(false, $this->tree->isReplicatingTo($this->connection1, $this->connection1));
-        $this->assertSame(true,  $this->tree->isReplicatingTo($this->connection1, $this->connection2));
-        $this->assertSame(true,  $this->tree->isReplicatingTo($this->connection1, $this->connection3));
-        $this->assertSame(true,  $this->tree->isReplicatingTo($this->connection1, $this->connection4));
+        $this->assertSame(true,  $this->tree->isReplicatingTo($this->connection2, $this->connection1));
+        $this->assertSame(true,  $this->tree->isReplicatingTo($this->connection3, $this->connection1));
+        $this->assertSame(true,  $this->tree->isReplicatingTo($this->connection4, $this->connection1));
 
-        $this->assertSame(false, $this->tree->isReplicatingTo($this->connection2, $this->connection1));
+        $this->assertSame(false, $this->tree->isReplicatingTo($this->connection1, $this->connection2));
         $this->assertSame(false, $this->tree->isReplicatingTo($this->connection2, $this->connection2));
-        $this->assertSame(true,  $this->tree->isReplicatingTo($this->connection2, $this->connection3));
-        $this->assertSame(true,  $this->tree->isReplicatingTo($this->connection2, $this->connection4));
+        $this->assertSame(true,  $this->tree->isReplicatingTo($this->connection3, $this->connection2));
+        $this->assertSame(true,  $this->tree->isReplicatingTo($this->connection4, $this->connection2));
     }
 
     public function testIsReplicatingWithUnknownMaster()
     {
         $this->setExpectedException(Exception\UnknownConnectionException::CLASS);
-        $this->tree->isReplicatingTo($this->connection5, $this->connection1);
+        $this->tree->isReplicatingTo($this->connection1, $this->connection5);
     }
 
     public function testIsReplicatingWithUnknownSlave()
@@ -174,37 +174,48 @@ class ReplicationTreeTest extends PHPUnit_Framework_TestCase
     public function testCountHops()
     {
         $this->assertSame(0,    $this->tree->countHops($this->connection1, $this->connection1));
-        $this->assertSame(1,    $this->tree->countHops($this->connection1, $this->connection2));
-        $this->assertSame(2,    $this->tree->countHops($this->connection1, $this->connection3));
-        $this->assertSame(2,    $this->tree->countHops($this->connection1, $this->connection4));
+        $this->assertSame(1,    $this->tree->countHops($this->connection2, $this->connection1));
+        $this->assertSame(2,    $this->tree->countHops($this->connection3, $this->connection1));
+        $this->assertSame(2,    $this->tree->countHops($this->connection4, $this->connection1));
+        $this->assertSame(0,    $this->tree->countHops($this->connection1));
+        $this->assertSame(1,    $this->tree->countHops($this->connection2));
+        $this->assertSame(2,    $this->tree->countHops($this->connection3));
+        $this->assertSame(2,    $this->tree->countHops($this->connection4));
 
-        $this->assertSame(null, $this->tree->countHops($this->connection2, $this->connection1));
+        $this->assertSame(null, $this->tree->countHops($this->connection1, $this->connection2));
         $this->assertSame(0,    $this->tree->countHops($this->connection2, $this->connection2));
-        $this->assertSame(1,    $this->tree->countHops($this->connection2, $this->connection3));
-        $this->assertSame(1,    $this->tree->countHops($this->connection2, $this->connection4));
+        $this->assertSame(1,    $this->tree->countHops($this->connection3, $this->connection2));
+        $this->assertSame(1,    $this->tree->countHops($this->connection4, $this->connection2));
     }
 
     public function testCountHopsWithUnknownMaster()
     {
         $this->setExpectedException(Exception\UnknownConnectionException::CLASS);
-        $this->tree->countHops($this->connection5, $this->connection1);
+        $this->tree->countHops($this->connection1, $this->connection5);
     }
 
     public function testCountHopsWithUnknownSlave()
     {
         $this->setExpectedException(Exception\UnknownConnectionException::CLASS);
-        $this->tree->countHops($this->connection1, $this->connection5);
+        $this->tree->countHops($this->connection5, $this->connection1);
     }
 
     public function testReplicationPath()
     {
         $this->assertEquals(array(), $this->tree->replicationPath($this->connection1, $this->connection1));
+        $this->assertEquals(array(), $this->tree->replicationPath($this->connection1));
 
         $this->assertEquals(
             array(
                 array($this->connection1, $this->connection2),
             ),
-            $this->tree->replicationPath($this->connection1, $this->connection2)
+            $this->tree->replicationPath($this->connection2, $this->connection1)
+        );
+        $this->assertEquals(
+            array(
+                array($this->connection1, $this->connection2),
+            ),
+            $this->tree->replicationPath($this->connection2)
         );
 
         $this->assertEquals(
@@ -212,7 +223,14 @@ class ReplicationTreeTest extends PHPUnit_Framework_TestCase
                 array($this->connection1, $this->connection2),
                 array($this->connection2, $this->connection3),
             ),
-            $this->tree->replicationPath($this->connection1, $this->connection3)
+            $this->tree->replicationPath($this->connection3, $this->connection1)
+        );
+        $this->assertEquals(
+            array(
+                array($this->connection1, $this->connection2),
+                array($this->connection2, $this->connection3),
+            ),
+            $this->tree->replicationPath($this->connection3)
         );
 
         $this->assertEquals(
@@ -220,10 +238,17 @@ class ReplicationTreeTest extends PHPUnit_Framework_TestCase
                 array($this->connection1, $this->connection2),
                 array($this->connection2, $this->connection4),
             ),
-            $this->tree->replicationPath($this->connection1, $this->connection4)
+            $this->tree->replicationPath($this->connection4, $this->connection1)
+        );
+        $this->assertEquals(
+            array(
+                array($this->connection1, $this->connection2),
+                array($this->connection2, $this->connection4),
+            ),
+            $this->tree->replicationPath($this->connection4)
         );
 
-        $this->assertNull($this->tree->replicationPath($this->connection2, $this->connection1));
+        $this->assertNull($this->tree->replicationPath($this->connection1, $this->connection2));
 
         $this->assertEquals(array(), $this->tree->replicationPath($this->connection2, $this->connection2));
 
@@ -231,27 +256,27 @@ class ReplicationTreeTest extends PHPUnit_Framework_TestCase
             array(
                 array($this->connection2, $this->connection3),
             ),
-            $this->tree->replicationPath($this->connection2, $this->connection3)
+            $this->tree->replicationPath($this->connection3, $this->connection2)
         );
 
         $this->assertEquals(
             array(
                 array($this->connection2, $this->connection4)
             ),
-            $this->tree->replicationPath($this->connection2, $this->connection4)
+            $this->tree->replicationPath($this->connection4, $this->connection2)
         );
     }
 
     public function testReplicationPathWithUnknownMaster()
     {
         $this->setExpectedException(Exception\UnknownConnectionException::CLASS);
-        $this->tree->replicationPath($this->connection5, $this->connection1);
+        $this->tree->replicationPath($this->connection1, $this->connection5);
     }
 
     public function testReplicationPathWithUnknownSlave()
     {
         $this->setExpectedException(Exception\UnknownConnectionException::CLASS);
-        $this->tree->replicationPath($this->connection1, $this->connection5);
+        $this->tree->replicationPath($this->connection5, $this->connection1);
     }
 
     public function testAddSlaveWithUnknownMaster()

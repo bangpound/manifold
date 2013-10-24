@@ -130,15 +130,17 @@ class ReplicationTree implements ReplicationTreeInterface
     /**
      * Check if a given master is replicating to a given slave.
      *
-     * @param PDO $masterConnection The master connection.
-     * @param PDO $slaveConnection  The slave connection.
+     * @param PDO      $slaveConnection  The slave connection.
+     * @param PDO|null $masterConnection The master connection, or null to use the replication root.
      *
      * @return boolean                              True if $masterConnection is anywhere above $slaveConnection in the replication hierarchy; otherwise, false.
      * @throws Exception\UnknownConnectionException If either connection is not found in this tree.
      */
-    public function isReplicatingTo(PDO $masterConnection, PDO $slaveConnection)
-    {
-        return $this->countHops($masterConnection, $slaveConnection) > 0;
+    public function isReplicatingTo(
+        PDO $slaveConnection,
+        PDO $masterConnection = null
+    ) {
+        return $this->countHops($slaveConnection, $masterConnection) > 0;
     }
 
     /**
@@ -162,14 +164,20 @@ class ReplicationTree implements ReplicationTreeInterface
     /**
      * Count the number of hops between a master and slave connection.
      *
-     * @param PDO $masterConnection The master connection.
-     * @param PDO $slaveConnection  The slave connection.
+     * @param PDO      $slaveConnection  The slave connection.
+     * @param PDO|null $masterConnection The master connection, or null to use the replication root.
      *
      * @return integer|null                         The number of hops (difference in depth) between $masterConnection and $slaveConnection, or null if $masterConnection is not replicating to $slaveConnection.
      * @throws Exception\UnknownConnectionException If either connection is not found in this tree.
      */
-    public function countHops(PDO $masterConnection, PDO $slaveConnection)
-    {
+    public function countHops(
+        PDO $slaveConnection,
+        PDO $masterConnection = null
+    ) {
+        if (null === $masterConnection) {
+            $masterConnection = $this->replicationRoot();
+        }
+
         // Ensure connections are in the tree ...
         $this->getEntry($masterConnection);
         $this->getEntry($slaveConnection);
@@ -192,14 +200,20 @@ class ReplicationTree implements ReplicationTreeInterface
      *
      * The result is an array containing 2-tuples of master and slave for each step in the replication hierarchy.
      *
-     * @param PDO $masterConnection The master connection.
-     * @param PDO $slaveConnection  The slave connection.
+     * @param PDO      $slaveConnection  The slave connection.
+     * @param PDO|null $masterConnection The master connection, or null to use the replication root.
      *
      * @return array<tuple<PDO,PDO>>|null           The replication path between the master and slave connection, or null if $slaveConnection is not replicating from $masterConnection.
      * @throws Exception\UnknownConnectionException If either connection is not found in this tree.
      */
-    public function replicationPath(PDO $masterConnection, PDO $slaveConnection)
-    {
+    public function replicationPath(
+        PDO $slaveConnection,
+        PDO $masterConnection = null
+    ) {
+        if (null === $masterConnection) {
+            $masterConnection = $this->replicationRoot();
+        }
+
         // Ensure connections are in the tree ...
         $this->getEntry($masterConnection);
         $this->getEntry($slaveConnection);

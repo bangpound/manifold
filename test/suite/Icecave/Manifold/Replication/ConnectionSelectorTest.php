@@ -13,7 +13,7 @@ class ConnectionSelectorTest extends PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        $this->manager = Phake::mock(__NAMESPACE__ . '\ReplicationManager');
+        $this->manager = Phake::mock(__NAMESPACE__ . '\ReplicationManagerInterface');
         $this->clock = Phake::partialMock('Icecave\Chrono\Clock\SystemClock');
         $this->selector = new ConnectionSelector($this->manager, $this->clock);
 

@@ -16,17 +16,20 @@
         "ext-pdo": "*",
         "eloquent/asplode": "~1",
         "eloquent/schemer": "~0.3.0",
-        "icecave/chrono": "~0.2.0",
-        "icecave/collections": "~0.8.0",
+        "icecave/chrono": "dev-develop@dev",
+        "icecave/collections": "~1@dev",
         "symfony/yaml": "~2"
     },
     "require-dev": {
+        "eloquent/liberator": "~1",
         "icecave/archer": "~1",
-        "icecave/parity": "~0.1.0"
+        "icecave/parity": "*"
     },
     "autoload": {
         "psr-0": {
             "Icecave\\Manifold": "src"
         }
-    }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }
