@@ -13,40 +13,55 @@ class MysqlQueryDiscriminatorTest extends PHPUnit_Framework_TestCase
     {
         parent::setUp();
 
+        $this->discriminator = new MysqlQueryDiscriminator(true);
+    }
+
+    public function testConstructor()
+    {
+        $this->assertTrue($this->discriminator->isAnsiQuotesEnabled());
+    }
+
+    public function testConstructorDefaults()
+    {
         $this->discriminator = new MysqlQueryDiscriminator;
+
+        $this->assertFalse($this->discriminator->isAnsiQuotesEnabled());
     }
 
     public function discriminateData()
     {
-        //                              query                                                     isWrite schema
+        //                                                       query                                                     isAnsiQuotesEnabled isWrite schema
         return array(
-            'Select'                    => array("SELECT * FROM foo.bar",                         false,  'foo'),
-            'Multi-line select'         => array("SELECT\n*\nFROM\n    foo.bar",                  false,  'foo'),
+            'Select'                                             => array("SELECT * FROM foo.bar",                         null,               false,  'foo'),
+            'Multi-line select'                                  => array("SELECT\n*\nFROM\n    foo.bar",                  null,               false,  'foo'),
 
-            'Insert'                    => array("INSERT INTO foo.bar VALUES (true)",             true,   'foo'),
-            'Multi-line insert'         => array("INSERT\nINTO\n    foo.bar\nVALUES\n(true)",     true,   'foo'),
-            'Insert ignore'             => array("INSERT IGNORE INTO foo.bar VALUES (true)",      true,   'foo'),
-            'Multi-line insert ignore'  => array("INSERT\nIGNORE\nINTO\nfoo.bar\nVALUES\n(true)", true,   'foo'),
-            'Replace'                   => array("REPLACE INTO foo.bar VALUES (true)",            true,   'foo'),
-            'Multi-line replace'        => array("REPLACE\nINTO\n    foo.bar\nVALUES\n(true)",    true,   'foo'),
+            'Insert'                                             => array("INSERT INTO foo.bar VALUES (true)",             null,               true,   'foo'),
+            'Multi-line insert'                                  => array("INSERT\nINTO\n    foo.bar\nVALUES\n(true)",     null,               true,   'foo'),
+            'Insert ignore'                                      => array("INSERT IGNORE INTO foo.bar VALUES (true)",      null,               true,   'foo'),
+            'Multi-line insert ignore'                           => array("INSERT\nIGNORE\nINTO\nfoo.bar\nVALUES\n(true)", null,               true,   'foo'),
+            'Replace'                                            => array("REPLACE INTO foo.bar VALUES (true)",            null,               true,   'foo'),
+            'Multi-line replace'                                 => array("REPLACE\nINTO\n    foo.bar\nVALUES\n(true)",    null,               true,   'foo'),
 
-            'Update'                    => array("UPDATE foo.bar SET baz = true",                 true,   'foo'),
-            'Multi-line update'         => array("UPDATE\nfoo.bar\nSET\nbaz\n=\ntrue",            true,   'foo'),
+            'Update'                                             => array("UPDATE foo.bar SET baz = true",                 null,               true,   'foo'),
+            'Multi-line update'                                  => array("UPDATE\nfoo.bar\nSET\nbaz\n=\ntrue",            null,               true,   'foo'),
 
-            'Delete'                    => array("DELETE FROM foo.bar",                           true,   'foo'),
-            'Multi-line delete'         => array("DELETE\nFROM\nfoo.bar",                         true,   'foo'),
+            'Delete'                                             => array("DELETE FROM foo.bar",                           null,               true,   'foo'),
+            'Multi-line delete'                                  => array("DELETE\nFROM\nfoo.bar",                         null,               true,   'foo'),
 
-            'Backtick escaped name'     => array("SELECT * FROM `fo``o`.`bar`",                   false,  'fo`o'),
-            'Single quote escaped name' => array("SELECT * FROM 'f\\o\\'o'.'bar'",                false,  'fo\'o'),
-            'Double quote escaped name' => array("SELECT * FROM \"f\\o\\\"o\".\"bar\"",           false,  'fo"o'),
+            'Backtick escaped name'                              => array("SELECT * FROM `fo``o`.`bar`",                   null,               false,  'fo`o'),
+            'Double quote escaped name'                          => array("SELECT * FROM \"fo\"\"o\".\"bar\"",             null,               false,  '"fo""o"'),
+            'Double quote escaped name with ANSI quotes enabled' => array("SELECT * FROM \"fo\"\"o\".\"bar\"",             true,               false,  'fo"o'),
+            'Non-escapedd name with ANSI quotes enabled'         => array("SELECT * FROM foo.bar",                         true,               false,  'foo'),
         );
     }
 
     /**
      * @dataProvider discriminateData
      */
-    public function testDiscriminate($query, $isWrite, $schema)
+    public function testDiscriminate($query, $isAnsiQuotesEnabled, $isWrite, $schema)
     {
+        $this->discriminator = new MysqlQueryDiscriminator($isAnsiQuotesEnabled);
+
         $this->assertSame(array($isWrite, $schema), $this->discriminator->discriminate($query));
     }
 

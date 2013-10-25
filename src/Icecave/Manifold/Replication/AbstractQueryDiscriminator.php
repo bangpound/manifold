@@ -53,10 +53,8 @@ abstract class AbstractQueryDiscriminator implements QueryDiscriminatorInterface
      */
     protected function unescapeIdentifier($identifier)
     {
-        $firstCharacter = $identifier[0];
-
-        if ("'" === $firstCharacter || '"' === $firstCharacter) {
-            return stripcslashes(substr($identifier, 1, -1));
+        if ('"' === $identifier[0]) {
+            return str_replace('""', '"', substr($identifier, 1, -1));
         }
 
         return $identifier;
