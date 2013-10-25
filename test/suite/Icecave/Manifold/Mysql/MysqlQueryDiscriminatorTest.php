@@ -51,7 +51,7 @@ class MysqlQueryDiscriminatorTest extends PHPUnit_Framework_TestCase
             'Backtick escaped name'                              => array("SELECT * FROM `fo``o`.`bar`",                   null,               false,  'fo`o'),
             'Double quote escaped name'                          => array("SELECT * FROM \"fo\"\"o\".\"bar\"",             null,               false,  '"fo""o"'),
             'Double quote escaped name with ANSI quotes enabled' => array("SELECT * FROM \"fo\"\"o\".\"bar\"",             true,               false,  'fo"o'),
-            'Non-escapedd name with ANSI quotes enabled'         => array("SELECT * FROM foo.bar",                         true,               false,  'foo'),
+            'Non-escaped name with ANSI quotes enabled'          => array("SELECT * FROM foo.bar",                         true,               false,  'foo'),
         );
     }
 
