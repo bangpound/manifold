@@ -3,10 +3,6 @@ namespace Icecave\Manifold\Mysql;
 
 use PHPUnit_Framework_TestCase;
 
-/**
- * @covers \Icecave\Manifold\Mysql\MysqlQueryDiscriminator
- * @covers \Icecave\Manifold\Replication\AbstractQueryDiscriminator
- */
 class MysqlQueryDiscriminatorTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()

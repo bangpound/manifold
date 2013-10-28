@@ -2,9 +2,9 @@
 namespace Icecave\Manifold\Replication;
 
 /**
- * An abstract base class for implementing query discriminators.
+ * A generic query discriminator.
  */
-abstract class AbstractQueryDiscriminator implements QueryDiscriminatorInterface
+class QueryDiscriminator implements QueryDiscriminatorInterface
 {
     /**
      * Determine whether a given query is read-only, and which database it

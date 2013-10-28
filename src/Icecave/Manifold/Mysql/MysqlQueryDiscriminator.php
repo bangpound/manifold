@@ -1,12 +1,12 @@
 <?php
 namespace Icecave\Manifold\Mysql;
 
-use Icecave\Manifold\Replication\AbstractQueryDiscriminator;
+use Icecave\Manifold\Replication\QueryDiscriminator;
 
 /**
  * A query discriminator for MySQL query syntax.
  */
-class MysqlQueryDiscriminator extends AbstractQueryDiscriminator
+class MysqlQueryDiscriminator extends QueryDiscriminator
 {
     /**
      * Construct a new MySQL query discriminator.
