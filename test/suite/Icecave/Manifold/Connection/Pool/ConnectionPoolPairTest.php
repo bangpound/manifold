@@ -4,7 +4,7 @@ namespace Icecave\Manifold\Connection\Pool;
 use Phake;
 use PHPUnit_Framework_TestCase;
 
-class ReadWritePairTest extends PHPUnit_Framework_TestCase
+class ConnectionPoolPairTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
@@ -12,7 +12,7 @@ class ReadWritePairTest extends PHPUnit_Framework_TestCase
 
         $this->write = Phake::mock(__NAMESPACE__ . '\ConnectionPoolInterface');
         $this->read = Phake::mock(__NAMESPACE__ . '\ConnectionPoolInterface');
-        $this->pair = new ReadWritePair($this->write, $this->read);
+        $this->pair = new ConnectionPoolPair($this->write, $this->read);
     }
 
     public function testConstructor()
@@ -23,7 +23,7 @@ class ReadWritePairTest extends PHPUnit_Framework_TestCase
 
     public function testConstructorDefaults()
     {
-        $this->pair = new ReadWritePair;
+        $this->pair = new ConnectionPoolPair;
 
         $this->assertNull($this->pair->write());
         $this->assertNull($this->pair->read());

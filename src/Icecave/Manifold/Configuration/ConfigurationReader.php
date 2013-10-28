@@ -17,10 +17,10 @@ use Icecave\Manifold\Connection\ConnectionFactory;
 use Icecave\Manifold\Connection\ConnectionFactoryInterface;
 use Icecave\Manifold\Connection\Pool\ConnectionPool;
 use Icecave\Manifold\Connection\Pool\ConnectionPoolInterface;
+use Icecave\Manifold\Connection\Pool\ConnectionPoolPair;
+use Icecave\Manifold\Connection\Pool\ConnectionPoolPairInterface;
 use Icecave\Manifold\Connection\Pool\ConnectionPoolSelector;
 use Icecave\Manifold\Connection\Pool\ConnectionPoolSelectorInterface;
-use Icecave\Manifold\Connection\Pool\ReadWritePair;
-use Icecave\Manifold\Connection\Pool\ReadWritePairInterface;
 use Icecave\Manifold\Replication\ReplicationTree;
 use Icecave\Manifold\Replication\ReplicationTreeInterface;
 use PDO;
@@ -243,7 +243,7 @@ class ConfigurationReader implements ConfigurationReaderInterface
 
         $selection = $value->get('selection');
         if ($selection->has('default')) {
-            $defaultPair = $this->createReadWritePair(
+            $defaultPair = $this->createConnectionPoolPair(
                 $selection->get('default'),
                 $connections,
                 $pools,
@@ -251,13 +251,13 @@ class ConfigurationReader implements ConfigurationReaderInterface
             );
         }
         if (null === $defaultPair) {
-            $defaultPair = new ReadWritePair($defaultPool, $defaultPool);
+            $defaultPair = new ConnectionPoolPair($defaultPool, $defaultPool);
         }
 
         foreach ($selection->get('databases') as $name => $pair) {
             $databases->add(
                 $name,
-                $this->createReadWritePair($pair, $connections, $pools)
+                $this->createConnectionPoolPair($pair, $connections, $pools)
             );
         }
 
@@ -329,16 +329,17 @@ class ConfigurationReader implements ConfigurationReaderInterface
     }
 
     /**
-     * Creates a new read/write pair from raw configuration data.
+     * Creates a new read/write connection pool pair from raw configuration
+     * data.
      *
      * @param ObjectValue                         $value       The raw configuration data.
      * @param Map<string,PDO>                     $connections The connection map.
      * @param Map<string,ConnectionPoolInterface> $pools       The connection pool map.
      * @param ConnectionPoolInterface|null        $defaultPool The default connection pool.
      *
-     * @return ReadWritePairInterface The new read/write pair.
+     * @return ConnectionPoolPairInterface The new read/write pair.
      */
-    protected function createReadWritePair(
+    protected function createConnectionPoolPair(
         ObjectValue $value,
         Map $connections,
         Map $pools,
@@ -364,7 +365,7 @@ class ConfigurationReader implements ConfigurationReaderInterface
             $read = $defaultPool;
         }
 
-        return new ReadWritePair($write, $read);
+        return new ConnectionPoolPair($write, $read);
     }
 
     /**

@@ -17,13 +17,13 @@ class ConnectionPoolSelectorTest extends PHPUnit_Framework_TestCase
         $this->readA = Phake::mock(__NAMESPACE__ . '\ConnectionPoolInterface');
         $this->writeB = Phake::mock(__NAMESPACE__ . '\ConnectionPoolInterface');
         $this->readC = Phake::mock(__NAMESPACE__ . '\ConnectionPoolInterface');
-        $this->defaults = new ReadWritePair($this->defaultWrite, $this->defaultRead);
+        $this->defaults = new ConnectionPoolPair($this->defaultWrite, $this->defaultRead);
         $this->databases = new Map(
             array(
-                'databaseA' => new ReadWritePair($this->writeA, $this->readA),
-                'databaseB' => new ReadWritePair($this->writeB),
-                'databaseC' => new ReadWritePair(null, $this->readC),
-                'databaseD' => new ReadWritePair,
+                'databaseA' => new ConnectionPoolPair($this->writeA, $this->readA),
+                'databaseB' => new ConnectionPoolPair($this->writeB),
+                'databaseC' => new ConnectionPoolPair(null, $this->readC),
+                'databaseD' => new ConnectionPoolPair,
             )
         );
         $this->selector = new ConnectionPoolSelector($this->defaults, $this->databases);
@@ -44,9 +44,9 @@ class ConnectionPoolSelectorTest extends PHPUnit_Framework_TestCase
 
     public function testConstructorFailureInvalidDefaults()
     {
-        $this->defaults = new ReadWritePair;
+        $this->defaults = new ConnectionPoolPair;
 
-        $this->setExpectedException(__NAMESPACE__ . '\Exception\InvalidDefaultReadWritePairException');
+        $this->setExpectedException(__NAMESPACE__ . '\Exception\InvalidDefaultConnectionPoolPairException');
         new ConnectionPoolSelector($this->defaults);
     }
 
@@ -82,7 +82,7 @@ class ConnectionPoolSelectorTest extends PHPUnit_Framework_TestCase
     /**
      * @dataProvider selectionData
      */
-    public function testReadWritePair($databaseName, $write, $read)
+    public function testConnectionPoolPair($databaseName, $write, $read)
     {
         $readWritePair = $this->selector->readWritePair($databaseName);
 

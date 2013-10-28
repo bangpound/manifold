@@ -4,7 +4,7 @@ namespace Icecave\Manifold\Connection\Pool;
 /**
  * Represents a read/write pair of connection pools.
  */
-class ReadWritePair implements ReadWritePairInterface
+class ConnectionPoolPair implements ConnectionPoolPairInterface
 {
     /**
      * Construct a new read/write connection pool pair.

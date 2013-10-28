@@ -12,17 +12,19 @@ class ConnectionPoolSelector implements ConnectionPoolSelectorInterface
     /**
      * Construct a new connection pool selector.
      *
-     * @param ReadWritePairInterface             $defaults  The default read/write pair.
-     * @param Map<string,ReadWritePairInterface> $databases Read/write pairs for specific databases.
+     * @param ConnectionPoolPairInterface             $defaults  The default read/write pair.
+     * @param Map<string,ConnectionPoolPairInterface> $databases Read/write pairs for specific databases.
      *
-     * @throws Exception\InvalidDefaultReadWritePairException If the default read/write pair is missing concrete values.
+     * @throws Exception\InvalidDefaultConnectionPoolPairException If the default read/write pair is missing concrete values.
      */
     public function __construct(
-        ReadWritePairInterface $defaults,
+        ConnectionPoolPairInterface $defaults,
         Map $databases = null
     ) {
         if (null === $defaults->read() || null === $defaults->write()) {
-            throw new Exception\InvalidDefaultReadWritePairException;
+            throw new Exception\InvalidDefaultConnectionPoolPairException(
+                $defaults
+            );
         }
         if (null === $databases) {
             $databases = new Map;
@@ -35,7 +37,7 @@ class ConnectionPoolSelector implements ConnectionPoolSelectorInterface
     /**
      * Get the default read/write pair.
      *
-     * @return ReadWritePairInterface The default read/write pair.
+     * @return ConnectionPoolPairInterface The default read/write pair.
      */
     public function defaults()
     {
@@ -45,7 +47,7 @@ class ConnectionPoolSelector implements ConnectionPoolSelectorInterface
     /**
      * Get the read/write pairs for specific databases.
      *
-     * @return Map<string,ReadWritePairInterface> The read/write pairs.
+     * @return Map<string,ConnectionPoolPairInterface> The read/write pairs.
      */
     public function databases()
     {
@@ -61,7 +63,7 @@ class ConnectionPoolSelector implements ConnectionPoolSelectorInterface
      */
     public function forWrite($databaseName = null)
     {
-        $readWritePair = $this->selectReadWritePair($databaseName);
+        $readWritePair = $this->selectConnectionPoolPair($databaseName);
         if (null === $readWritePair->write()) {
             return $this->defaults()->write();
         }
@@ -78,7 +80,7 @@ class ConnectionPoolSelector implements ConnectionPoolSelectorInterface
      */
     public function forRead($databaseName = null)
     {
-        $readWritePair = $this->selectReadWritePair($databaseName);
+        $readWritePair = $this->selectConnectionPoolPair($databaseName);
         if (null === $readWritePair->read()) {
             return $this->defaults()->read();
         }
@@ -91,18 +93,19 @@ class ConnectionPoolSelector implements ConnectionPoolSelectorInterface
      *
      * @param string|null $databaseName The name of the database, or null for a generic connection pair.
      *
-     * @return ReadWritePairInterface The read/write pair.
+     * @return ConnectionPoolPairInterface The most appropriate read/write pair.
      */
     public function readWritePair($databaseName = null)
     {
-        return new ReadWritePair(
+        return new ConnectionPoolPair(
             $this->forWrite($databaseName),
             $this->forRead($databaseName)
         );
     }
 
     /**
-     * Select the most appropriate read/write pair for the specified database.
+     * Select the most appropriate read/write connection pool pair for the
+     * specified database.
      *
      * This method is not guaranteed to return a pair with concrete values. That
      * is, the read or write connection may be null, indicating that it should
@@ -110,9 +113,9 @@ class ConnectionPoolSelector implements ConnectionPoolSelectorInterface
      *
      * @param string|null $databaseName The name of the database, or null for a generic connection.
      *
-     * @return ReadWritePairInterface The read/write pair.
+     * @return ConnectionPoolPairInterface The read/write pair.
      */
-    protected function selectReadWritePair($databaseName = null)
+    protected function selectConnectionPoolPair($databaseName = null)
     {
         if (null === $databaseName) {
             return $this->defaults();

@@ -29,7 +29,7 @@ interface ConnectionPoolSelectorInterface
      *
      * @param string|null $databaseName The name of the database, or null for a generic connection pair.
      *
-     * @return ReadWritePairInterface The read/write pair.
+     * @return ConnectionPoolPairInterface The most appropriate read/write pair.
      */
     public function readWritePair($databaseName = null);
 }

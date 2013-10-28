@@ -8,7 +8,7 @@ use Icecave\Manifold\Connection\ConnectionFactory;
 use Icecave\Manifold\Connection\LazyPdoConnection;
 use Icecave\Manifold\Connection\Pool\ConnectionPool;
 use Icecave\Manifold\Connection\Pool\ConnectionPoolSelector;
-use Icecave\Manifold\Connection\Pool\ReadWritePair;
+use Icecave\Manifold\Connection\Pool\ConnectionPoolPair;
 use Icecave\Manifold\Replication\ReplicationTree;
 use Icecave\Parity\Parity;
 use PHPUnit_Framework_TestCase;
@@ -75,7 +75,7 @@ EOD;
         $expectedPools = new Map;
         $expectedPool = new ConnectionPool(new Vector(array($expectedConnections->get('foo'))));
         $expectedSelector = new ConnectionPoolSelector(
-            new ReadWritePair($expectedPool, $expectedPool)
+            new ConnectionPoolPair($expectedPool, $expectedPool)
         );
         $expectedReplicationTree = new ReplicationTree($expectedConnections->get('foo'));
         $expectedReplicationTrees = new Vector(array($expectedReplicationTree));
@@ -97,7 +97,7 @@ EOD;
         $expectedPools = new Map;
         $expectedPool = new ConnectionPool(new Vector(array($expectedConnections->get('foo'))));
         $expectedSelector = new ConnectionPoolSelector(
-            new ReadWritePair($expectedPool, $expectedPool)
+            new ConnectionPoolPair($expectedPool, $expectedPool)
         );
         $expectedReplicationTree = new ReplicationTree($expectedConnections->get('foo'));
         $expectedReplicationTrees = new Vector(array($expectedReplicationTree));
@@ -148,29 +148,29 @@ EOD;
             )
         );
         $expectedSelector = new ConnectionPoolSelector(
-            new ReadWritePair(
+            new ConnectionPoolPair(
                 new ConnectionPool(new Vector(array($expectedConnections->get('reporting1')))),
                 $expectedPools->get('pool1')
             ),
             new Map(
                 array(
-                    'app_data' => new ReadWritePair(
+                    'app_data' => new ConnectionPoolPair(
                         new ConnectionPool(new Vector(array($expectedConnections->get('master1')))),
                         $expectedPools->get('pool1')
                     ),
-                    'app_reporting' => new ReadWritePair(
+                    'app_reporting' => new ConnectionPoolPair(
                         new ConnectionPool(new Vector(array($expectedConnections->get('reporting2')))),
                         $expectedPools->get('pool2')
                     ),
-                    'app_temp' => new ReadWritePair(
+                    'app_temp' => new ConnectionPoolPair(
                         $expectedPools->get('pool2'),
                         $expectedPools->get('pool2')
                     ),
-                    'app_read_only' => new ReadWritePair(
+                    'app_read_only' => new ConnectionPoolPair(
                         null,
                         new ConnectionPool(new Vector(array($expectedConnections->get('master2'))))
                     ),
-                    'app_write_only' => new ReadWritePair(
+                    'app_write_only' => new ConnectionPoolPair(
                         new ConnectionPool(new Vector(array($expectedConnections->get('master2'))))
                     ),
                 )
@@ -250,7 +250,7 @@ EOD;
         $expectedPools = new Map;
         $expectedPool = new ConnectionPool(new Vector(array($expectedConnections->get('foo'))));
         $expectedSelector = new ConnectionPoolSelector(
-            new ReadWritePair($expectedPool, $expectedPool)
+            new ConnectionPoolPair($expectedPool, $expectedPool)
         );
         $expectedReplicationTree = new ReplicationTree($expectedConnections->get('foo'));
         $expectedReplicationTrees = new Vector(array($expectedReplicationTree));
