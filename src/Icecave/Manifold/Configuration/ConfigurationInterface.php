@@ -3,7 +3,7 @@ namespace Icecave\Manifold\Configuration;
 
 use Icecave\Collections\Map;
 use Icecave\Manifold\Connection\ConnectionPoolInterface;
-use Icecave\Manifold\Connection\ConnectionSelectorInterface;
+use Icecave\Manifold\Connection\Pool\ConnectionPoolSelectorInterface;
 use Icecave\Manifold\Replication\ReplicationTreeInterface;
 use PDO;
 
@@ -29,7 +29,7 @@ interface ConfigurationInterface
     /**
      * Get the connection pool selector.
      *
-     * @return ConnectionSelectorInterface The connection pool selector.
+     * @return ConnectionPoolSelectorInterface The connection pool selector.
      */
     public function connectionPoolSelector();
 

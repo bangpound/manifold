@@ -14,10 +14,10 @@ use PDO;
  * Selects single connections from candidate connection pools according to
  * various strategies.
  */
-class ConnectionSelector implements ConnectionSelectorInterface
+class ConnectionPoolMemberSelector implements ConnectionPoolMemberSelectorInterface
 {
     /**
-     * Construct a new connection selector.
+     * Construct a new connection pool member selector.
      *
      * @param ReplicationManagerInterface $manager The replication manager to use.
      * @param ClockInterface|null         $clock   The clock to use.

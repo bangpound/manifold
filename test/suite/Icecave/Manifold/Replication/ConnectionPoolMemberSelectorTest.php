@@ -9,13 +9,13 @@ use Icecave\Manifold\Connection\Pool\ConnectionPool;
 use PHPUnit_Framework_TestCase;
 use Phake;
 
-class ConnectionSelectorTest extends PHPUnit_Framework_TestCase
+class ConnectionPoolMemberSelectorTest extends PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
         $this->manager = Phake::mock(__NAMESPACE__ . '\ReplicationManagerInterface');
         $this->clock = Phake::partialMock('Icecave\Chrono\Clock\SystemClock');
-        $this->selector = new ConnectionSelector($this->manager, $this->clock);
+        $this->selector = new ConnectionPoolMemberSelector($this->manager, $this->clock);
 
         $this->connectionA = new LazyPdoConnection('a');
         $this->connectionB = new LazyPdoConnection('b');
@@ -39,7 +39,7 @@ class ConnectionSelectorTest extends PHPUnit_Framework_TestCase
 
     public function testConstructorDefaults()
     {
-        $this->selector = new ConnectionSelector($this->manager);
+        $this->selector = new ConnectionPoolMemberSelector($this->manager);
 
         $this->assertInstanceOf('Icecave\Chrono\Clock\SystemClock', $this->selector->clock());
     }

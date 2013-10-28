@@ -7,9 +7,9 @@ use Icecave\Manifold\Connection\Pool\ConnectionPoolInterface;
 use PDO;
 
 /**
- * The interface implemented by connection selectors.
+ * The interface implemented by connection pool member selectors.
  */
-interface ConnectionSelectorInterface
+interface ConnectionPoolMemberSelectorInterface
 {
     /**
      * Get a single connection from a pool.
