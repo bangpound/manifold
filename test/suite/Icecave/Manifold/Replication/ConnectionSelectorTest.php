@@ -5,7 +5,6 @@ use Icecave\Collections\Vector;
 use Icecave\Manifold\Connection\ConnectionPair;
 use Icecave\Manifold\Connection\LazyPdoConnection;
 use Icecave\Manifold\Connection\Pool\ConnectionPool;
-use Icecave\Manifold\Replication\QueryDiscriminator;
 use PHPUnit_Framework_TestCase;
 use Phake;
 
@@ -18,12 +17,10 @@ class ConnectionSelectorTest extends PHPUnit_Framework_TestCase
         $this->poolSelector = Phake::mock('Icecave\Manifold\Connection\Pool\ConnectionPoolSelectorInterface');
         $this->replicationManager = Phake::mock('Icecave\Manifold\Replication\ReplicationManagerInterface');
         $this->defaultStrategy = Phake::mock(__NAMESPACE__ . '\SelectionStrategy\SelectionStrategyInterface');
-        $this->queryDiscriminator = new QueryDiscriminator;
         $this->selector = new ConnectionSelector(
             $this->poolSelector,
             $this->replicationManager,
-            $this->defaultStrategy,
-            $this->queryDiscriminator
+            $this->defaultStrategy
         );
 
         $this->strategy = Phake::mock(__NAMESPACE__ . '\SelectionStrategy\SelectionStrategyInterface');
@@ -66,7 +63,6 @@ class ConnectionSelectorTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->poolSelector, $this->selector->poolSelector());
         $this->assertSame($this->replicationManager, $this->selector->replicationManager());
         $this->assertSame($this->defaultStrategy, $this->selector->defaultStrategy());
-        $this->assertSame($this->queryDiscriminator, $this->selector->queryDiscriminator());
     }
 
     public function testConstructorDefaults()
@@ -74,7 +70,6 @@ class ConnectionSelectorTest extends PHPUnit_Framework_TestCase
         $this->selector = new ConnectionSelector($this->poolSelector, $this->replicationManager);
 
         $this->assertEquals(new SelectionStrategy\AcceptableDelayStrategy, $this->selector->defaultStrategy());
-        $this->assertEquals($this->queryDiscriminator, $this->selector->queryDiscriminator());
     }
 
     public function testSetDefaultStrategy()
@@ -82,23 +77,6 @@ class ConnectionSelectorTest extends PHPUnit_Framework_TestCase
         $this->selector->setDefaultStrategy($this->strategy);
 
         $this->assertSame($this->strategy, $this->selector->defaultStrategy());
-    }
-
-    public function testForQuery()
-    {
-        Phake::when($this->poolSelector)->forRead('foo')->thenReturn($this->poolA);
-        Phake::when($this->poolSelector)->forWrite('bar')->thenReturn($this->poolB);
-        Phake::when($this->defaultStrategy)->select($this->replicationManager, $this->poolA)
-            ->thenReturn($this->connectionA1);
-        Phake::when($this->defaultStrategy)->select($this->replicationManager, $this->poolB)
-            ->thenReturn($this->connectionB1);
-        Phake::when($this->strategy)->select($this->replicationManager, $this->poolA)->thenReturn($this->connectionA2);
-        Phake::when($this->strategy)->select($this->replicationManager, $this->poolB)->thenReturn($this->connectionB2);
-
-        $this->assertSame($this->connectionA1, $this->selector->forQuery('SELECT * FROM foo.bar'));
-        $this->assertSame($this->connectionA2, $this->selector->forQuery('SELECT * FROM foo.bar', $this->strategy));
-        $this->assertSame($this->connectionB1, $this->selector->forQuery('DELETE FROM bar.baz'));
-        $this->assertSame($this->connectionB2, $this->selector->forQuery('DELETE FROM bar.baz', $this->strategy));
     }
 
     public function testForWrite()

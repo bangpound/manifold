@@ -26,21 +26,6 @@ interface ConnectionSelectorInterface
     public function defaultStrategy();
 
     /**
-     * Select a connection for the supplied query.
-     *
-     * @param string                                            $query    The query to select a connection for.
-     * @param SelectionStrategy\SelectionStrategyInterface|null $strategy The selection strategy to use.
-     *
-     * @return PDO                                      The selected connection.
-     * @throws Exception\UnsupportedQueryException      If the query type is unsupported, or cannot be determined.
-     * @throws Exception\NoConnectionAvailableException If no connection is available for selection.
-     */
-    public function forQuery(
-        $query,
-        SelectionStrategy\SelectionStrategyInterface $strategy = null
-    );
-
-    /**
      * Get the connection to use for writing the specified database.
      *
      * @param string|null                                       $databaseName The name of the database to write to, or null for a generic connection.

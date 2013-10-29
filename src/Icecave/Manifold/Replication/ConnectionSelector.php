@@ -19,25 +19,18 @@ class ConnectionSelector implements ConnectionSelectorInterface
      * @param ConnectionPoolSelectorInterface                   $poolSelector       The connection pool selector to use.
      * @param ReplicationManagerInterface                       $replicationManager The replication manager to use.
      * @param SelectionStrategy\SelectionStrategyInterface|null $defaultStrategy    The default selection strategy to use.
-     * @param QueryDiscriminatorInterface|null                  $queryDiscriminator The query discriminator to use.
      */
     public function __construct(
         ConnectionPoolSelectorInterface $poolSelector,
         ReplicationManagerInterface $replicationManager,
-        SelectionStrategy\SelectionStrategyInterface $defaultStrategy = null,
-        QueryDiscriminatorInterface $queryDiscriminator = null
+        SelectionStrategy\SelectionStrategyInterface $defaultStrategy = null
     ) {
         if (null === $defaultStrategy) {
             $defaultStrategy = new SelectionStrategy\AcceptableDelayStrategy;
         }
-        if (null === $queryDiscriminator) {
-            $queryDiscriminator = new QueryDiscriminator;
-        }
 
         $this->poolSelector = $poolSelector;
         $this->replicationManager = $replicationManager;
-        $this->queryDiscriminator = $queryDiscriminator;
-
         $this->setDefaultStrategy($defaultStrategy);
     }
 
@@ -62,16 +55,6 @@ class ConnectionSelector implements ConnectionSelectorInterface
     }
 
     /**
-     * Get the query discriminator.
-     *
-     * @return QueryDiscriminatorInterface The query discriminator.
-     */
-    public function queryDiscriminator()
-    {
-        return $this->queryDiscriminator;
-    }
-
-    /**
      * Set the default selection strategy.
      *
      * @param SelectionStrategy\SelectionStrategyInterface $defaultStrategy The default selection strategy to use.
@@ -90,32 +73,6 @@ class ConnectionSelector implements ConnectionSelectorInterface
     public function defaultStrategy()
     {
         return $this->defaultStrategy;
-    }
-
-    /**
-     * Select a connection for the supplied query.
-     *
-     * @param string                                            $query    The query to select a connection for.
-     * @param SelectionStrategy\SelectionStrategyInterface|null $strategy The selection strategy to use.
-     *
-     * @return PDO                                      The selected connection.
-     * @throws Exception\UnsupportedQueryException      If the query type is unsupported, or cannot be determined.
-     * @throws Exception\NoConnectionAvailableException If no connection is available for selection.
-     */
-    public function forQuery(
-        $query,
-        SelectionStrategy\SelectionStrategyInterface $strategy = null
-    ) {
-        list($isWrite, $databaseName) = $this->queryDiscriminator()
-            ->discriminate($query);
-
-        if ($isWrite) {
-            $connection = $this->forWrite($databaseName, $strategy);
-        } else {
-            $connection = $this->forRead($databaseName, $strategy);
-        }
-
-        return $connection;
     }
 
     /**
@@ -186,5 +143,4 @@ class ConnectionSelector implements ConnectionSelectorInterface
     private $poolSelector;
     private $replicationManager;
     private $defaultStrategy;
-    private $queryDiscriminator;
 }
