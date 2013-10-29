@@ -16,11 +16,11 @@ class LeastDelayStrategyTest extends PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        $this->manager = Phake::mock('Icecave\Manifold\Replication\ReplicationManagerInterface');
         $this->threshold = new Duration(444);
         $this->clock = Phake::partialMock('Icecave\Chrono\Clock\SystemClock');
-        $this->strategy = new LeastDelayStrategy($this->manager, $this->threshold, $this->clock);
+        $this->strategy = new LeastDelayStrategy($this->threshold, $this->clock);
 
+        $this->manager = Phake::mock('Icecave\Manifold\Replication\ReplicationManagerInterface');
         $this->connectionA = new LazyPdoConnection('a');
         $this->connectionB = new LazyPdoConnection('b');
         $this->connectionC = new LazyPdoConnection('c');
@@ -37,14 +37,13 @@ class LeastDelayStrategyTest extends PHPUnit_Framework_TestCase
 
     public function testConstructor()
     {
-        $this->assertSame($this->manager, $this->strategy->manager());
         $this->assertSame($this->threshold, $this->strategy->threshold());
         $this->assertSame($this->clock, $this->strategy->clock());
     }
 
     public function testConstructorDefaults()
     {
-        $this->strategy = new LeastDelayStrategy($this->manager);
+        $this->strategy = new LeastDelayStrategy;
 
         $this->assertNull($this->strategy->threshold());
         $this->assertInstanceOf('Icecave\Chrono\Clock\SystemClock', $this->strategy->clock());
@@ -52,7 +51,7 @@ class LeastDelayStrategyTest extends PHPUnit_Framework_TestCase
 
     public function testConstructorNormalization()
     {
-        $this->strategy = new LeastDelayStrategy($this->manager, 111);
+        $this->strategy = new LeastDelayStrategy(111);
 
         $this->assertSame(111, $this->strategy->threshold()->totalSeconds());
     }
@@ -64,18 +63,18 @@ class LeastDelayStrategyTest extends PHPUnit_Framework_TestCase
         Phake::when($this->manager)->delay($this->connectionB)->thenReturn(new Duration(111));
         Phake::when($this->manager)->delay($this->connectionC)->thenReturn(new Duration(333));
 
-        $this->assertSame($this->connectionB, $this->strategy->select($this->pool));
+        $this->assertSame($this->connectionB, $this->strategy->select($this->manager, $this->pool));
     }
 
     public function testSelectNoThreshold()
     {
-        $this->strategy = new LeastDelayStrategy($this->manager, null, $this->clock);
+        $this->strategy = new LeastDelayStrategy(null, $this->clock);
         Phake::when($this->manager)->isReplicating(Phake::anyParameters())->thenReturn(true);
         Phake::when($this->manager)->delay($this->connectionA)->thenReturn(new Duration(222));
         Phake::when($this->manager)->delay($this->connectionB)->thenReturn(new Duration(111));
         Phake::when($this->manager)->delay($this->connectionC)->thenReturn(new Duration(333));
 
-        $this->assertSame($this->connectionB, $this->strategy->select($this->pool));
+        $this->assertSame($this->connectionB, $this->strategy->select($this->manager, $this->pool));
     }
 
     public function testSelectFailureThreshold()
@@ -86,7 +85,7 @@ class LeastDelayStrategyTest extends PHPUnit_Framework_TestCase
         Phake::when($this->manager)->delay($this->connectionC)->thenReturn(new Duration(777));
 
         $this->setExpectedException('Icecave\Manifold\Replication\Exception\NoConnectionAvailableException');
-        $this->strategy->select($this->pool);
+        $this->strategy->select($this->manager, $this->pool);
     }
 
     public function testSelectFailureNoneReplicating()
@@ -94,6 +93,6 @@ class LeastDelayStrategyTest extends PHPUnit_Framework_TestCase
         Phake::when($this->manager)->isReplicating(Phake::anyParameters())->thenReturn(false);
 
         $this->setExpectedException('Icecave\Manifold\Replication\Exception\NoConnectionAvailableException');
-        $this->strategy->select($this->pool);
+        $this->strategy->select($this->manager, $this->pool);
     }
 }

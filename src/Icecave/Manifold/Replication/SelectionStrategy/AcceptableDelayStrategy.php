@@ -18,16 +18,12 @@ class AcceptableDelayStrategy extends AbstractSelectionStrategy
     /**
      * Construct a new acceptable delay strategy.
      *
-     * @param ReplicationManagerInterface    $manager   The replication manager to use.
      * @param TimeSpanInterface|integer|null $threshold The maximum allowable replication delay.
      * @param ClockInterface|null            $clock     The clock to use.
      */
-    public function __construct(
-        ReplicationManagerInterface $manager,
-        $threshold = null,
-        ClockInterface $clock = null
-    ) {
-        parent::__construct($manager, $clock);
+    public function __construct($threshold = null, ClockInterface $clock = null)
+    {
+        parent::__construct($clock);
 
         if (null === $threshold) {
             $this->threshold = new Duration(3);
@@ -49,17 +45,20 @@ class AcceptableDelayStrategy extends AbstractSelectionStrategy
     /**
      * Get a single connection from a pool.
      *
-     * @param ConnectionPoolInterface $pool The pool to select from.
+     * @param ReplicationManagerInterface $manager The replication manager to use.
+     * @param ConnectionPoolInterface     $pool    The pool to select from.
      *
      * @return PDO                            The selected connection.
      * @throws NoConnectionAvailableException If no connection is available for selection.
      */
-    public function select(ConnectionPoolInterface $pool)
-    {
+    public function select(
+        ReplicationManagerInterface $manager,
+        ConnectionPoolInterface $pool
+    ) {
         foreach ($pool->connections() as $connection) {
             if (
-                $this->manager()->isReplicating($connection) &&
-                $this->manager()->delay($connection)
+                $manager->isReplicating($connection) &&
+                $manager->delay($connection)
                         ->isLessThanOrEqualTo($this->threshold())
             ) {
                 return $connection;

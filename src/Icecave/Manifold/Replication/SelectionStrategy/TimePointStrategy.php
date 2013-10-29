@@ -16,16 +16,12 @@ class TimePointStrategy extends AbstractSelectionStrategy
     /**
      * Construct a new time point strategy.
      *
-     * @param ReplicationManagerInterface     $manager   The replication manager to use.
      * @param TimePointInterface|integer|null $timePoint The minimum cut-off time for replication delay.
      * @param ClockInterface|null             $clock     The clock to use.
      */
-    public function __construct(
-        ReplicationManagerInterface $manager,
-        $timePoint = null,
-        ClockInterface $clock = null
-    ) {
-        parent::__construct($manager, $clock);
+    public function __construct($timePoint = null, ClockInterface $clock = null)
+    {
+        parent::__construct($clock);
 
         if (null === $timePoint) {
             $this->timePoint = $this->clock()->localDateTime();
@@ -47,19 +43,22 @@ class TimePointStrategy extends AbstractSelectionStrategy
     /**
      * Get a single connection from a pool.
      *
-     * @param ConnectionPoolInterface $pool The pool to select from.
+     * @param ReplicationManagerInterface $manager The replication manager to use.
+     * @param ConnectionPoolInterface     $pool    The pool to select from.
      *
      * @return PDO                            The selected connection.
      * @throws NoConnectionAvailableException If no connection is available for selection.
      */
-    public function select(ConnectionPoolInterface $pool)
-    {
+    public function select(
+        ReplicationManagerInterface $manager,
+        ConnectionPoolInterface $pool
+    ) {
         $now = $this->clock()->localDateTime();
 
         foreach ($pool->connections() as $connection) {
             if (
-                $this->manager()->isReplicating($connection) &&
-                $now->subtract($this->manager()->delay($connection))
+                $manager->isReplicating($connection) &&
+                $now->subtract($manager->delay($connection))
                     ->isGreaterThanOrEqualTo($this->timePoint())
             ) {
                 return $connection;

@@ -7,7 +7,6 @@ use Icecave\Chrono\DateTime;
 use Icecave\Chrono\TimePointInterface;
 use Icecave\Chrono\TimeSpan\Duration;
 use Icecave\Chrono\TimeSpan\TimeSpanInterface;
-use Icecave\Manifold\Replication\ReplicationManagerInterface;
 
 /**
  * An abstract base class for implementing connection pool member selection
@@ -18,29 +17,15 @@ abstract class AbstractSelectionStrategy implements SelectionStrategyInterface
     /**
      * Construct a new connection pool member selection strategy.
      *
-     * @param ReplicationManagerInterface $manager The replication manager to use.
-     * @param ClockInterface|null         $clock   The clock to use.
+     * @param ClockInterface|null $clock The clock to use.
      */
-    public function __construct(
-        ReplicationManagerInterface $manager,
-        ClockInterface $clock = null
-    ) {
+    public function __construct(ClockInterface $clock = null)
+    {
         if (null === $clock) {
             $clock = new SystemClock;
         }
 
-        $this->manager = $manager;
         $this->clock = $clock;
-    }
-
-    /**
-     * Get the replication manager.
-     *
-     * @return ReplicationManagerInterface The replication manager.
-     */
-    public function manager()
-    {
-        return $this->manager;
     }
 
     /**
@@ -91,6 +76,5 @@ abstract class AbstractSelectionStrategy implements SelectionStrategyInterface
         return DateTime::fromUnixTime($timePoint);
     }
 
-    private $manager;
     private $clock;
 }
