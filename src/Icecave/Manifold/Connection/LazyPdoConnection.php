@@ -6,7 +6,7 @@ use PDO;
 /**
  * A PDO connection with lazy-connection semantics.
  */
-class LazyPdoConnection extends PDO
+class LazyPdoConnection extends PDO implements PdoConnectionInterface
 {
     /**
      * Construct a new lazy PDO connection.
