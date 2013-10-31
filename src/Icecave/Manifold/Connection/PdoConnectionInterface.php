@@ -17,8 +17,8 @@ interface PdoConnectionInterface
      *
      * @link http://php.net/pdo.prepare
      *
-     * @param string $statement  The statement to prepare.
-     * @param array  $attributes The connection attributes to use.
+     * @param string               $statement  The statement to prepare.
+     * @param array<integer,mixed> $attributes The connection attributes to use.
      *
      * @return PDOStatement The prepared PDO statement.
      * @throws PDOException If the statement cannot be prepared.

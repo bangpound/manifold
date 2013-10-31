@@ -108,7 +108,7 @@ class PdoConnectionFacade extends PDO implements PdoConnectionFacadeInterface
      *
      * @param SelectionStrategyInterface $strategy   The strategy to use.
      * @param string                     $statement  The statement to prepare.
-     * @param array                      $attributes The connection attributes to use.
+     * @param array<integer,mixed>       $attributes The connection attributes to use.
      *
      * @return PDOStatement The prepared PDO statement.
      * @throws PDOException If the statement cannot be prepared.
@@ -116,8 +116,12 @@ class PdoConnectionFacade extends PDO implements PdoConnectionFacadeInterface
     public function prepareWithStrategy(
         SelectionStrategyInterface $strategy,
         $statement,
-        $attributes = array()
+        array $attributes = null
     ) {
+        if (null === $attributes) {
+            $attributes = array();
+        }
+
         return $this->selectConnectionForStatement($statement, $strategy)
             ->prepare($statement, $attributes);
     }
@@ -180,8 +184,8 @@ class PdoConnectionFacade extends PDO implements PdoConnectionFacadeInterface
      *
      * @link http://php.net/pdo.prepare
      *
-     * @param string $statement  The statement to prepare.
-     * @param array  $attributes The connection attributes to use.
+     * @param string               $statement  The statement to prepare.
+     * @param array<integer,mixed> $attributes The connection attributes to use.
      *
      * @return PDOStatement The prepared PDO statement.
      * @throws PDOException If the statement cannot be prepared.

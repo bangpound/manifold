@@ -11,10 +11,10 @@ class LazyPdoConnection extends PDO implements PdoConnectionInterface
     /**
      * Construct a new lazy PDO connection.
      *
-     * @param string      $dsn        The connection data source name.
-     * @param string|null $username   The database username, this parameter is optional for some PDO drivers.
-     * @param string|null $password   The database password, this parameter is optional for some PDO drivers.
-     * @param array|null  $attributes The connection attributes to use.
+     * @param string                    $dsn        The connection data source name.
+     * @param string|null               $username   The database username, this parameter is optional for some PDO drivers.
+     * @param string|null               $password   The database password, this parameter is optional for some PDO drivers.
+     * @param array<integer,mixed>|null $attributes The connection attributes to use.
      */
     public function __construct(
         $dsn,
@@ -68,7 +68,7 @@ class LazyPdoConnection extends PDO implements PdoConnectionInterface
     /**
      * Get the connection attributes.
      *
-     * @return array The connection attributes.
+     * @return array<integer,mixed> The connection attributes.
      */
     public function attributes()
     {
@@ -169,10 +169,10 @@ class LazyPdoConnection extends PDO implements PdoConnectionInterface
     /**
      * Call the parent class constructor.
      *
-     * @param string      $dsn        The connection data-source name.
-     * @param string|null $username   The database username, this parameter is optional for some PDO drivers.
-     * @param string|null $password   The database password, this parameter is optional for some PDO drivers.
-     * @param array       $attributes The connection attributes to use.
+     * @param string               $dsn        The connection data-source name.
+     * @param string|null          $username   The database username, this parameter is optional for some PDO drivers.
+     * @param string|null          $password   The database password, this parameter is optional for some PDO drivers.
+     * @param array<integer,mixed> $attributes The connection attributes to use.
      */
     protected function constructParent(
         $dsn,

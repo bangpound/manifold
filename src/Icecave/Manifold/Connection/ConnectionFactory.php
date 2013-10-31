@@ -11,7 +11,7 @@ class ConnectionFactory implements ConnectionFactoryInterface
     /**
      * Construct a new connection factory.
      *
-     * @param array|null $attributes The connection attributes to use.
+     * @param array<integer,mixed>|null $attributes The connection attributes to use.
      */
     public function __construct(array $attributes = null)
     {
@@ -21,7 +21,7 @@ class ConnectionFactory implements ConnectionFactoryInterface
     /**
      * Get the connection attributes.
      *
-     * @return array|null The connection attributes.
+     * @return array<integer,mixed>|null The connection attributes.
      */
     public function attributes()
     {
