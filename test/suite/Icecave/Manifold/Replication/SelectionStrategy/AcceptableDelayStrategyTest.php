@@ -27,6 +27,7 @@ class AcceptableDelayStrategyTest extends PHPUnit_Framework_TestCase
         $this->connectionC = Phake::mock('PDO');
         $this->connectionC->id = 'C';
         $this->pool = new ConnectionPool(
+            'pool',
             new Vector(
                 array(
                     $this->connectionA,

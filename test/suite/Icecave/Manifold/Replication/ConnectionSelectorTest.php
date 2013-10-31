@@ -38,6 +38,7 @@ class ConnectionSelectorTest extends PHPUnit_Framework_TestCase
         $this->connectionC2->id = 'C2';
 
         $this->poolA = new ConnectionPool(
+            'A',
             new Vector(
                 array(
                     $this->connectionA1,
@@ -46,6 +47,7 @@ class ConnectionSelectorTest extends PHPUnit_Framework_TestCase
             )
         );
         $this->poolB = new ConnectionPool(
+            'B',
             new Vector(
                 array(
                     $this->connectionB1,
@@ -54,6 +56,7 @@ class ConnectionSelectorTest extends PHPUnit_Framework_TestCase
             )
         );
         $this->poolC = new ConnectionPool(
+            'C',
             new Vector(
                 array(
                     $this->connectionC1,

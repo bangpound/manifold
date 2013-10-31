@@ -18,6 +18,7 @@ class AnyStrategyTest extends PHPUnit_Framework_TestCase
         $this->connectionB = Phake::mock('PDO');
         $this->connectionB->id = 'B';
         $this->pool = new ConnectionPool(
+            'pool',
             new Vector(
                 array(
                     $this->connectionA,

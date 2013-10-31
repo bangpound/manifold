@@ -15,11 +15,12 @@ class ConnectionPoolTest extends PHPUnit_Framework_TestCase
                 Phake::mock('PDO'),
             )
         );
-        $this->pool = new ConnectionPool($this->connections);
+        $this->pool = new ConnectionPool('name', $this->connections);
     }
 
     public function testConstructor()
     {
+        $this->assertSame('name', $this->pool->name());
         $this->assertSame($this->connections, $this->pool->connections());
     }
 
@@ -27,6 +28,6 @@ class ConnectionPoolTest extends PHPUnit_Framework_TestCase
     {
         $this->setExpectedException(__NAMESPACE__ . '\Exception\EmptyConnectionPoolException');
 
-        new ConnectionPool(new Vector);
+        new ConnectionPool('name', new Vector);
     }
 }

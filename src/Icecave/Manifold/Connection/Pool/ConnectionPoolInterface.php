@@ -10,6 +10,13 @@ use PDO;
 interface ConnectionPoolInterface
 {
     /**
+     * Get the connection pool name.
+     *
+     * @return string The connection pool name.
+     */
+    public function name();
+
+    /**
      * Get the connections.
      *
      * @return Vector<PDO> The connections.

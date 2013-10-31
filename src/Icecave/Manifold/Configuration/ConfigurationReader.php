@@ -212,10 +212,10 @@ class ConfigurationReader implements ConfigurationReaderInterface
         Map $connections
     ) {
         $pools = new Map;
-        foreach ($value->get('pools') as $name => $connectionNames) {
+        foreach ($value->get('pools') as $poolName => $connectionNames) {
             $pools->add(
-                $name,
-                $this->createPool($connectionNames, $connections)
+                $poolName,
+                $this->createPool($poolName, $connectionNames, $connections)
             );
         }
 
@@ -310,12 +310,14 @@ class ConfigurationReader implements ConfigurationReaderInterface
     /**
      * Creates a new connection pool from raw configuration data.
      *
+     * @param string          $poolName        The connection pool name.
      * @param ArrayValue      $connectionNames The raw configuration data.
      * @param Map<string,PDO> $connections     The connection map.
      *
      * @return ConnectionPoolInterface The new connection pool.
      */
     protected function createPool(
+        $poolName,
         ArrayValue $connectionNames,
         Map $connections
     ) {
@@ -326,7 +328,7 @@ class ConfigurationReader implements ConfigurationReaderInterface
             );
         }
 
-        return new ConnectionPool($poolConnections);
+        return new ConnectionPool($poolName, $poolConnections);
     }
 
     /**
@@ -461,7 +463,7 @@ class ConfigurationReader implements ConfigurationReaderInterface
         $connections = new Vector;
         $connections->pushBack($connection);
 
-        return new ConnectionPool($connections);
+        return new ConnectionPool($connection->name(), $connections);
     }
 
     private $reader;
