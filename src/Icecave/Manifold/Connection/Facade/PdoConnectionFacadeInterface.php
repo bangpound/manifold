@@ -1,7 +1,6 @@
 <?php
 namespace Icecave\Manifold\Connection\Facade;
 
-use Icecave\Collections\Map;
 use Icecave\Manifold\Connection\PdoConnectionInterface;
 use Icecave\Manifold\Replication\SelectionStrategy\SelectionStrategyInterface;
 use PDO;
@@ -16,7 +15,7 @@ interface PdoConnectionFacadeInterface extends PdoConnectionInterface
     /**
      * Get the connection attributes.
      *
-     * @return Map<integer,mixed> The connection attributes.
+     * @return array<integer,mixed> The connection attributes.
      */
     public function attributes();
 
