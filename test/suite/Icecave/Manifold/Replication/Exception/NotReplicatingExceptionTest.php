@@ -2,14 +2,14 @@
 namespace Icecave\Manifold\Replication\Exception;
 
 use Exception;
-use Icecave\Manifold\Connection\LazyPdoConnection;
+use Phake;
 use PHPUnit_Framework_TestCase;
 
 class NotReplicatingExceptionTest extends PHPUnit_Framework_TestCase
 {
     public function testException()
     {
-        $connection = new LazyPdoConnection('dsn');
+        $connection = Phake::mock('PDO');
         $previous = new Exception;
         $exception = new NotReplicatingException($connection, $previous);
 

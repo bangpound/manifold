@@ -4,7 +4,6 @@ namespace Icecave\Manifold\Replication\SelectionStrategy;
 use Icecave\Chrono\DateTime;
 use Icecave\Chrono\TimeSpan\Duration;
 use Icecave\Collections\Vector;
-use Icecave\Manifold\Connection\LazyPdoConnection;
 use Icecave\Manifold\Connection\Pool\ConnectionPool;
 use PHPUnit_Framework_TestCase;
 use Phake;
@@ -22,9 +21,12 @@ class TimePointStrategyTest extends PHPUnit_Framework_TestCase
         $this->strategy = new TimePointStrategy($this->timePoint, $this->clock);
 
         $this->manager = Phake::mock('Icecave\Manifold\Replication\ReplicationManagerInterface');
-        $this->connectionA = new LazyPdoConnection('a');
-        $this->connectionB = new LazyPdoConnection('b');
-        $this->connectionC = new LazyPdoConnection('c');
+        $this->connectionA = Phake::mock('PDO');
+        $this->connectionA->id = 'A';
+        $this->connectionB = Phake::mock('PDO');
+        $this->connectionB->id = 'B';
+        $this->connectionC = Phake::mock('PDO');
+        $this->connectionC->id = 'C';
         $this->pool = new ConnectionPool(
             new Vector(
                 array(

@@ -2,7 +2,6 @@
 namespace Icecave\Manifold\Replication\SelectionStrategy;
 
 use Icecave\Collections\Vector;
-use Icecave\Manifold\Connection\LazyPdoConnection;
 use Icecave\Manifold\Connection\Pool\ConnectionPool;
 use PHPUnit_Framework_TestCase;
 use Phake;
@@ -14,8 +13,10 @@ class AnyStrategyTest extends PHPUnit_Framework_TestCase
         $this->strategy = new AnyStrategy;
 
         $this->manager = Phake::mock('Icecave\Manifold\Replication\ReplicationManagerInterface');
-        $this->connectionA = new LazyPdoConnection('a');
-        $this->connectionB = new LazyPdoConnection('b');
+        $this->connectionA = Phake::mock('PDO');
+        $this->connectionA->id = 'A';
+        $this->connectionB = Phake::mock('PDO');
+        $this->connectionB->id = 'B';
         $this->pool = new ConnectionPool(
             new Vector(
                 array(

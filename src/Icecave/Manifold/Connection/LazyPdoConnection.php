@@ -6,17 +6,19 @@ use PDO;
 /**
  * A PDO connection with lazy-connection semantics.
  */
-class LazyPdoConnection extends PDO implements PdoConnectionInterface
+class LazyPdoConnection extends PDO implements ConcreteConnectionInterface
 {
     /**
      * Construct a new lazy PDO connection.
      *
-     * @param string                    $dsn        The connection data source name.
-     * @param string|null               $username   The database username, this parameter is optional for some PDO drivers.
-     * @param string|null               $password   The database password, this parameter is optional for some PDO drivers.
+     * @param string                    $name       The connection name.
+     * @param stringable                $dsn        The connection data source name.
+     * @param stringable|null           $username   The database username, this parameter is optional for some PDO drivers.
+     * @param stringable|null           $password   The database password, this parameter is optional for some PDO drivers.
      * @param array<integer,mixed>|null $attributes The connection attributes to use.
      */
     public function __construct(
+        $name,
         $dsn,
         $username = null,
         $password = null,
@@ -26,6 +28,7 @@ class LazyPdoConnection extends PDO implements PdoConnectionInterface
             $attributes = array();
         }
 
+        $this->name = $name;
         $this->dsn = $dsn;
         $this->username = $username;
         $this->password = $password;
@@ -36,9 +39,19 @@ class LazyPdoConnection extends PDO implements PdoConnectionInterface
     }
 
     /**
+     * Get the connection name.
+     *
+     * @return string The connection name.
+     */
+    public function name()
+    {
+        return $this->name;
+    }
+
+    /**
      * Get the data source name.
      *
-     * @return string The data source name.
+     * @return stringable The data source name.
      */
     public function dsn()
     {
@@ -48,7 +61,7 @@ class LazyPdoConnection extends PDO implements PdoConnectionInterface
     /**
      * Get the username.
      *
-     * @return string|null The username, or null if no username is in use.
+     * @return stringable|null The username, or null if no username is in use.
      */
     public function username()
     {
@@ -58,7 +71,7 @@ class LazyPdoConnection extends PDO implements PdoConnectionInterface
     /**
      * Get the password.
      *
-     * @return string The password, or null if no password is in use.
+     * @return stringable|null The password, or null if no password is in use.
      */
     public function password()
     {
@@ -138,7 +151,12 @@ class LazyPdoConnection extends PDO implements PdoConnectionInterface
         if (!$this->isConnected()) {
             $this->beforeConnect();
 
-            $this->constructParent($this->dsn, $this->username, $this->password, $this->attributes);
+            $this->constructParent(
+                $this->resolveStringable($this->dsn()),
+                $this->resolveStringable($this->username()),
+                $this->resolveStringable($this->password()),
+                $this->attributes()
+            );
             $this->isConnected = true;
 
             $this->afterConnect();
@@ -163,6 +181,22 @@ class LazyPdoConnection extends PDO implements PdoConnectionInterface
      */
     protected function afterConnect()
     {
+    }
+
+    /**
+     * Resolves a stringable value into a string.
+     *
+     * @param stringable|null $value The value to resolve.
+     *
+     * @return string|null The resolved value.
+     */
+    protected function resolveStringable($value)
+    {
+        if (null === $value) {
+            return null;
+        }
+
+        return strval($value);
     }
 
     // @codeCoverageIgnoreStart

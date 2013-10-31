@@ -2,7 +2,6 @@
 namespace Icecave\Manifold\Replication;
 
 use Icecave\Chrono\TimeSpan\Duration;
-use Icecave\Manifold\Connection\LazyPdoConnection;
 use PHPUnit_Framework_TestCase;
 use Phake;
 
@@ -10,11 +9,16 @@ class AbstractReplicationManagerTest extends PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        $this->connection1 = new LazyPdoConnection('1');
-        $this->connection2 = new LazyPdoConnection('2');
-        $this->connection3 = new LazyPdoConnection('3');
-        $this->connection4 = new LazyPdoConnection('4');
-        $this->connection5 = new LazyPdoConnection('5');
+        $this->connection1 = Phake::mock('PDO');
+        $this->connection1->id = '1';
+        $this->connection2 = Phake::mock('PDO');
+        $this->connection2->id = '2';
+        $this->connection3 = Phake::mock('PDO');
+        $this->connection3->id = '3';
+        $this->connection4 = Phake::mock('PDO');
+        $this->connection4->id = '4';
+        $this->connection5 = Phake::mock('PDO');
+        $this->connection5->id = '5';
         $this->tree = new ReplicationTree($this->connection1);
         $this->tree->addSlave($this->connection1, $this->connection2);
         $this->tree->addSlave($this->connection2, $this->connection3);

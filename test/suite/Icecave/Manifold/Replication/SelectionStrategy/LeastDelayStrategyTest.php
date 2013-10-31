@@ -3,7 +3,6 @@ namespace Icecave\Manifold\Replication\SelectionStrategy;
 
 use Icecave\Chrono\TimeSpan\Duration;
 use Icecave\Collections\Vector;
-use Icecave\Manifold\Connection\LazyPdoConnection;
 use Icecave\Manifold\Connection\Pool\ConnectionPool;
 use PHPUnit_Framework_TestCase;
 use Phake;
@@ -21,9 +20,12 @@ class LeastDelayStrategyTest extends PHPUnit_Framework_TestCase
         $this->strategy = new LeastDelayStrategy($this->threshold, $this->clock);
 
         $this->manager = Phake::mock('Icecave\Manifold\Replication\ReplicationManagerInterface');
-        $this->connectionA = new LazyPdoConnection('a');
-        $this->connectionB = new LazyPdoConnection('b');
-        $this->connectionC = new LazyPdoConnection('c');
+        $this->connectionA = Phake::mock('PDO');
+        $this->connectionA->id = 'A';
+        $this->connectionB = Phake::mock('PDO');
+        $this->connectionB->id = 'B';
+        $this->connectionC = Phake::mock('PDO');
+        $this->connectionC->id = 'C';
         $this->pool = new ConnectionPool(
             new Vector(
                 array(

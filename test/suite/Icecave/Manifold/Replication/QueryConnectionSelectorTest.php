@@ -1,7 +1,6 @@
 <?php
 namespace Icecave\Manifold\Replication;
 
-use Icecave\Manifold\Connection\LazyPdoConnection;
 use PHPUnit_Framework_TestCase;
 use Phake;
 
@@ -17,10 +16,14 @@ class QueryConnectionSelectorTest extends PHPUnit_Framework_TestCase
 
         $this->strategy = Phake::mock(__NAMESPACE__ . '\SelectionStrategy\SelectionStrategyInterface');
 
-        $this->connectionA = new LazyPdoConnection('A');
-        $this->connectionB = new LazyPdoConnection('B');
-        $this->connectionC = new LazyPdoConnection('C');
-        $this->connectionD = new LazyPdoConnection('D');
+        $this->connectionA = Phake::mock('PDO');
+        $this->connectionA->id = 'A';
+        $this->connectionB = Phake::mock('PDO');
+        $this->connectionB->id = 'B';
+        $this->connectionC = Phake::mock('PDO');
+        $this->connectionC->id = 'C';
+        $this->connectionD = Phake::mock('PDO');
+        $this->connectionD->id = 'D';
     }
 
     public function testConstructor()

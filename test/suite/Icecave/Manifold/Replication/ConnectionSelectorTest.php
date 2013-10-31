@@ -3,7 +3,6 @@ namespace Icecave\Manifold\Replication;
 
 use Icecave\Collections\Vector;
 use Icecave\Manifold\Connection\ConnectionPair;
-use Icecave\Manifold\Connection\LazyPdoConnection;
 use Icecave\Manifold\Connection\Pool\ConnectionPool;
 use PHPUnit_Framework_TestCase;
 use Phake;
@@ -25,12 +24,18 @@ class ConnectionSelectorTest extends PHPUnit_Framework_TestCase
 
         $this->strategy = Phake::mock(__NAMESPACE__ . '\SelectionStrategy\SelectionStrategyInterface');
 
-        $this->connectionA1 = new LazyPdoConnection('A1');
-        $this->connectionA2 = new LazyPdoConnection('A2');
-        $this->connectionB1 = new LazyPdoConnection('B1');
-        $this->connectionB2 = new LazyPdoConnection('B2');
-        $this->connectionC1 = new LazyPdoConnection('C1');
-        $this->connectionC2 = new LazyPdoConnection('C2');
+        $this->connectionA1 = Phake::mock('PDO');
+        $this->connectionA1->id = 'A1';
+        $this->connectionA2 = Phake::mock('PDO');
+        $this->connectionA2->id = 'A2';
+        $this->connectionB1 = Phake::mock('PDO');
+        $this->connectionB1->id = 'B1';
+        $this->connectionB2 = Phake::mock('PDO');
+        $this->connectionB2->id = 'B2';
+        $this->connectionC1 = Phake::mock('PDO');
+        $this->connectionC1->id = 'C1';
+        $this->connectionC2 = Phake::mock('PDO');
+        $this->connectionC2->id = 'C2';
 
         $this->poolA = new ConnectionPool(
             new Vector(

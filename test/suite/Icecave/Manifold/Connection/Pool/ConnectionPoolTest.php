@@ -2,7 +2,7 @@
 namespace Icecave\Manifold\Connection\Pool;
 
 use Icecave\Collections\Vector;
-use Icecave\Manifold\Connection\LazyPdoConnection;
+use Phake;
 use PHPUnit_Framework_TestCase;
 
 class ConnectionPoolTest extends PHPUnit_Framework_TestCase
@@ -11,7 +11,8 @@ class ConnectionPoolTest extends PHPUnit_Framework_TestCase
     {
         $this->connections = new Vector(
             array(
-                new LazyPdoConnection('dsn')
+                Phake::mock('PDO'),
+                Phake::mock('PDO'),
             )
         );
         $this->pool = new ConnectionPool($this->connections);

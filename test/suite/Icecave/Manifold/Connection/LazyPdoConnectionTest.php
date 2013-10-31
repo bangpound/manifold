@@ -11,19 +11,19 @@ class LazyPdoConnectionTest extends PHPUnit_Framework_TestCase
     {
         $this->connection = Phake::partialMock(
             __NAMESPACE__ . '\LazyPdoConnection',
+            'name',
             'dsn',
             'username',
             'password',
             array(10101 => 'foo')
         );
 
-        Phake::when($this->connection)
-            ->constructParent(Phake::anyParameters())
-            ->thenReturn(null);
+        Phake::when($this->connection)->constructParent(Phake::anyParameters())->thenReturn(null);
     }
 
     public function testConstructor()
     {
+        $this->assertSame('name', $this->connection->name());
         $this->assertSame('dsn', $this->connection->dsn());
         $this->assertSame('username', $this->connection->username());
         $this->assertSame('password', $this->connection->password());
@@ -32,7 +32,7 @@ class LazyPdoConnectionTest extends PHPUnit_Framework_TestCase
 
     public function testConstructorDefaults()
     {
-        $this->connection = new LazyPdoConnection('dsn');
+        $this->connection = new LazyPdoConnection('name', 'dsn');
 
         $this->assertNull($this->connection->username());
         $this->assertNull($this->connection->password());
@@ -51,13 +51,29 @@ class LazyPdoConnectionTest extends PHPUnit_Framework_TestCase
     public function testConnect()
     {
         $this->connection->connect();
-
-        // Second invocation should be a no-op ...
         $this->connection->connect();
 
         Phake::inOrder(
             Phake::verify($this->connection)->beforeConnect(),
             Phake::verify($this->connection)->constructParent('dsn', 'username', 'password', array(10101 => 'foo')),
+            Phake::verify($this->connection)->afterConnect()
+        );
+    }
+
+    public function testConnectDefaults()
+    {
+        $this->connection = Phake::partialMock(
+            __NAMESPACE__ . '\LazyPdoConnection',
+            'name',
+            'dsn'
+        );
+        Phake::when($this->connection)->constructParent(Phake::anyParameters())->thenReturn(null);
+        $this->connection->connect();
+        $this->connection->connect();
+
+        Phake::inOrder(
+            Phake::verify($this->connection)->beforeConnect(),
+            Phake::verify($this->connection)->constructParent('dsn', null, null, array()),
             Phake::verify($this->connection)->afterConnect()
         );
     }

@@ -1,7 +1,7 @@
 <?php
 namespace Icecave\Manifold\Connection;
 
-use Icecave\Manifold\Connection\LazyPdoConnection;
+use Phake;
 use PHPUnit_Framework_TestCase;
 
 class ConnectionPairTest extends PHPUnit_Framework_TestCase
@@ -10,8 +10,8 @@ class ConnectionPairTest extends PHPUnit_Framework_TestCase
     {
         parent::setUp();
 
-        $this->write = new LazyPdoConnection('write');
-        $this->read = new LazyPdoConnection('read');
+        $this->write = Phake::mock('PDO');
+        $this->read = Phake::mock('PDO');
         $this->pair = new ConnectionPair($this->write, $this->read);
     }
 

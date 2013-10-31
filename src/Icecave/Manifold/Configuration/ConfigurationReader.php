@@ -184,6 +184,7 @@ class ConfigurationReader implements ConfigurationReaderInterface
         $defaultConnection = null;
         foreach ($value->get('connections') as $name => $options) {
             $connection = $this->connectionFactory()->create(
+                $name,
                 $options->getRaw('dsn'),
                 $options->getRawDefault('username'),
                 $options->getRawDefault('password')
