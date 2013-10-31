@@ -394,7 +394,7 @@ class PdoConnectionFacade extends PDO implements PdoConnectionFacadeInterface
             return array('', null, null);
         }
 
-        return $this->currentConnection()->errorInfo($name);
+        return $this->currentConnection()->errorInfo();
     }
 
     /**
@@ -433,7 +433,26 @@ class PdoConnectionFacade extends PDO implements PdoConnectionFacadeInterface
     {
         $this->attributes->set($attribute, $value);
 
-        return true;
+        $result = true;
+        $error = null;
+        foreach ($this->initializedConnections() as $connection) {
+            try {
+                $subResult = $connection->setAttribute($attribute, $value);
+            } catch (PDOException $e) {
+                $subResult = false;
+                if (null === $error) {
+                    $error = $e;
+                }
+            }
+
+            $result = $result && $subResult;
+        }
+
+        if (null !== $error) {
+            throw $error;
+        }
+
+        return $result;
     }
 
     /**
@@ -516,7 +535,7 @@ class PdoConnectionFacade extends PDO implements PdoConnectionFacadeInterface
      * @throws PDOException If a connection cannot be obtained.
      */
     protected function selectConnectionForWrite(
-        $databaseName,
+        $databaseName = null,
         SelectionStrategyInterface $strategy = null
     ) {
         try {
