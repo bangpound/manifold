@@ -13,7 +13,7 @@ interface ReplicationManagerInterface
     /**
      * Fetch the replication tree upon which this manager operates.
      *
-     * @return ReplicationTree The replication tree upon which this manager operates.
+     * @return ReplicationTreeInterface The replication tree upon which this manager operates.
      */
     public function tree();
 

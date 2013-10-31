@@ -17,12 +17,12 @@ abstract class AbstractReplicationManager implements ReplicationManagerInterface
     /**
      * Construct a new replication manager.
      *
-     * @param ReplicationTree     $tree  The replication tree upon which this manager operates.
-     * @param ClockInterface|null $clock The clock to use.
-     * @param TimerInterface|null $timer The timer to use.
+     * @param ReplicationTreeInterface $tree  The replication tree upon which this manager operates.
+     * @param ClockInterface|null      $clock The clock to use.
+     * @param TimerInterface|null      $timer The timer to use.
      */
     public function __construct(
-        ReplicationTree $tree,
+        ReplicationTreeInterface $tree,
         ClockInterface $clock = null,
         TimerInterface $timer = null
     ) {
@@ -41,7 +41,7 @@ abstract class AbstractReplicationManager implements ReplicationManagerInterface
     /**
      * Fetch the replication tree upon which this manager operates.
      *
-     * @return ReplicationTree The replication tree upon which this manager operates.
+     * @return ReplicationTreeInterface The replication tree upon which this manager operates.
      */
     public function tree()
     {

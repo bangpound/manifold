@@ -75,7 +75,16 @@ class PdoConnectionFacadeTest extends PHPUnit_Framework_TestCase
     {
         $this->facade = new PdoConnectionFacade($this->queryConnectionSelector);
 
-        $this->assertEquals(new Map, $this->facade->attributes());
+        $this->assertEquals(
+            new Map(
+                array(
+                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                    PDO::ATTR_PERSISTENT => false,
+                    PDO::ATTR_AUTOCOMMIT => false,
+                )
+            ),
+            $this->facade->attributes()
+        );
     }
 
     public function testConnectionSelector()

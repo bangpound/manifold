@@ -23,11 +23,7 @@ class LazyPdoConnection extends PDO implements PdoConnectionInterface
         array $driverOptions = null
     ) {
         if (null === $driverOptions) {
-            $driverOptions = array(
-                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                PDO::ATTR_PERSISTENT => false,
-                PDO::ATTR_AUTOCOMMIT => false,
-            );
+            $driverOptions = array();
         }
 
         $this->dsn = $dsn;

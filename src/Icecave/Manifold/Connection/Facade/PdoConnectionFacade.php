@@ -32,6 +32,9 @@ class PdoConnectionFacade extends PDO implements PdoConnectionFacadeInterface
     ) {
         if (null === $attributes) {
             $attributes = new Map;
+            $attributes->set(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $attributes->set(PDO::ATTR_PERSISTENT, false);
+            $attributes->set(PDO::ATTR_AUTOCOMMIT, false);
         } else {
             $attributes = clone $attributes;
         }

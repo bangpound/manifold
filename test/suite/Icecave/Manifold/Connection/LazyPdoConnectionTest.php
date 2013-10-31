@@ -33,15 +33,10 @@ class LazyPdoConnectionTest extends PHPUnit_Framework_TestCase
     public function testConstructorDefaults()
     {
         $this->connection = new LazyPdoConnection('dsn');
-        $expectedDriverOptions = array(
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_PERSISTENT => false,
-            PDO::ATTR_AUTOCOMMIT => false,
-        );
 
         $this->assertNull($this->connection->username());
         $this->assertNull($this->connection->password());
-        $this->assertSame($expectedDriverOptions, $this->connection->driverOptions());
+        $this->assertSame(array(), $this->connection->driverOptions());
     }
 
     public function testIsConnected()
