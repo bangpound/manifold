@@ -42,9 +42,9 @@ interface PdoConnectionFacadeInterface extends PdoConnectionInterface
      *
      * @link http://php.net/pdo.prepare
      *
-     * @param SelectionStrategyInterface $strategy      The strategy to use.
-     * @param string                     $statement     The statement to prepare.
-     * @param array                      $driverOptions Driver options to use.
+     * @param SelectionStrategyInterface $strategy   The strategy to use.
+     * @param string                     $statement  The statement to prepare.
+     * @param array                      $attributes The connection attributes to use.
      *
      * @return PDOStatement The prepared PDO statement.
      * @throws PDOException If the statement cannot be prepared.
@@ -52,7 +52,7 @@ interface PdoConnectionFacadeInterface extends PdoConnectionInterface
     public function prepareWithStrategy(
         SelectionStrategyInterface $strategy,
         $statement,
-        $driverOptions = array()
+        $attributes = array()
     );
 
     /**

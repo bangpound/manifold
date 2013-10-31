@@ -11,25 +11,25 @@ class LazyPdoConnection extends PDO implements PdoConnectionInterface
     /**
      * Construct a new lazy PDO connection.
      *
-     * @param string      $dsn           The connection data source name.
-     * @param string|null $username      The database username, this parameter is optional for some PDO drivers.
-     * @param string|null $password      The database password, this parameter is optional for some PDO drivers.
-     * @param array|null  $driverOptions The driver-specific options.
+     * @param string      $dsn        The connection data source name.
+     * @param string|null $username   The database username, this parameter is optional for some PDO drivers.
+     * @param string|null $password   The database password, this parameter is optional for some PDO drivers.
+     * @param array|null  $attributes The connection attributes to use.
      */
     public function __construct(
         $dsn,
         $username = null,
         $password = null,
-        array $driverOptions = null
+        array $attributes = null
     ) {
-        if (null === $driverOptions) {
-            $driverOptions = array();
+        if (null === $attributes) {
+            $attributes = array();
         }
 
         $this->dsn = $dsn;
         $this->username = $username;
         $this->password = $password;
-        $this->driverOptions = $driverOptions;
+        $this->attributes = $attributes;
         $this->isConnected = false;
 
         // Do not call PDO constructor ...
@@ -66,19 +66,20 @@ class LazyPdoConnection extends PDO implements PdoConnectionInterface
     }
 
     /**
-     * Get the driver-specific options for this connection.
+     * Get the connection attributes.
      *
-     * @return array The driver-specific options.
+     * @return array The connection attributes.
      */
-    public function driverOptions()
+    public function attributes()
     {
-        return $this->driverOptions;
+        return $this->attributes;
     }
 
     /**
      * Get an attribute of the connection.
      *
-     * If a connection has not yet been established, the attribute is taken from the driver options provided upon construction.
+     * If a connection has not yet been established, the attribute is taken from
+     * those provided upon construction.
      *
      * @param mixed $attribute The key of the attribute.
      *
@@ -92,8 +93,8 @@ class LazyPdoConnection extends PDO implements PdoConnectionInterface
         }
         // @codeCoverageIgnoreEnd
 
-        if (array_key_exists($attribute, $this->driverOptions)) {
-            return $this->driverOptions[$attribute];
+        if (array_key_exists($attribute, $this->attributes)) {
+            return $this->attributes[$attribute];
         } else {
             return null;
         }
@@ -102,7 +103,8 @@ class LazyPdoConnection extends PDO implements PdoConnectionInterface
     /**
      * Set an attribute on the connection.
      *
-     * If a connection has not yet been established, the attribute is set on the driver options array.
+     * If a connection has not yet been established, the attribute is set on the
+     * internal array.
      *
      * @param mixed $attribute The key of the attribute.
      * @param mixed $value     The value of the attribute specified by $attribute.
@@ -115,13 +117,13 @@ class LazyPdoConnection extends PDO implements PdoConnectionInterface
         }
         // @codeCoverageIgnoreEnd
 
-        $this->driverOptions[$attribute] = $value;
+        $this->attributes[$attribute] = $value;
     }
 
     /**
      * Check if a connection has been established.
      *
-     * @return boolean True if a connection has been established; otherwise false.
+     * @return boolean True if a connection has been established.
      */
     public function isConnected()
     {
@@ -136,7 +138,7 @@ class LazyPdoConnection extends PDO implements PdoConnectionInterface
         if (!$this->isConnected()) {
             $this->beforeConnect();
 
-            $this->constructParent($this->dsn, $this->username, $this->password, $this->driverOptions);
+            $this->constructParent($this->dsn, $this->username, $this->password, $this->attributes);
             $this->isConnected = true;
 
             $this->afterConnect();
@@ -146,7 +148,8 @@ class LazyPdoConnection extends PDO implements PdoConnectionInterface
     /**
      * Called before establishing a connection.
      *
-     * The default implementation is a no-op, this method may be overridden to provide custom behaviour.
+     * The default implementation is a no-op, this method may be overridden to
+     * provide custom behaviour.
      */
     protected function beforeConnect()
     {
@@ -155,7 +158,8 @@ class LazyPdoConnection extends PDO implements PdoConnectionInterface
     /**
      * Called after establishing a connection.
      *
-     * The default implementation is a no-op, this method may be overridden to provide custom behaviour.
+     * The default implementation is a no-op, this method may be overridden to
+     * provide custom behaviour.
      */
     protected function afterConnect()
     {
@@ -165,24 +169,24 @@ class LazyPdoConnection extends PDO implements PdoConnectionInterface
     /**
      * Call the parent class constructor.
      *
-     * @param string      $dsn           The connection data-source name.
-     * @param string|null $username      The database username, this parameter is optional for some PDO drivers.
-     * @param string|null $password      The database password, this parameter is optional for some PDO drivers.
-     * @param array       $driverOptions An associative array of driver-specific options.
+     * @param string      $dsn        The connection data-source name.
+     * @param string|null $username   The database username, this parameter is optional for some PDO drivers.
+     * @param string|null $password   The database password, this parameter is optional for some PDO drivers.
+     * @param array       $attributes The connection attributes to use.
      */
     protected function constructParent(
         $dsn,
         $username = null,
         $password = null,
-        array $driverOptions = array()
+        array $attributes = array()
     ) {
-        parent::__construct($dsn, $username, $password, $driverOptions);
+        parent::__construct($dsn, $username, $password, $attributes);
     }
     // @codeCoverageIgnoreEnd
 
     private $dsn;
     private $username;
     private $password;
-    private $driverOptions;
+    private $attributes;
     private $isConnected;
 }

@@ -109,13 +109,13 @@ class PdoConnectionFacadeTest extends PHPUnit_Framework_TestCase
     public function testPrepareWithStrategy()
     {
         $query = 'SELECT * FROM foo.bar';
-        $driverOptions = array('baz' => 'qux');
+        $attributes = array('baz' => 'qux');
         Phake::when($this->queryConnectionSelector)->select($query, $this->strategy)->thenReturn($this->connectionA);
-        Phake::when($this->connectionA)->prepare($query, $driverOptions)->thenReturn($this->statement);
+        Phake::when($this->connectionA)->prepare($query, $attributes)->thenReturn($this->statement);
 
         $this->assertSame(
             $this->statement,
-            $this->facade->prepareWithStrategy($this->strategy, $query, $driverOptions)
+            $this->facade->prepareWithStrategy($this->strategy, $query, $attributes)
         );
     }
 
@@ -154,11 +154,11 @@ class PdoConnectionFacadeTest extends PHPUnit_Framework_TestCase
     public function testPrepare()
     {
         $query = 'SELECT * FROM foo.bar';
-        $driverOptions = array('baz' => 'qux');
+        $attributes = array('baz' => 'qux');
         Phake::when($this->queryConnectionSelector)->select($query, null)->thenReturn($this->connectionA);
-        Phake::when($this->connectionA)->prepare($query, $driverOptions)->thenReturn($this->statement);
+        Phake::when($this->connectionA)->prepare($query, $attributes)->thenReturn($this->statement);
 
-        $this->assertSame($this->statement, $this->facade->prepare($query, $driverOptions));
+        $this->assertSame($this->statement, $this->facade->prepare($query, $attributes));
     }
 
     public function testPrepareDefaultOptions()

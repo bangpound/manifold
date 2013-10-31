@@ -17,13 +17,13 @@ interface PdoConnectionInterface
      *
      * @link http://php.net/pdo.prepare
      *
-     * @param string $statement     The statement to prepare.
-     * @param array  $driverOptions Driver options to use.
+     * @param string $statement  The statement to prepare.
+     * @param array  $attributes The connection attributes to use.
      *
      * @return PDOStatement The prepared PDO statement.
      * @throws PDOException If the statement cannot be prepared.
      */
-    public function prepare($statement, $driverOptions = array());
+    public function prepare($statement, $attributes = array());
 
     /**
      * Execute an SQL statement and return the result set.

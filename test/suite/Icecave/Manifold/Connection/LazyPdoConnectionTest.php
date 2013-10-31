@@ -27,7 +27,7 @@ class LazyPdoConnectionTest extends PHPUnit_Framework_TestCase
         $this->assertSame('dsn', $this->connection->dsn());
         $this->assertSame('username', $this->connection->username());
         $this->assertSame('password', $this->connection->password());
-        $this->assertSame(array(10101 => 'foo'), $this->connection->driverOptions());
+        $this->assertSame(array(10101 => 'foo'), $this->connection->attributes());
     }
 
     public function testConstructorDefaults()
@@ -36,7 +36,7 @@ class LazyPdoConnectionTest extends PHPUnit_Framework_TestCase
 
         $this->assertNull($this->connection->username());
         $this->assertNull($this->connection->password());
-        $this->assertSame(array(), $this->connection->driverOptions());
+        $this->assertSame(array(), $this->connection->attributes());
     }
 
     public function testIsConnected()

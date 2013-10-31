@@ -7,20 +7,20 @@ class ConnectionFactoryTest extends PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        $this->driverOptions = array('foo' => 'bar');
-        $this->factory = new ConnectionFactory($this->driverOptions);
+        $this->attributes = array('foo' => 'bar');
+        $this->factory = new ConnectionFactory($this->attributes);
     }
 
     public function testConstructor()
     {
-        $this->assertSame($this->driverOptions, $this->factory->driverOptions());
+        $this->assertSame($this->attributes, $this->factory->attributes());
     }
 
     public function testConstructorDefaults()
     {
         $this->factory = new ConnectionFactory;
 
-        $this->assertNull($this->factory->driverOptions());
+        $this->assertNull($this->factory->attributes());
     }
 
     public function testCreate()

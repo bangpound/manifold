@@ -71,7 +71,7 @@ interface ReplicationManagerInterface
      * @param PDO      $slaveConnection  The replication slave.
      * @param PDO|null $masterConnection The replication master to check against, or null to use the replication root.
      *
-     * @return boolean                           True if $slaveConnection is replicating; otherwise, false.
+     * @return boolean                           True if $slaveConnection is replicating.
      * @throws Exception\NotReplicatingException If $slaveConnection is not a replication slave of $masterConnection.
      */
     public function isReplicating(

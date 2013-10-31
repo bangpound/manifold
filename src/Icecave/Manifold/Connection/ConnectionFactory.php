@@ -11,21 +11,21 @@ class ConnectionFactory implements ConnectionFactoryInterface
     /**
      * Construct a new connection factory.
      *
-     * @param array|null $driverOptions Options to pass to the connection upon creation.
+     * @param array|null $attributes The connection attributes to use.
      */
-    public function __construct(array $driverOptions = null)
+    public function __construct(array $attributes = null)
     {
-        $this->driverOptions = $driverOptions;
+        $this->attributes = $attributes;
     }
 
     /**
-     * Get the driver-specific options passed to the connection upon creation.
+     * Get the connection attributes.
      *
-     * @return array|null The driver-specific options.
+     * @return array|null The connection attributes.
      */
-    public function driverOptions()
+    public function attributes()
     {
-        return $this->driverOptions;
+        return $this->attributes;
     }
 
     /**
@@ -43,9 +43,9 @@ class ConnectionFactory implements ConnectionFactoryInterface
             $dsn,
             $username,
             $password,
-            $this->driverOptions()
+            $this->attributes()
         );
     }
 
-    private $driverOptions;
+    private $attributes;
 }
