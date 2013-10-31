@@ -2,7 +2,6 @@
 namespace Icecave\Manifold\Connection\Facade;
 
 use Eloquent\Liberator\Liberator;
-use Icecave\Collections\Map;
 use Icecave\Manifold\Replication\Exception\NoConnectionAvailableException;
 use Icecave\Manifold\Replication\Exception\UnsupportedQueryException;
 use Icecave\Manifold\Replication\SelectionStrategy\AnyStrategy;
@@ -18,7 +17,7 @@ class PdoConnectionFacadeTest extends PHPUnit_Framework_TestCase
         parent::setUp();
 
         $this->queryConnectionSelector = Phake::mock('Icecave\Manifold\Replication\QueryConnectionSelectorInterface');
-        $this->attributes = new Map(array(123 => 'foo', 456 => 'bar'));
+        $this->attributes = array(123 => 'foo', 456 => 'bar');
         $this->facade = new PdoConnectionFacade($this->queryConnectionSelector, $this->attributes);
 
         $this->connectionSelector = Phake::mock('Icecave\Manifold\Replication\ConnectionSelectorInterface');
@@ -67,21 +66,18 @@ class PdoConnectionFacadeTest extends PHPUnit_Framework_TestCase
     public function testConstructor()
     {
         $this->assertSame($this->queryConnectionSelector, $this->facade->queryConnectionSelector());
-        $this->assertEquals($this->attributes, $this->facade->attributes());
-        $this->assertNotSame($this->attributes, $this->facade->attributes());
+        $this->assertSame($this->attributes, $this->facade->attributes());
     }
 
     public function testConstructorDefaults()
     {
         $this->facade = new PdoConnectionFacade($this->queryConnectionSelector);
 
-        $this->assertEquals(
-            new Map(
-                array(
-                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                    PDO::ATTR_PERSISTENT => false,
-                    PDO::ATTR_AUTOCOMMIT => false,
-                )
+        $this->assertSame(
+            array(
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_PERSISTENT => false,
+                PDO::ATTR_AUTOCOMMIT => false,
             ),
             $this->facade->attributes()
         );

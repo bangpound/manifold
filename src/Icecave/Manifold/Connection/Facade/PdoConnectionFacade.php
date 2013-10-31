@@ -1,7 +1,6 @@
 <?php
 namespace Icecave\Manifold\Connection\Facade;
 
-use Icecave\Collections\Map;
 use Icecave\Collections\Set;
 use Icecave\Collections\Vector;
 use Icecave\Manifold\Connection\PdoConnectionInterface;
@@ -24,19 +23,18 @@ class PdoConnectionFacade extends PDO implements PdoConnectionFacadeInterface
      * Construct a new PDO connection facade.
      *
      * @param QueryConnectionSelectorInterface $queryConnectionSelector The query connection selector to use.
-     * @param Map<integer,mixed>|null          $attributes              The connection attributes to use.
+     * @param array<integer,mixed>|null        $attributes              The connection attributes to use.
      */
     public function __construct(
         QueryConnectionSelectorInterface $queryConnectionSelector,
-        Map $attributes = null
+        array $attributes = null
     ) {
         if (null === $attributes) {
-            $attributes = new Map;
-            $attributes->set(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            $attributes->set(PDO::ATTR_PERSISTENT, false);
-            $attributes->set(PDO::ATTR_AUTOCOMMIT, false);
-        } else {
-            $attributes = clone $attributes;
+            $attributes = array(
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_PERSISTENT => false,
+                PDO::ATTR_AUTOCOMMIT => false,
+            );
         }
 
         $this->queryConnectionSelector = $queryConnectionSelector;
@@ -72,7 +70,7 @@ class PdoConnectionFacade extends PDO implements PdoConnectionFacadeInterface
     /**
      * Get the connection attributes.
      *
-     * @return Map<integer,mixed> The connection attributes.
+     * @return array<integer,mixed> The connection attributes.
      */
     public function attributes()
     {
@@ -438,7 +436,7 @@ class PdoConnectionFacade extends PDO implements PdoConnectionFacadeInterface
      */
     public function setAttribute($attribute, $value)
     {
-        $this->attributes->set($attribute, $value);
+        $this->attributes[$attribute] = $value;
 
         $result = true;
         $error = null;

@@ -33,15 +33,18 @@ class MysqlDriverTest extends PHPUnit_Framework_TestCase
 
         $this->connectionSelector = Phake::mock('Icecave\Manifold\Replication\ConnectionSelectorInterface');
 
-        $this->attributes = new Map(array(111 => 'foo'));
-        $this->defaultAttributes = new Map(
-            array(
-                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                PDO::ATTR_PERSISTENT => false,
-                PDO::ATTR_AUTOCOMMIT => false,
-            )
+        $this->attributes = array(111 => 'foo');
+        $this->defaultAttributes = array(
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_PERSISTENT => false,
+            PDO::ATTR_AUTOCOMMIT => false,
         );
-        $this->expectedAttributes = $this->attributes->merge($this->defaultAttributes);
+        $this->expectedAttributes = array(
+            111 => 'foo',
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_PERSISTENT => false,
+            PDO::ATTR_AUTOCOMMIT => false,
+        );
     }
 
     public function testCreateConnections()
