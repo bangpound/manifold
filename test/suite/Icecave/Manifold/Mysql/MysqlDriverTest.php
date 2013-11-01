@@ -4,7 +4,7 @@ namespace Icecave\Manifold\Mysql;
 use Icecave\Collections\Map;
 use Icecave\Collections\Vector;
 use Icecave\Manifold\Configuration\Configuration;
-use Icecave\Manifold\Connection\Facade\PdoConnectionFacade;
+use Icecave\Manifold\Connection\Facade\ConnectionFacade;
 use Icecave\Manifold\Replication\ConnectionSelector;
 use Icecave\Manifold\Replication\QueryConnectionSelector;
 use PDO;
@@ -51,7 +51,7 @@ class MysqlDriverTest extends PHPUnit_Framework_TestCase
     {
         $expected = new Vector(
             array(
-                new PdoConnectionFacade(
+                new ConnectionFacade(
                     new QueryConnectionSelector(
                         new ConnectionSelector(
                             $this->connectionPoolSelector,
@@ -61,7 +61,7 @@ class MysqlDriverTest extends PHPUnit_Framework_TestCase
                     ),
                     $this->expectedAttributes
                 ),
-                new PdoConnectionFacade(
+                new ConnectionFacade(
                     new QueryConnectionSelector(
                         new ConnectionSelector(
                             $this->connectionPoolSelector,
@@ -86,7 +86,7 @@ class MysqlDriverTest extends PHPUnit_Framework_TestCase
     {
         $expected = new Vector(
             array(
-                new PdoConnectionFacade(
+                new ConnectionFacade(
                     new QueryConnectionSelector(
                         new ConnectionSelector(
                             $this->connectionPoolSelector,
@@ -96,7 +96,7 @@ class MysqlDriverTest extends PHPUnit_Framework_TestCase
                     ),
                     $this->defaultAttributes
                 ),
-                new PdoConnectionFacade(
+                new ConnectionFacade(
                     new QueryConnectionSelector(
                         new ConnectionSelector(
                             $this->connectionPoolSelector,
@@ -115,7 +115,7 @@ class MysqlDriverTest extends PHPUnit_Framework_TestCase
 
     public function testCreateConnection()
     {
-        $expected = new PdoConnectionFacade(
+        $expected = new ConnectionFacade(
             new QueryConnectionSelector(
                 new ConnectionSelector(
                     $this->connectionPoolSelector,
@@ -134,7 +134,7 @@ class MysqlDriverTest extends PHPUnit_Framework_TestCase
 
     public function testCreateConnectionDefaults()
     {
-        $expected = new PdoConnectionFacade(
+        $expected = new ConnectionFacade(
             new QueryConnectionSelector(
                 new ConnectionSelector(
                     $this->connectionPoolSelector,
@@ -151,7 +151,7 @@ class MysqlDriverTest extends PHPUnit_Framework_TestCase
 
     public function testCreateConnectionFromSelector()
     {
-        $expected = new PdoConnectionFacade(
+        $expected = new ConnectionFacade(
             new QueryConnectionSelector(
                 $this->connectionSelector,
                 new MysqlQueryDiscriminator
@@ -166,7 +166,7 @@ class MysqlDriverTest extends PHPUnit_Framework_TestCase
 
     public function testCreateConnectionFromSelectorDefaults()
     {
-        $expected = new PdoConnectionFacade(
+        $expected = new ConnectionFacade(
             new QueryConnectionSelector(
                 $this->connectionSelector,
                 new MysqlQueryDiscriminator

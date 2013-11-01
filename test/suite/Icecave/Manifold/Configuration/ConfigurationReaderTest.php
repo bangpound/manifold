@@ -5,7 +5,7 @@ use Icecave\Collections\Map;
 use Icecave\Collections\Vector;
 use Icecave\Isolator\Isolator;
 use Icecave\Manifold\Connection\ConnectionFactory;
-use Icecave\Manifold\Connection\LazyPdoConnection;
+use Icecave\Manifold\Connection\LazyConnection;
 use Icecave\Manifold\Connection\Pool\ConnectionPool;
 use Icecave\Manifold\Connection\Pool\ConnectionPoolSelector;
 use Icecave\Manifold\Connection\Pool\ConnectionPoolPair;
@@ -69,7 +69,7 @@ EOD;
         $configuration = $this->reader->readString($string);
         $expectedConnections = new Map(
             array(
-                'foo' => new LazyPdoConnection('foo', 'mysql:host=foo'),
+                'foo' => new LazyConnection('foo', 'mysql:host=foo'),
             )
         );
         $expectedPools = new Map;
@@ -91,7 +91,7 @@ EOD;
         $configuration = $this->reader->readFile($this->fixturePath . '/valid-minimal.yml');
         $expectedConnections = new Map(
             array(
-                'foo' => new LazyPdoConnection('foo', 'mysql:host=foo'),
+                'foo' => new LazyConnection('foo', 'mysql:host=foo'),
             )
         );
         $expectedPools = new Map;
@@ -113,18 +113,18 @@ EOD;
         $configuration = $this->reader->readFile($this->fixturePath . '/valid-full.yml');
         $expectedConnections = new Map(
             array(
-                'master1' => new LazyPdoConnection('master1', 'mysql:host=master1', 'username', 'password'),
-                'master2' => new LazyPdoConnection('master2', 'mysql:host=master2'),
-                'master3' => new LazyPdoConnection('master3', 'mysql:host=master3'),
-                'reporting1' => new LazyPdoConnection('reporting1', 'mysql:host=reporting1'),
-                'slave101' => new LazyPdoConnection('slave101', 'mysql:host=slave101'),
-                'slave102' => new LazyPdoConnection('slave102', 'mysql:host=slave102'),
-                'reporting2' => new LazyPdoConnection('reporting2', 'mysql:host=reporting2'),
-                'slave201' => new LazyPdoConnection('slave201', 'mysql:host=slave201'),
-                'slave202' => new LazyPdoConnection('slave202', 'mysql:host=slave202'),
-                'reporting3' => new LazyPdoConnection('reporting3', 'mysql:host=reporting3'),
-                'slave301' => new LazyPdoConnection('slave301', 'mysql:host=slave301'),
-                'slave302' => new LazyPdoConnection('slave302', 'mysql:host=slave302'),
+                'master1' => new LazyConnection('master1', 'mysql:host=master1', 'username', 'password'),
+                'master2' => new LazyConnection('master2', 'mysql:host=master2'),
+                'master3' => new LazyConnection('master3', 'mysql:host=master3'),
+                'reporting1' => new LazyConnection('reporting1', 'mysql:host=reporting1'),
+                'slave101' => new LazyConnection('slave101', 'mysql:host=slave101'),
+                'slave102' => new LazyConnection('slave102', 'mysql:host=slave102'),
+                'reporting2' => new LazyConnection('reporting2', 'mysql:host=reporting2'),
+                'slave201' => new LazyConnection('slave201', 'mysql:host=slave201'),
+                'slave202' => new LazyConnection('slave202', 'mysql:host=slave202'),
+                'reporting3' => new LazyConnection('reporting3', 'mysql:host=reporting3'),
+                'slave301' => new LazyConnection('slave301', 'mysql:host=slave301'),
+                'slave302' => new LazyConnection('slave302', 'mysql:host=slave302'),
             )
         );
         $expectedPools = new Map(
@@ -245,8 +245,8 @@ EOD;
         $configuration = $this->reader->readString($string);
         $expectedConnections = new Map(
             array(
-                'foo' => new LazyPdoConnection('foo', 'mysql:host=foo', 'username', '$ESCAPED'),
-                'bar' => new LazyPdoConnection('bar', 'mysql:host=bar', '\\$ESCAPED', 'IG$NORED'),
+                'foo' => new LazyConnection('foo', 'mysql:host=foo', 'username', '$ESCAPED'),
+                'bar' => new LazyConnection('bar', 'mysql:host=bar', '\\$ESCAPED', 'IG$NORED'),
             )
         );
         $expectedPools = new Map;

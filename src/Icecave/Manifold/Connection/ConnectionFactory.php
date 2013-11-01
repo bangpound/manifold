@@ -40,7 +40,7 @@ class ConnectionFactory implements ConnectionFactoryInterface
      */
     public function create($name, $dsn, $username = null, $password = null)
     {
-        return new LazyPdoConnection(
+        return new LazyConnection(
             $name,
             $dsn,
             $username,

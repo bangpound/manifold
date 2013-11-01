@@ -15,9 +15,10 @@ use PDOException;
 use PDOStatement;
 
 /**
- * The interface implemented by PDO connection facades.
+ * Implements the PDO interface to allow a replication tree to behave as a
+ * single connection.
  */
-class PdoConnectionFacade extends PDO implements PdoConnectionFacadeInterface
+class ConnectionFacade extends PDO implements ConnectionFacadeInterface
 {
     /**
      * Construct a new PDO connection facade.
@@ -65,7 +66,7 @@ class PdoConnectionFacade extends PDO implements PdoConnectionFacadeInterface
         return $this->queryConnectionSelector()->selector();
     }
 
-    // Implementation of PdoConnectionFacadeInterface ==========================
+    // Implementation of ConnectionFacadeInterface =============================
 
     /**
      * Get the connection attributes.

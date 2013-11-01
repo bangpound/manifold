@@ -25,7 +25,7 @@ class ConnectionFactoryTest extends PHPUnit_Framework_TestCase
 
     public function testCreate()
     {
-        $expected = new LazyPdoConnection('name', 'dsn', 'username', 'password', array('foo' => 'bar'));
+        $expected = new LazyConnection('name', 'dsn', 'username', 'password', array('foo' => 'bar'));
 
         $this->assertEquals($expected, $this->factory->create('name', 'dsn', 'username', 'password'));
     }

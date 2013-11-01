@@ -3,7 +3,7 @@ namespace Icecave\Manifold\Driver;
 
 use Icecave\Collections\Vector;
 use Icecave\Manifold\Configuration\ConfigurationInterface;
-use Icecave\Manifold\Connection\Facade\PdoConnectionFacadeInterface;
+use Icecave\Manifold\Connection\Facade\ConnectionFacadeInterface;
 use Icecave\Manifold\Replication\ConnectionSelectorInterface;
 use Icecave\Manifold\Replication\ReplicationTreeInterface;
 
@@ -18,7 +18,7 @@ interface DriverInterface
      * @param ConfigurationInterface    $configuration The configuration to use.
      * @param array<integer,mixed>|null $attributes    The connection attributes to use.
      *
-     * @return Vector<PdoConnectionFacadeInterface> The newly created connection facades.
+     * @return Vector<ConnectionFacadeInterface> The newly created connection facades.
      */
     public function createConnections(
         ConfigurationInterface $configuration,
@@ -33,7 +33,7 @@ interface DriverInterface
      * @param ReplicationTreeInterface  $replicationTree The replication tree to use.
      * @param array<integer,mixed>|null $attributes      The connection attributes to use.
      *
-     * @return PdoConnectionFacadeInterface The newly created connection facade.
+     * @return ConnectionFacadeInterface The newly created connection facade.
      */
     public function createConnection(
         ConfigurationInterface $configuration,
@@ -47,7 +47,7 @@ interface DriverInterface
      * @param ConnectionSelectorInterface $connectionSelector The connection selector to use.
      * @param array<integer,mixed>|null   $attributes         The connection attributes to use.
      *
-     * @return PdoConnectionFacadeInterface The newly created connection facade.
+     * @return ConnectionFacadeInterface The newly created connection facade.
      */
     public function createConnectionFromSelector(
         ConnectionSelectorInterface $connectionSelector,

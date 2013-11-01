@@ -10,7 +10,7 @@ use PDOException;
 use PHPUnit_Framework_TestCase;
 use Phake;
 
-class PdoConnectionFacadeTest extends PHPUnit_Framework_TestCase
+class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
@@ -18,7 +18,7 @@ class PdoConnectionFacadeTest extends PHPUnit_Framework_TestCase
 
         $this->queryConnectionSelector = Phake::mock('Icecave\Manifold\Replication\QueryConnectionSelectorInterface');
         $this->attributes = array(123 => 'foo', 456 => 'bar');
-        $this->facade = new PdoConnectionFacade($this->queryConnectionSelector, $this->attributes);
+        $this->facade = new ConnectionFacade($this->queryConnectionSelector, $this->attributes);
 
         $this->connectionSelector = Phake::mock('Icecave\Manifold\Replication\ConnectionSelectorInterface');
 
@@ -71,7 +71,7 @@ class PdoConnectionFacadeTest extends PHPUnit_Framework_TestCase
 
     public function testConstructorDefaults()
     {
-        $this->facade = new PdoConnectionFacade($this->queryConnectionSelector);
+        $this->facade = new ConnectionFacade($this->queryConnectionSelector);
 
         $this->assertSame(
             array(
@@ -88,7 +88,7 @@ class PdoConnectionFacadeTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->connectionSelector, $this->facade->connectionSelector());
     }
 
-    // Implementation of PdoConnectionFacadeInterface ==========================
+    // Implementation of ConnectionFacadeInterface =============================
 
     public function testSetDefaultStrategy()
     {

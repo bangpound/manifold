@@ -10,7 +10,7 @@ use PDOStatement;
 /**
  * The interface implemented by PDO connection facades.
  */
-interface PdoConnectionFacadeInterface extends PdoConnectionInterface
+interface ConnectionFacadeInterface extends PdoConnectionInterface
 {
     /**
      * Get the connection attributes.

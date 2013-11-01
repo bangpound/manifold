@@ -5,12 +5,12 @@ use PDO;
 use Phake;
 use PHPUnit_Framework_TestCase;
 
-class LazyPdoConnectionTest extends PHPUnit_Framework_TestCase
+class LazyConnectionTest extends PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
         $this->connection = Phake::partialMock(
-            __NAMESPACE__ . '\LazyPdoConnection',
+            __NAMESPACE__ . '\LazyConnection',
             'name',
             'dsn',
             'username',
@@ -32,7 +32,7 @@ class LazyPdoConnectionTest extends PHPUnit_Framework_TestCase
 
     public function testConstructorDefaults()
     {
-        $this->connection = new LazyPdoConnection('name', 'dsn');
+        $this->connection = new LazyConnection('name', 'dsn');
 
         $this->assertNull($this->connection->username());
         $this->assertNull($this->connection->password());
@@ -63,7 +63,7 @@ class LazyPdoConnectionTest extends PHPUnit_Framework_TestCase
     public function testConnectDefaults()
     {
         $this->connection = Phake::partialMock(
-            __NAMESPACE__ . '\LazyPdoConnection',
+            __NAMESPACE__ . '\LazyConnection',
             'name',
             'dsn'
         );
