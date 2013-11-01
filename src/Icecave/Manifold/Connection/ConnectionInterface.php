@@ -2,12 +2,12 @@
 namespace Icecave\Manifold\Connection;
 
 /**
- * The interface implemented by conrete connections.
+ * The interface implemented by concrete connections.
  *
  * This interface extends the PDO connection interface to add information
  * necessary to serialize the connection for later use.
  */
-interface ConcreteConnectionInterface
+interface ConnectionInterface
 {
     /**
      * Get the connection name.
