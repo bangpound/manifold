@@ -15,6 +15,7 @@ use Icecave\Collections\Map;
 use Icecave\Collections\Vector;
 use Icecave\Manifold\Connection\ConnectionFactory;
 use Icecave\Manifold\Connection\ConnectionFactoryInterface;
+use Icecave\Manifold\Connection\ConnectionInterface;
 use Icecave\Manifold\Connection\Pool\ConnectionPool;
 use Icecave\Manifold\Connection\Pool\ConnectionPoolInterface;
 use Icecave\Manifold\Connection\Pool\ConnectionPoolPair;
@@ -23,7 +24,6 @@ use Icecave\Manifold\Connection\Pool\ConnectionPoolSelector;
 use Icecave\Manifold\Connection\Pool\ConnectionPoolSelectorInterface;
 use Icecave\Manifold\Replication\ReplicationTree;
 use Icecave\Manifold\Replication\ReplicationTreeInterface;
-use PDO;
 
 /**
  * Reads configuration from files and strings.
@@ -176,7 +176,7 @@ class ConfigurationReader implements ConfigurationReaderInterface
      *
      * @param ObjectValue $value The raw configuration data.
      *
-     * @return tuple<Map<string,PDO>,PDO> A tuple of the connection map, and the default connection.
+     * @return tuple<Map<string,ConnectionInterface>,ConnectionInterface> A tuple of the connection map, and the default connection.
      */
     protected function createConnections(ObjectValue $value)
     {
@@ -202,8 +202,8 @@ class ConfigurationReader implements ConfigurationReaderInterface
     /**
      * Creates a map of connection pools from raw configuration data.
      *
-     * @param ObjectValue     $value       The raw configuration data.
-     * @param Map<string,PDO> $connections The connection map.
+     * @param ObjectValue                     $value       The raw configuration data.
+     * @param Map<string,ConnectionInterface> $connections The connection map.
      *
      * @return Map<string,ConnectionPoolInterface> The connection pool map.
      */
@@ -226,9 +226,9 @@ class ConfigurationReader implements ConfigurationReaderInterface
      * Creates a new connection pool selector from raw configuration data.
      *
      * @param ObjectValue                         $value             The raw configuration data.
-     * @param Map<string,PDO>                     $connections       The connection map.
+     * @param Map<string,ConnectionInterface>     $connections       The connection map.
      * @param Map<string,ConnectionPoolInterface> $pools             The connection pool map.
-     * @param PDO                                 $defaultConnection The default connection.
+     * @param ConnectionInterface                 $defaultConnection The default connection.
      *
      * @return ConnectionPoolSelectorInterface The new connection pool selector.
      */
@@ -236,7 +236,7 @@ class ConfigurationReader implements ConfigurationReaderInterface
         ObjectValue $value,
         Map $connections,
         Map $pools,
-        PDO $defaultConnection
+        ConnectionInterface $defaultConnection
     ) {
         $databases = new Map;
         $defaultPool = $this->createSingleConnectionPool($defaultConnection);
@@ -269,9 +269,9 @@ class ConfigurationReader implements ConfigurationReaderInterface
      * Creates a vector of replication trees from raw configuration data.
      *
      * @param ObjectValue                         $value             The raw configuration data.
-     * @param Map<string,PDO>                     $connections       The connection map.
+     * @param Map<string,ConnectionInterface>     $connections       The connection map.
      * @param Map<string,ConnectionPoolInterface> $pools             The connection pool map.
-     * @param PDO                                 $defaultConnection The default connection.
+     * @param ConnectionInterface                 $defaultConnection The default connection.
      *
      * @return Vector<ReplicationTreeInterface> The new replication trees.
      */
@@ -279,7 +279,7 @@ class ConfigurationReader implements ConfigurationReaderInterface
         ObjectValue $value,
         Map $connections,
         Map $pools,
-        PDO $defaultConnection
+        ConnectionInterface $defaultConnection
     ) {
         $replicationTrees = new Vector;
 
@@ -310,9 +310,9 @@ class ConfigurationReader implements ConfigurationReaderInterface
     /**
      * Creates a new connection pool from raw configuration data.
      *
-     * @param string          $poolName        The connection pool name.
-     * @param ArrayValue      $connectionNames The raw configuration data.
-     * @param Map<string,PDO> $connections     The connection map.
+     * @param string                          $poolName        The connection pool name.
+     * @param ArrayValue                      $connectionNames The raw configuration data.
+     * @param Map<string,ConnectionInterface> $connections     The connection map.
      *
      * @return ConnectionPoolInterface The new connection pool.
      */
@@ -336,7 +336,7 @@ class ConfigurationReader implements ConfigurationReaderInterface
      * data.
      *
      * @param ObjectValue                         $value       The raw configuration data.
-     * @param Map<string,PDO>                     $connections The connection map.
+     * @param Map<string,ConnectionInterface>     $connections The connection map.
      * @param Map<string,ConnectionPoolInterface> $pools       The connection pool map.
      * @param ConnectionPoolInterface|null        $defaultPool The default connection pool.
      *
@@ -375,17 +375,17 @@ class ConfigurationReader implements ConfigurationReaderInterface
      * Adds replication nodes to an existing tree based upon configuration data.
      *
      * @param ValueInterface                      $treeNodes        The raw configuration data.
-     * @param Map<string,PDO>                     $connections      The connection map.
+     * @param Map<string,ConnectionInterface>     $connections      The connection map.
      * @param Map<string,ConnectionPoolInterface> $pools            The connection pool map.
      * @param ReplicationTreeInterface            $replicationTree  The replication tree to add to.
-     * @param PDO                                 $masterConnection The master connection.
+     * @param ConnectionInterface                 $masterConnection The master connection.
      */
     protected function addReplicationNodes(
         ValueInterface $treeNodes,
         Map $connections,
         Map $pools,
         ReplicationTreeInterface $replicationTree,
-        PDO $masterConnection
+        ConnectionInterface $masterConnection
     ) {
         if ($treeNodes instanceof NullValue) {
             return;
@@ -412,10 +412,10 @@ class ConfigurationReader implements ConfigurationReaderInterface
     /**
      * Finds a connection by name.
      *
-     * @param string          $name        The connection name.
-     * @param Map<string,PDO> $connections The connection map.
+     * @param string                          $name        The connection name.
+     * @param Map<string,ConnectionInterface> $connections The connection map.
      *
-     * @return PDO                                    The connection.
+     * @return ConnectionInterface                    The connection.
      * @throws Exception\UndefinedConnectionException If no associated connection is found.
      */
     protected function findConnection($name, Map $connections)
@@ -434,7 +434,7 @@ class ConfigurationReader implements ConfigurationReaderInterface
      * placed in a pool by itself and returned.
      *
      * @param string                              $name        The pool or connection name.
-     * @param Map<string,PDO>                     $connections The connection map.
+     * @param Map<string,ConnectionInterface>     $connections The connection map.
      * @param Map<string,ConnectionPoolInterface> $pools       The connection pool map.
      *
      * @return ConnectionPoolInterface                The connection pool.
@@ -454,11 +454,11 @@ class ConfigurationReader implements ConfigurationReaderInterface
     /**
      * Wraps a single connection in its own pool.
      *
-     * @param PDO $connection The connection to wrap.
+     * @param ConnectionInterface $connection The connection to wrap.
      *
      * @return ConnectionPoolInterface The new connection pool.
      */
-    protected function createSingleConnectionPool(PDO $connection)
+    protected function createSingleConnectionPool(ConnectionInterface $connection)
     {
         $connections = new Vector;
         $connections->pushBack($connection);

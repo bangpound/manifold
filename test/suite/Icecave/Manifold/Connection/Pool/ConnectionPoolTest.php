@@ -11,8 +11,8 @@ class ConnectionPoolTest extends PHPUnit_Framework_TestCase
     {
         $this->connections = new Vector(
             array(
-                Phake::mock('PDO'),
-                Phake::mock('PDO'),
+                Phake::mock('Icecave\Manifold\Connection\ConnectionInterface'),
+                Phake::mock('Icecave\Manifold\Connection\ConnectionInterface'),
             )
         );
         $this->pool = new ConnectionPool('name', $this->connections);

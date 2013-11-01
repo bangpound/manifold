@@ -13,9 +13,9 @@ class AnyStrategyTest extends PHPUnit_Framework_TestCase
         $this->strategy = new AnyStrategy;
 
         $this->manager = Phake::mock('Icecave\Manifold\Replication\ReplicationManagerInterface');
-        $this->connectionA = Phake::mock('PDO');
+        $this->connectionA = Phake::mock('Icecave\Manifold\Connection\ConnectionInterface');
         $this->connectionA->id = 'A';
-        $this->connectionB = Phake::mock('PDO');
+        $this->connectionB = Phake::mock('Icecave\Manifold\Connection\ConnectionInterface');
         $this->connectionB->id = 'B';
         $this->pool = new ConnectionPool(
             'pool',

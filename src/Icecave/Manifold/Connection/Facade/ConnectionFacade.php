@@ -3,6 +3,7 @@ namespace Icecave\Manifold\Connection\Facade;
 
 use Icecave\Collections\Set;
 use Icecave\Collections\Vector;
+use Icecave\Manifold\Connection\ConnectionInterface;
 use Icecave\Manifold\Connection\PdoConnectionInterface;
 use Icecave\Manifold\Replication\Exception\NoConnectionAvailableException;
 use Icecave\Manifold\Replication\Exception\UnsupportedQueryException;
@@ -486,7 +487,7 @@ class ConnectionFacade extends PDO implements ConnectionFacadeInterface
     /**
      * Get the initialized connections.
      *
-     * @return Set<PDO> The initialized connections.
+     * @return Set<ConnectionInterface> The initialized connections.
      */
     protected function initializedConnections()
     {
@@ -496,17 +497,18 @@ class ConnectionFacade extends PDO implements ConnectionFacadeInterface
     /**
      * Set the current concrete connection.
      *
-     * @param PDO $currentConnection The connection to use.
+     * @param ConnectionInterface $currentConnection The connection to use.
      */
-    protected function setCurrentConnection(PDO $currentConnection)
-    {
+    protected function setCurrentConnection(
+        ConnectionInterface $currentConnection
+    ) {
         $this->currentConnection = $currentConnection;
     }
 
     /**
      * Get the most recently used concrete connection.
      *
-     * @return PDO|null The most recently used concrete connection, or null if no connection has yet been used.
+     * @return ConnectionInterface|null The most recently used concrete connection, or null if no connection has yet been used.
      */
     protected function currentConnection()
     {
@@ -524,7 +526,7 @@ class ConnectionFacade extends PDO implements ConnectionFacadeInterface
     /**
      * Get the connections involved in the current transaction.
      *
-     * @return Vector<PDO> The transaction connections.
+     * @return Vector<ConnectionInterface> The transaction connections.
      */
     protected function transactionConnections()
     {
@@ -537,8 +539,8 @@ class ConnectionFacade extends PDO implements ConnectionFacadeInterface
      * @param string|null                     $databaseName The name of the database to write to, or null for a generic connection.
      * @param SelectionStrategyInterface|null $strategy     The strategy to use, or null to use the default strategy.
      *
-     * @return PDO          The connection to use.
-     * @throws PDOException If a connection cannot be obtained.
+     * @return ConnectionInterface The connection to use.
+     * @throws PDOException        If a connection cannot be obtained.
      */
     protected function selectConnectionForWrite(
         $databaseName = null,
@@ -562,8 +564,8 @@ class ConnectionFacade extends PDO implements ConnectionFacadeInterface
      * @param string|null                     $databaseName The name of the database to read from, or null for a generic connection.
      * @param SelectionStrategyInterface|null $strategy     The strategy to use, or null to use the default strategy.
      *
-     * @return PDO          The connection to use.
-     * @throws PDOException If a connection cannot be obtained.
+     * @return ConnectionInterface The connection to use.
+     * @throws PDOException        If a connection cannot be obtained.
      */
     protected function selectConnectionForRead(
         $databaseName = null,
@@ -588,8 +590,8 @@ class ConnectionFacade extends PDO implements ConnectionFacadeInterface
      * @param string                          $statement The statement to be executed.
      * @param SelectionStrategyInterface|null $strategy  The strategy to use, or null to use the default strategy.
      *
-     * @return PDO          The connection to use.
-     * @throws PDOException If a connection cannot be obtained.
+     * @return ConnectionInterface The connection to use.
+     * @throws PDOException        If a connection cannot be obtained.
      */
     protected function selectConnectionForStatement(
         $statement,
@@ -615,11 +617,11 @@ class ConnectionFacade extends PDO implements ConnectionFacadeInterface
      *
      * This method also records the connection as the 'current' connection.
      *
-     * @param PDO $connection The connection to initialize.
+     * @param ConnectionInterface $connection The connection to initialize.
      *
      * @throws PDOException If activation fails.
      */
-    protected function activateConnection(PDO $connection)
+    protected function activateConnection(ConnectionInterface $connection)
     {
         if (!$this->initializedConnections()->contains($connection)) {
             foreach ($this->attributes() as $attribute => $value) {

@@ -3,7 +3,7 @@ namespace Icecave\Manifold\Replication;
 
 use Icecave\Chrono\TimeSpan\Duration;
 use Icecave\Chrono\TimeSpan\TimeSpanInterface;
-use PDO;
+use Icecave\Manifold\Connection\ConnectionInterface;
 
 /**
  * The interface implemented by replication managers.
@@ -29,17 +29,17 @@ interface ReplicationManagerInterface
      * returned instead of a duration. This allows for improved performance if
      * the delay must be below a threshold to be useful.
      *
-     * @param PDO                            $slaveConnection       The replication slave.
+     * @param ConnectionInterface            $slaveConnection       The replication slave.
      * @param TimeSpanInterface|integer|null $threshold             The maximum allowable replication delay, or null to allow any amount of delay.
-     * @param PDO                            $masterConnection|null The replication master to check against, or null to use the replication root.
+     * @param ConnectionInterface            $masterConnection|null The replication master to check against, or null to use the replication root.
      *
      * @return Duration|null                     The replication delay between $masterConnection and $slaveConnection, or null if a threshold is passed, and the duration surpasses that threshold.
      * @throws Exception\NotReplicatingException If $slaveConnection is not replicating from $masterConnection.
      */
     public function delay(
-        PDO $slaveConnection,
+        ConnectionInterface $slaveConnection,
         $threshold = null,
-        PDO $masterConnection = null
+        ConnectionInterface $masterConnection = null
     );
 
     /**
@@ -50,16 +50,16 @@ interface ReplicationManagerInterface
      * the delay surpasses the threshold.
      *
      * @param TimeSpanInterface|integer $threshold             The threshold delay.
-     * @param PDO                       $slaveConnection       The replication slave.
-     * @param PDO                       $masterConnection|null The replication master to check against, or null to use the replication root.
+     * @param ConnectionInterface       $slaveConnection       The replication slave.
+     * @param ConnectionInterface       $masterConnection|null The replication master to check against, or null to use the replication root.
      *
      * @return boolean                           True if the slave's replication delay is less than or equal to $threshold.
      * @throws Exception\NotReplicatingException If $slaveConnection is not replicating from $masterConnection.
      */
     public function delayWithin(
         $threshold,
-        PDO $slaveConnection,
-        PDO $masterConnection = null
+        ConnectionInterface $slaveConnection,
+        ConnectionInterface $masterConnection = null
     );
 
     /**
@@ -68,15 +68,15 @@ interface ReplicationManagerInterface
      * This function will return false if any of the links in the replication
      * path between $masterConnection and $slaveConnection are not replicating.
      *
-     * @param PDO      $slaveConnection  The replication slave.
-     * @param PDO|null $masterConnection The replication master to check against, or null to use the replication root.
+     * @param ConnectionInterface      $slaveConnection  The replication slave.
+     * @param ConnectionInterface|null $masterConnection The replication master to check against, or null to use the replication root.
      *
      * @return boolean                           True if $slaveConnection is replicating.
      * @throws Exception\NotReplicatingException If $slaveConnection is not a replication slave of $masterConnection.
      */
     public function isReplicating(
-        PDO $slaveConnection,
-        PDO $masterConnection = null
+        ConnectionInterface $slaveConnection,
+        ConnectionInterface $masterConnection = null
     );
 
     /**
@@ -87,16 +87,16 @@ interface ReplicationManagerInterface
      * catch up to its master. If a timeout is specified, this method will
      * return false once the total time spent waiting exceeds this timeout.
      *
-     * @param PDO                            $slaveConnection       The replication slave.
+     * @param ConnectionInterface            $slaveConnection       The replication slave.
      * @param TimeSpanInterface|integer|null $timeout               The maximum time to wait, or null to wait indefinitely.
-     * @param PDO                            $masterConnection|null The replication master to check against, or null to use the replication root.
+     * @param ConnectionInterface            $masterConnection|null The replication master to check against, or null to use the replication root.
      *
      * @return boolean                           False if the wait operation times out before completion; otherwise, true.
      * @throws Exception\NotReplicatingException If $slaveConnection is not replicating from $masterConnection.
      */
     public function wait(
-        PDO $slaveConnection,
+        ConnectionInterface $slaveConnection,
         $timeout = null,
-        PDO $masterConnection = null
+        ConnectionInterface $masterConnection = null
     );
 }

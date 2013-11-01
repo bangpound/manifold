@@ -3,9 +3,9 @@ namespace Icecave\Manifold\Mysql;
 
 use Icecave\Chrono\TimeSpan\Duration;
 use Icecave\Chrono\TimeSpan\TimeSpanInterface;
+use Icecave\Manifold\Connection\ConnectionInterface;
 use Icecave\Manifold\Replication\AbstractReplicationManager;
 use Icecave\Manifold\Replication\Exception\NotReplicatingException;
-use PDO;
 use stdClass;
 
 /**
@@ -22,14 +22,14 @@ class MysqlReplicationManager extends AbstractReplicationManager
      * safely assume that $masterConnection is the direct master of
      * $slaveConnection.
      *
-     * @param PDO $masterConnection The replication master to check against.
-     * @param PDO $slaveConnection  The replication slave.
+     * @param ConnectionInterface $masterConnection The replication master to check against.
+     * @param ConnectionInterface $slaveConnection  The replication slave.
      *
      * @return Duration|null The amount of time behind master, or null if $slaveConnection is not replicating from $masterConnection.
      */
     protected function amountBehindMaster(
-        PDO $masterConnection,
-        PDO $slaveConnection
+        ConnectionInterface $masterConnection,
+        ConnectionInterface $slaveConnection
     ) {
         $result = $this->slaveStatus($slaveConnection);
         if (null === $result || null === $result->Seconds_Behind_Master) {
@@ -48,16 +48,16 @@ class MysqlReplicationManager extends AbstractReplicationManager
      * safely assume that $masterConnection is the direct master of
      * $slaveConnection.
      *
-     * @param PDO                    $masterConnection The replication master to check against.
-     * @param PDO                    $slaveConnection  The replication slave.
+     * @param ConnectionInterface    $masterConnection The replication master to check against.
+     * @param ConnectionInterface    $slaveConnection  The replication slave.
      * @param TimeSpanInterface|null $timeout          The maximum time to wait, or null to wait indefinitely.
      *
      * @return boolean                 False if the wait operation times out before completion; otherwise, true.
      * @throws NotReplicatingException If $slaveConnection is not replicating from $masterConnection.
      */
     protected function doWait(
-        PDO $masterConnection,
-        PDO $slaveConnection,
+        ConnectionInterface $masterConnection,
+        ConnectionInterface $slaveConnection,
         TimeSpanInterface $timeout = null
     ) {
         $timeout = $this->normalizeDuration($timeout);
@@ -101,11 +101,11 @@ class MysqlReplicationManager extends AbstractReplicationManager
     /**
      * Get the slave status of a connection.
      *
-     * @param PDO $connection The slave connection.
+     * @param ConnectionInterface $connection The slave connection.
      *
      * @return stdClass|null The result row, or null if the connection is not a replication slave.
      */
-    protected function slaveStatus(PDO $connection)
+    protected function slaveStatus(ConnectionInterface $connection)
     {
         return $connection->query('SHOW SLAVE STATUS')->fetchObject();
     }
@@ -113,11 +113,11 @@ class MysqlReplicationManager extends AbstractReplicationManager
     /**
      * Get the master status of a connection.
      *
-     * @param PDO $connection The master connection.
+     * @param ConnectionInterface $connection The master connection.
      *
      * @return stdClass|null The result row, or null if the connection is not a replication master.
      */
-    protected function masterStatus(PDO $connection)
+    protected function masterStatus(ConnectionInterface $connection)
     {
         return $connection->query('SHOW MASTER STATUS')->fetchObject();;
     }

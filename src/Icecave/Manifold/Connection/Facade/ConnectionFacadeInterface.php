@@ -3,7 +3,6 @@ namespace Icecave\Manifold\Connection\Facade;
 
 use Icecave\Manifold\Connection\PdoConnectionInterface;
 use Icecave\Manifold\Replication\SelectionStrategy\SelectionStrategyInterface;
-use PDO;
 use PDOException;
 use PDOStatement;
 

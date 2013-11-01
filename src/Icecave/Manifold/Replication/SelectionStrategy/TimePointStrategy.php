@@ -3,10 +3,10 @@ namespace Icecave\Manifold\Replication\SelectionStrategy;
 
 use Icecave\Chrono\Clock\ClockInterface;
 use Icecave\Chrono\TimePointInterface;
+use Icecave\Manifold\Connection\ConnectionInterface;
 use Icecave\Manifold\Connection\Pool\ConnectionPoolInterface;
 use Icecave\Manifold\Replication\Exception\NoConnectionAvailableException;
 use Icecave\Manifold\Replication\ReplicationManagerInterface;
-use PDO;
 
 /**
  * Selects the first connection that is up-to-date
@@ -46,7 +46,7 @@ class TimePointStrategy extends AbstractSelectionStrategy
      * @param ReplicationManagerInterface $replicationManager The replication manager to use.
      * @param ConnectionPoolInterface     $pool               The pool to select from.
      *
-     * @return PDO                            The selected connection.
+     * @return ConnectionInterface            The selected connection.
      * @throws NoConnectionAvailableException If no connection is available for selection.
      */
     public function select(

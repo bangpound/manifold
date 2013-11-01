@@ -3,10 +3,10 @@ namespace Icecave\Manifold\Configuration;
 
 use Icecave\Collections\Map;
 use Icecave\Collections\Vector;
+use Icecave\Manifold\Connection\ConnectionInterface;
 use Icecave\Manifold\Connection\Pool\ConnectionPoolInterface;
 use Icecave\Manifold\Connection\Pool\ConnectionPoolSelectorInterface;
 use Icecave\Manifold\Replication\ReplicationTreeInterface;
-use PDO;
 
 /**
  * Represents a complete set of configuration settings.
@@ -16,7 +16,7 @@ class Configuration implements ConfigurationInterface
     /**
      * Construct a new configuration.
      *
-     * @param Map<string,PDO>                     $connections            The defined connections.
+     * @param Map<string,ConnectionInterface>     $connections            The defined connections.
      * @param Map<string,ConnectionPoolInterface> $connectionPools        The defined connection pools.
      * @param ConnectionPoolSelectorInterface     $connectionPoolSelector The connection pool selector.
      * @param Vector<ReplicationTreeInterface>    $replicationTrees       The replication trees.
@@ -36,7 +36,7 @@ class Configuration implements ConfigurationInterface
     /**
      * Get the defined connections.
      *
-     * @return Map<string,PDO> The defined connections.
+     * @return Map<string,ConnectionInterface> The defined connections.
      */
     public function connections()
     {

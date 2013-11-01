@@ -1,8 +1,6 @@
 <?php
 namespace Icecave\Manifold\Connection;
 
-use PDO;
-
 /**
  * The interface implemented by connection read/write pairs.
  */
@@ -11,11 +9,13 @@ class ConnectionPair implements ConnectionPairInterface
     /**
      * Construct a new read/write connection pair.
      *
-     * @param PDO $write The write connection.
-     * @param PDO $read  The read connection.
+     * @param ConnectionInterface $write The write connection.
+     * @param ConnectionInterface $read  The read connection.
      */
-    public function __construct(PDO $write, PDO $read)
-    {
+    public function __construct(
+        ConnectionInterface $write,
+        ConnectionInterface $read
+    ) {
         $this->write = $write;
         $this->read = $read;
     }
@@ -23,7 +23,7 @@ class ConnectionPair implements ConnectionPairInterface
     /**
      * Get the write connection.
      *
-     * @return PDO The write connection.
+     * @return ConnectionInterface The write connection.
      */
     public function write()
     {
@@ -33,7 +33,7 @@ class ConnectionPair implements ConnectionPairInterface
     /**
      * Get the read connection.
      *
-     * @return PDO The read connection.
+     * @return ConnectionInterface The read connection.
      */
     public function read()
     {

@@ -2,7 +2,7 @@
 namespace Icecave\Manifold\Connection\Pool;
 
 use Icecave\Collections\Vector;
-use PDO;
+use Icecave\Manifold\Connection\ConnectionInterface;
 
 /**
  * The interface implemented by connection pools.
@@ -12,8 +12,8 @@ class ConnectionPool implements ConnectionPoolInterface
     /**
      * Construct a new connection pool.
      *
-     * @param string      $name        The connection pool name.
-     * @param Vector<PDO> $connections The connections.
+     * @param string                      $name        The connection pool name.
+     * @param Vector<ConnectionInterface> $connections The connections.
      *
      * @throws Exception\EmptyConnectionPoolException If no connections are supplied.
      */
@@ -40,7 +40,7 @@ class ConnectionPool implements ConnectionPoolInterface
     /**
      * Get the connections.
      *
-     * @return Vector<PDO> The connections.
+     * @return Vector<ConnectionInterface> The connections.
      */
     public function connections()
     {

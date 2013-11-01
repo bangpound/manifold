@@ -1,8 +1,8 @@
 <?php
 namespace Icecave\Manifold\Replication;
 
+use Icecave\Manifold\Connection\ConnectionInterface;
 use Icecave\Manifold\Connection\ConnectionPairInterface;
-use PDO;
 
 /**
  * The interface implemented by connection selectors.
@@ -31,7 +31,7 @@ interface ConnectionSelectorInterface
      * @param string|null                                       $databaseName The name of the database to write to, or null for a generic connection.
      * @param SelectionStrategy\SelectionStrategyInterface|null $strategy     The selection strategy to use.
      *
-     * @return PDO                                      The most appropriate connection.
+     * @return ConnectionInterface                      The most appropriate connection.
      * @throws Exception\NoConnectionAvailableException If no connection is available for selection.
      */
     public function forWrite(
@@ -45,7 +45,7 @@ interface ConnectionSelectorInterface
      * @param string|null                                       $databaseName The name of the database to read from, or null for a generic connection.
      * @param SelectionStrategy\SelectionStrategyInterface|null $strategy     The selection strategy to use.
      *
-     * @return PDO                                      The most appropriate connection.
+     * @return ConnectionInterface                      The most appropriate connection.
      * @throws Exception\NoConnectionAvailableException If no connection is available for selection.
      */
     public function forRead(

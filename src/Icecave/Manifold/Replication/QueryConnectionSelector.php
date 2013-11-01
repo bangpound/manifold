@@ -1,7 +1,7 @@
 <?php
 namespace Icecave\Manifold\Replication;
 
-use PDO;
+use Icecave\Manifold\Connection\ConnectionInterface;
 
 /**
  * Wraps a connection selector to implement selection based upon queries.
@@ -52,7 +52,7 @@ class QueryConnectionSelector implements QueryConnectionSelectorInterface
      * @param string                                            $query    The query to select a connection for.
      * @param SelectionStrategy\SelectionStrategyInterface|null $strategy The selection strategy to use.
      *
-     * @return PDO                                      The selected connection.
+     * @return ConnectionInterface                      The selected connection.
      * @throws Exception\UnsupportedQueryException      If the query type is unsupported, or cannot be determined.
      * @throws Exception\NoConnectionAvailableException If no connection is available for selection.
      */

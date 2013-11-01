@@ -21,11 +21,11 @@ class TimePointStrategyTest extends PHPUnit_Framework_TestCase
         $this->strategy = new TimePointStrategy($this->timePoint, $this->clock);
 
         $this->manager = Phake::mock('Icecave\Manifold\Replication\ReplicationManagerInterface');
-        $this->connectionA = Phake::mock('PDO');
+        $this->connectionA = Phake::mock('Icecave\Manifold\Connection\ConnectionInterface');
         $this->connectionA->id = 'A';
-        $this->connectionB = Phake::mock('PDO');
+        $this->connectionB = Phake::mock('Icecave\Manifold\Connection\ConnectionInterface');
         $this->connectionB->id = 'B';
-        $this->connectionC = Phake::mock('PDO');
+        $this->connectionC = Phake::mock('Icecave\Manifold\Connection\ConnectionInterface');
         $this->connectionC->id = 'C';
         $this->pool = new ConnectionPool(
             'pool',

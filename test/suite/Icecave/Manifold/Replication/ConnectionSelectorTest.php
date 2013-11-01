@@ -24,17 +24,17 @@ class ConnectionSelectorTest extends PHPUnit_Framework_TestCase
 
         $this->strategy = Phake::mock(__NAMESPACE__ . '\SelectionStrategy\SelectionStrategyInterface');
 
-        $this->connectionA1 = Phake::mock('PDO');
+        $this->connectionA1 = Phake::mock('Icecave\Manifold\Connection\ConnectionInterface');
         $this->connectionA1->id = 'A1';
-        $this->connectionA2 = Phake::mock('PDO');
+        $this->connectionA2 = Phake::mock('Icecave\Manifold\Connection\ConnectionInterface');
         $this->connectionA2->id = 'A2';
-        $this->connectionB1 = Phake::mock('PDO');
+        $this->connectionB1 = Phake::mock('Icecave\Manifold\Connection\ConnectionInterface');
         $this->connectionB1->id = 'B1';
-        $this->connectionB2 = Phake::mock('PDO');
+        $this->connectionB2 = Phake::mock('Icecave\Manifold\Connection\ConnectionInterface');
         $this->connectionB2->id = 'B2';
-        $this->connectionC1 = Phake::mock('PDO');
+        $this->connectionC1 = Phake::mock('Icecave\Manifold\Connection\ConnectionInterface');
         $this->connectionC1->id = 'C1';
-        $this->connectionC2 = Phake::mock('PDO');
+        $this->connectionC2 = Phake::mock('Icecave\Manifold\Connection\ConnectionInterface');
         $this->connectionC2->id = 'C2';
 
         $this->poolA = new ConnectionPool(

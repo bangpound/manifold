@@ -1,11 +1,11 @@
 <?php
 namespace Icecave\Manifold\Replication;
 
+use Icecave\Manifold\Connection\ConnectionInterface;
 use Icecave\Manifold\Connection\ConnectionPair;
 use Icecave\Manifold\Connection\ConnectionPairInterface;
 use Icecave\Manifold\Connection\Pool\ConnectionPoolSelectorInterface;
 use Icecave\Manifold\Replication\ReplicationManagerInterface;
-use PDO;
 
 /**
  * Selects a single connection, taking into account a replication hierarchy, the
@@ -81,7 +81,7 @@ class ConnectionSelector implements ConnectionSelectorInterface
      * @param string|null                                       $databaseName The name of the database to write to, or null for a generic connection.
      * @param SelectionStrategy\SelectionStrategyInterface|null $strategy     The selection strategy to use.
      *
-     * @return PDO                                      The most appropriate connection.
+     * @return ConnectionInterface                      The most appropriate connection.
      * @throws Exception\NoConnectionAvailableException If no connection is available for selection.
      */
     public function forWrite(
@@ -104,7 +104,7 @@ class ConnectionSelector implements ConnectionSelectorInterface
      * @param string|null                                       $databaseName The name of the database to read from, or null for a generic connection.
      * @param SelectionStrategy\SelectionStrategyInterface|null $strategy     The selection strategy to use.
      *
-     * @return PDO                                      The most appropriate connection.
+     * @return ConnectionInterface                      The most appropriate connection.
      * @throws Exception\NoConnectionAvailableException If no connection is available for selection.
      */
     public function forRead(

@@ -7,7 +7,7 @@ namespace Icecave\Manifold\Connection;
  * This interface extends the PDO connection interface to add information
  * necessary to serialize the connection for later use.
  */
-interface ConnectionInterface
+interface ConnectionInterface extends PdoConnectionInterface
 {
     /**
      * Get the connection name.

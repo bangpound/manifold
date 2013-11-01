@@ -10,8 +10,8 @@ class ConnectionPairTest extends PHPUnit_Framework_TestCase
     {
         parent::setUp();
 
-        $this->write = Phake::mock('PDO');
-        $this->read = Phake::mock('PDO');
+        $this->write = Phake::mock(__NAMESPACE__ . '\ConnectionInterface');
+        $this->read = Phake::mock(__NAMESPACE__ . '\ConnectionInterface');
         $this->pair = new ConnectionPair($this->write, $this->read);
     }
 

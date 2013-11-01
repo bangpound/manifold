@@ -2,7 +2,7 @@
 namespace Icecave\Manifold\Connection\Pool;
 
 use Icecave\Collections\Vector;
-use PDO;
+use Icecave\Manifold\Connection\ConnectionInterface;
 
 /**
  * The interface implemented by connection pools.
@@ -19,7 +19,7 @@ interface ConnectionPoolInterface
     /**
      * Get the connections.
      *
-     * @return Vector<PDO> The connections.
+     * @return Vector<ConnectionInterface> The connections.
      */
     public function connections();
 }

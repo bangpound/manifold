@@ -2,10 +2,10 @@
 namespace Icecave\Manifold\Configuration;
 
 use Icecave\Collections\Map;
+use Icecave\Manifold\Connection\ConnectionInterface;
 use Icecave\Manifold\Connection\ConnectionPoolInterface;
 use Icecave\Manifold\Connection\Pool\ConnectionPoolSelectorInterface;
 use Icecave\Manifold\Replication\ReplicationTreeInterface;
-use PDO;
 
 /**
  * The interface implemented by configuration instances.
@@ -15,7 +15,7 @@ interface ConfigurationInterface
     /**
      * Get the defined connections.
      *
-     * @return Map<string,PDO> The defined connections.
+     * @return Map<string,ConnectionInterface> The defined connections.
      */
     public function connections();
 

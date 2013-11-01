@@ -12,8 +12,10 @@ class MysqlReplicationManagerTest extends PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        $this->connection1 = Phake::mock('PDO');
-        $this->connection2 = Phake::mock('PDO');
+        $this->connection1 = Phake::mock('Icecave\Manifold\Connection\ConnectionInterface');
+        $this->connection1->id = '1';
+        $this->connection2 = Phake::mock('Icecave\Manifold\Connection\ConnectionInterface');
+        $this->connection2->id = '2';
         $this->tree = new ReplicationTree($this->connection1);
         $this->manager = Liberator::liberate(new MysqlReplicationManager($this->tree));
 

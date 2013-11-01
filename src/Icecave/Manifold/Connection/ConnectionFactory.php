@@ -1,8 +1,6 @@
 <?php
 namespace Icecave\Manifold\Connection;
 
-use PDO;
-
 /**
  * Creates connections.
  */
@@ -36,7 +34,7 @@ class ConnectionFactory implements ConnectionFactoryInterface
      * @param stringable|null $username The username.
      * @param stringable|null $password The password.
      *
-     * @return PDO The newly created connection.
+     * @return ConnectionInterface The newly created connection.
      */
     public function create($name, $dsn, $username = null, $password = null)
     {

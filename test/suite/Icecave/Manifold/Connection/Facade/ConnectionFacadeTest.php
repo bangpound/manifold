@@ -27,13 +27,13 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
         );
         $this->strategy = Phake::mock('Icecave\Manifold\Replication\SelectionStrategy\SelectionStrategyInterface');
 
-        $this->connectionA = Phake::mock('PDO');
+        $this->connectionA = Phake::mock('Icecave\Manifold\Connection\ConnectionInterface');
         $this->connectionA->id = 'A';
-        $this->connectionB = Phake::mock('PDO');
+        $this->connectionB = Phake::mock('Icecave\Manifold\Connection\ConnectionInterface');
         $this->connectionB->id = 'B';
-        $this->connectionC = Phake::mock('PDO');
+        $this->connectionC = Phake::mock('Icecave\Manifold\Connection\ConnectionInterface');
         $this->connectionC->id = 'C';
-        $this->connectionD = Phake::mock('PDO');
+        $this->connectionD = Phake::mock('Icecave\Manifold\Connection\ConnectionInterface');
         $this->connectionD->id = 'D';
 
         $this->statement = Phake::mock('PDOStatement');

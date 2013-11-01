@@ -9,7 +9,7 @@ class NotReplicatingExceptionTest extends PHPUnit_Framework_TestCase
 {
     public function testException()
     {
-        $connection = Phake::mock('PDO');
+        $connection = Phake::mock('Icecave\Manifold\Connection\ConnectionInterface');
         $previous = new Exception;
         $exception = new NotReplicatingException($connection, $previous);
 

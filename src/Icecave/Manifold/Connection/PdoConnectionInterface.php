@@ -1,6 +1,7 @@
 <?php
 namespace Icecave\Manifold\Connection;
 
+use PDO;
 use PDOException;
 use PDOStatement;
 

@@ -2,7 +2,7 @@
 namespace Icecave\Manifold\Replication\Exception;
 
 use Exception;
-use PDO;
+use Icecave\Manifold\Connection\ConnectionInterface;
 
 /**
  * The connection is not currently replicating.
@@ -12,10 +12,10 @@ class NotReplicatingException extends Exception
     /**
      * Construct a new not replicating exception.
      *
-     * @param PDO            $connection The connection.
-     * @param Exception|null $previous   The cause, if available.
+     * @param ConnectionInterface $connection The connection.
+     * @param Exception|null      $previous   The cause, if available.
      */
-    public function __construct(PDO $connection, Exception $previous = null)
+    public function __construct(ConnectionInterface $connection, Exception $previous = null)
     {
         $this->connection = $connection;
 
@@ -29,7 +29,7 @@ class NotReplicatingException extends Exception
     /**
      * Get the connection.
      *
-     * @return PDO The connection.
+     * @return ConnectionInterface The connection.
      */
     public function connection()
     {

@@ -9,15 +9,15 @@ class AbstractReplicationManagerTest extends PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        $this->connection1 = Phake::mock('PDO');
+        $this->connection1 = Phake::mock('Icecave\Manifold\Connection\ConnectionInterface');
         $this->connection1->id = '1';
-        $this->connection2 = Phake::mock('PDO');
+        $this->connection2 = Phake::mock('Icecave\Manifold\Connection\ConnectionInterface');
         $this->connection2->id = '2';
-        $this->connection3 = Phake::mock('PDO');
+        $this->connection3 = Phake::mock('Icecave\Manifold\Connection\ConnectionInterface');
         $this->connection3->id = '3';
-        $this->connection4 = Phake::mock('PDO');
+        $this->connection4 = Phake::mock('Icecave\Manifold\Connection\ConnectionInterface');
         $this->connection4->id = '4';
-        $this->connection5 = Phake::mock('PDO');
+        $this->connection5 = Phake::mock('Icecave\Manifold\Connection\ConnectionInterface');
         $this->connection5->id = '5';
         $this->tree = new ReplicationTree($this->connection1);
         $this->tree->addSlave($this->connection1, $this->connection2);
