@@ -18,12 +18,13 @@
         "eloquent/schemer": "~0.3.0",
         "icecave/chrono": "dev-develop@dev",
         "icecave/collections": "~1@dev",
+        "psr/log": "~1",
         "symfony/yaml": "~2"
     },
     "require-dev": {
         "eloquent/liberator": "~1",
         "icecave/archer": "~1",
-        "icecave/parity": "*"
+        "icecave/parity": "~1@dev"
     },
     "autoload": {
         "psr-0": {
