@@ -46,7 +46,7 @@ class ReplicationTreeTest extends PHPUnit_Framework_TestCase
 
     public function testIsRootWithUnknownConnection()
     {
-        $this->setExpectedException(Exception\UnknownConnectionException::CLASS);
+        $this->setExpectedException(__NAMESPACE__ . '\Exception\UnknownConnectionException');
         $this->tree->isRoot($this->connection5);
     }
 
@@ -60,7 +60,7 @@ class ReplicationTreeTest extends PHPUnit_Framework_TestCase
 
     public function testIsLeafWithUnknownConnection()
     {
-        $this->setExpectedException(Exception\UnknownConnectionException::CLASS);
+        $this->setExpectedException(__NAMESPACE__ . '\Exception\UnknownConnectionException');
         $this->tree->isLeaf($this->connection5);
     }
 
@@ -74,7 +74,7 @@ class ReplicationTreeTest extends PHPUnit_Framework_TestCase
 
     public function testIsMasterWithUnknownConnection()
     {
-        $this->setExpectedException(Exception\UnknownConnectionException::CLASS);
+        $this->setExpectedException(__NAMESPACE__ . '\Exception\UnknownConnectionException');
         $this->tree->isMaster($this->connection5);
     }
 
@@ -88,7 +88,7 @@ class ReplicationTreeTest extends PHPUnit_Framework_TestCase
 
     public function testIsSlaveWithUnknownConnection()
     {
-        $this->setExpectedException(Exception\UnknownConnectionException::CLASS);
+        $this->setExpectedException(__NAMESPACE__ . '\Exception\UnknownConnectionException');
         $this->tree->isSlave($this->connection5);
     }
 
@@ -102,7 +102,7 @@ class ReplicationTreeTest extends PHPUnit_Framework_TestCase
 
     public function testMasterOfWithUnknownConnection()
     {
-        $this->setExpectedException(Exception\UnknownConnectionException::CLASS);
+        $this->setExpectedException(__NAMESPACE__ . '\Exception\UnknownConnectionException');
         $this->tree->masterOf($this->connection5);
     }
 
@@ -116,7 +116,7 @@ class ReplicationTreeTest extends PHPUnit_Framework_TestCase
 
     public function testSlavesOfWithUnknownConncetion()
     {
-        $this->setExpectedException(Exception\UnknownConnectionException::CLASS);
+        $this->setExpectedException(__NAMESPACE__ . '\Exception\UnknownConnectionException');
         $this->tree->slavesOf($this->connection5);
     }
 
@@ -135,13 +135,13 @@ class ReplicationTreeTest extends PHPUnit_Framework_TestCase
 
     public function testIsReplicatingWithUnknownMaster()
     {
-        $this->setExpectedException(Exception\UnknownConnectionException::CLASS);
+        $this->setExpectedException(__NAMESPACE__ . '\Exception\UnknownConnectionException');
         $this->tree->isReplicatingTo($this->connection1, $this->connection5);
     }
 
     public function testIsReplicatingWithUnknownSlave()
     {
-        $this->setExpectedException(Exception\UnknownConnectionException::CLASS);
+        $this->setExpectedException(__NAMESPACE__ . '\Exception\UnknownConnectionException');
         $this->tree->isReplicatingTo($this->connection1, $this->connection5);
     }
 
@@ -160,13 +160,13 @@ class ReplicationTreeTest extends PHPUnit_Framework_TestCase
 
     public function testIsMasterOfWithUnknownMaster()
     {
-        $this->setExpectedException(Exception\UnknownConnectionException::CLASS);
+        $this->setExpectedException(__NAMESPACE__ . '\Exception\UnknownConnectionException');
         $this->tree->isMasterOf($this->connection5, $this->connection1);
     }
 
     public function testIsMasterOfWithUnknownSlave()
     {
-        $this->setExpectedException(Exception\UnknownConnectionException::CLASS);
+        $this->setExpectedException(__NAMESPACE__ . '\Exception\UnknownConnectionException');
         $this->tree->isMasterOf($this->connection1, $this->connection5);
     }
 
@@ -189,13 +189,13 @@ class ReplicationTreeTest extends PHPUnit_Framework_TestCase
 
     public function testCountHopsWithUnknownMaster()
     {
-        $this->setExpectedException(Exception\UnknownConnectionException::CLASS);
+        $this->setExpectedException(__NAMESPACE__ . '\Exception\UnknownConnectionException');
         $this->tree->countHops($this->connection1, $this->connection5);
     }
 
     public function testCountHopsWithUnknownSlave()
     {
-        $this->setExpectedException(Exception\UnknownConnectionException::CLASS);
+        $this->setExpectedException(__NAMESPACE__ . '\Exception\UnknownConnectionException');
         $this->tree->countHops($this->connection5, $this->connection1);
     }
 
@@ -268,13 +268,13 @@ class ReplicationTreeTest extends PHPUnit_Framework_TestCase
 
     public function testReplicationPathWithUnknownMaster()
     {
-        $this->setExpectedException(Exception\UnknownConnectionException::CLASS);
+        $this->setExpectedException(__NAMESPACE__ . '\Exception\UnknownConnectionException');
         $this->tree->replicationPath($this->connection1, $this->connection5);
     }
 
     public function testReplicationPathWithUnknownSlave()
     {
-        $this->setExpectedException(Exception\UnknownConnectionException::CLASS);
+        $this->setExpectedException(__NAMESPACE__ . '\Exception\UnknownConnectionException');
         $this->tree->replicationPath($this->connection5, $this->connection1);
     }
 
@@ -282,7 +282,7 @@ class ReplicationTreeTest extends PHPUnit_Framework_TestCase
     {
         $tree = new ReplicationTree($this->connection1);
 
-        $this->setExpectedException(Exception\UnknownConnectionException::CLASS);
+        $this->setExpectedException(__NAMESPACE__ . '\Exception\UnknownConnectionException');
         $tree->addSlave($this->connection2, $this->connection3);
     }
 
@@ -299,13 +299,16 @@ class ReplicationTreeTest extends PHPUnit_Framework_TestCase
 
     public function testRemoveSlaveWithReplicationRoot()
     {
-        $this->setExpectedException(InvalidArgumentException::CLASS, 'The root connection can not be removed from the tree.');
+        $this->setExpectedException(
+            'InvalidArgumentException',
+            'The root connection can not be removed from the tree.'
+        );
         $this->tree->removeSlave($this->connection1);
     }
 
     public function testRemoveSlaveWithUnknownSlave()
     {
-        $this->setExpectedException(Exception\UnknownConnectionException::CLASS);
+        $this->setExpectedException(__NAMESPACE__ . '\Exception\UnknownConnectionException');
         $this->tree->removeSlave($this->connection5);
     }
 }
