@@ -9,7 +9,6 @@ use Eloquent\Schemer\Validation\BoundConstraintValidator;
 use Eloquent\Schemer\Value\ArrayValue;
 use Eloquent\Schemer\Value\NullValue;
 use Eloquent\Schemer\Value\ObjectValue;
-use Eloquent\Schemer\Value\Transform\ValueTransformInterface;
 use Eloquent\Schemer\Value\ValueInterface;
 use Icecave\Collections\Map;
 use Icecave\Collections\Vector;
@@ -33,24 +32,18 @@ class ConfigurationReader implements ConfigurationReaderInterface
     /**
      * Construct a new configuration reader.
      *
-     * @param ReaderInterface|null            $reader                       The internal reader to use.
-     * @param ValueTransformInterface|null    $environmentVariableTransform The environment variable transform to use.
-     * @param ConnectionFactoryInterface|null $connectionFactory            The connection factory to use.
+     * @param ReaderInterface|null            $reader            The internal reader to use.
+     * @param ConnectionFactoryInterface|null $connectionFactory The connection factory to use.
      */
     public function __construct(
         ReaderInterface $reader = null,
-        ValueTransformInterface $environmentVariableTransform = null,
         ConnectionFactoryInterface $connectionFactory = null
     ) {
-        if (null === $environmentVariableTransform) {
-            $environmentVariableTransform = new EnvironmentVariableTransform;
-        }
         if (null === $connectionFactory) {
             $connectionFactory = new ConnectionFactory;
         }
 
         $this->reader = $reader;
-        $this->environmentVariableTransform = $environmentVariableTransform;
         $this->connectionFactory = $connectionFactory;
     }
 
@@ -74,16 +67,6 @@ class ConfigurationReader implements ConfigurationReaderInterface
         }
 
         return $this->reader;
-    }
-
-    /**
-     * Get the environment variable transform.
-     *
-     * @return ValueTransformInterface The environment variable transform.
-     */
-    public function environmentVariableTransform()
-    {
-        return $this->environmentVariableTransform;
     }
 
     /**
@@ -143,8 +126,6 @@ class ConfigurationReader implements ConfigurationReaderInterface
      */
     protected function createConfiguration(ObjectValue $value)
     {
-        $value = $this->environmentVariableTransform()->transform($value);
-
         list($connections, $defaultConnection) = $this->createConnections(
             $value
         );
@@ -185,9 +166,9 @@ class ConfigurationReader implements ConfigurationReaderInterface
         foreach ($value->get('connections') as $name => $options) {
             $connection = $this->connectionFactory()->create(
                 $name,
-                $options->getRaw('dsn'),
-                $options->getRawDefault('username'),
-                $options->getRawDefault('password')
+                $this->stringOrVariable($options->getRaw('dsn')),
+                $this->stringOrVariable($options->getRawDefault('username')),
+                $this->stringOrVariable($options->getRawDefault('password'))
             );
             $connections->add($name, $connection);
 
@@ -466,7 +447,31 @@ class ConfigurationReader implements ConfigurationReaderInterface
         return new ConnectionPool($connection->name(), $connections);
     }
 
+    /**
+     * Look for environment variable names in the supplied string value, and
+     * return an environment variable instead of a string if found.
+     *
+     * @param string $string The string to inspect.
+     *
+     * @return string|EnvironmentVariableInterface The resulting value.
+     */
+    protected function stringOrVariable($string)
+    {
+        if (null === $string) {
+            return null;
+        }
+
+        $firstCharacter = $string[0];
+        if ('$' === $firstCharacter) {
+            return new EnvironmentVariable(substr($string, 1));
+        }
+        if ('\\' === $firstCharacter) {
+            return substr($string, 1);
+        }
+
+        return $string;
+    }
+
     private $reader;
-    private $environmentVariableTransform;
     private $connectionFactory;
 }

@@ -14,10 +14,6 @@ use Icecave\Parity\Parity;
 use PHPUnit_Framework_TestCase;
 use Phake;
 
-/**
- * @covers \Icecave\Manifold\Configuration\ConfigurationReader
- * @covers \Icecave\Manifold\Configuration\EnvironmentVariableTransform
- */
 class ConfigurationReaderTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
@@ -26,24 +22,18 @@ class ConfigurationReaderTest extends PHPUnit_Framework_TestCase
 
         $this->isolator = Phake::mock(Isolator::className());
         $this->innerReader = Phake::mock('Eloquent\Schemer\Reader\ReaderInterface');
-        $this->environmentVariableTransform = new EnvironmentVariableTransform($this->isolator);
         $this->connectionFactory = new ConnectionFactory;
 
-        $this->reader = new ConfigurationReader(null, $this->environmentVariableTransform, $this->connectionFactory);
+        $this->reader = new ConfigurationReader(null, $this->connectionFactory);
 
         $this->fixturePath = __DIR__ . '/../../../../fixture/config';
     }
 
     public function testConstructor()
     {
-        $this->reader = new ConfigurationReader(
-            $this->innerReader,
-            $this->environmentVariableTransform,
-            $this->connectionFactory
-        );
+        $this->reader = new ConfigurationReader($this->innerReader, $this->connectionFactory);
 
         $this->assertSame($this->innerReader, $this->reader->reader());
-        $this->assertSame($this->environmentVariableTransform, $this->reader->environmentVariableTransform());
         $this->assertSame($this->connectionFactory, $this->reader->connectionFactory());
     }
 
@@ -52,10 +42,6 @@ class ConfigurationReaderTest extends PHPUnit_Framework_TestCase
         $this->reader = new ConfigurationReader;
 
         $this->assertInstanceOf('Eloquent\Schemer\Reader\ValidatingReader', $this->reader->reader());
-        $this->assertInstanceOf(
-            __NAMESPACE__ . '\EnvironmentVariableTransform',
-            $this->reader->environmentVariableTransform()
-        );
         $this->assertInstanceOf('Icecave\Manifold\Connection\ConnectionFactory', $this->reader->connectionFactory());
     }
 
@@ -241,11 +227,10 @@ connections:
         username: \\$ESCAPED
         password: IG$NORED
 EOD;
-        Phake::when($this->isolator)->getenv('USERNAME')->thenReturn('username');
         $configuration = $this->reader->readString($string);
         $expectedConnections = new Map(
             array(
-                'foo' => new LazyConnection('foo', 'mysql:host=foo', 'username', '$ESCAPED'),
+                'foo' => new LazyConnection('foo', 'mysql:host=foo', new EnvironmentVariable('USERNAME'), '$ESCAPED'),
                 'bar' => new LazyConnection('bar', 'mysql:host=bar', '\\$ESCAPED', 'IG$NORED'),
             )
         );
@@ -282,19 +267,5 @@ EOD;
 
         $this->setExpectedException($expected);
         $this->reader->readFile($fixturePath);
-    }
-
-    public function testConfigurationEnvironmentVariablesFailure()
-    {
-        $string = <<<'EOD'
-connections:
-    foo:
-        dsn: mysql:host=foo
-        username: $USERNAME
-EOD;
-        Phake::when($this->isolator)->getenv('USERNAME')->thenReturn(false);
-
-        $this->setExpectedException(__NAMESPACE__ . '\Exception\UndefinedEnvironmentVariableException');
-        $configuration = $this->reader->readString($string);
     }
 }
