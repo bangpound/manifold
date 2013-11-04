@@ -1,13 +1,18 @@
 <?php
 namespace Icecave\Manifold\Connection;
 
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerInterface;
+
 /**
  * The interface implemented by concrete connections.
  *
  * This interface extends the PDO connection interface to add information
  * necessary to serialize the connection for later use.
  */
-interface ConnectionInterface extends PdoConnectionInterface
+interface ConnectionInterface extends
+    PdoConnectionInterface,
+    LoggerAwareInterface
 {
     /**
      * Get the connection name.
@@ -43,4 +48,11 @@ interface ConnectionInterface extends PdoConnectionInterface
      * @return array<integer,mixed> The connection attributes.
      */
     public function attributes();
+
+    /**
+     * Get the logger.
+     *
+     * @return LoggerInterface The logger.
+     */
+    public function logger();
 }

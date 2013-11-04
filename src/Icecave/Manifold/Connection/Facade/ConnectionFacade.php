@@ -14,7 +14,6 @@ use InvalidArgumentException;
 use PDO;
 use PDOException;
 use PDOStatement;
-use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
@@ -22,9 +21,7 @@ use Psr\Log\NullLogger;
  * Implements the PDO interface to allow a replication tree to behave as a
  * single connection.
  */
-class ConnectionFacade extends PDO implements
-    ConnectionFacadeInterface,
-    LoggerAwareInterface
+class ConnectionFacade extends PDO implements ConnectionFacadeInterface
 {
     /**
      * Construct a new PDO connection facade.
@@ -51,11 +48,12 @@ class ConnectionFacade extends PDO implements
 
         $this->queryConnectionSelector = $queryConnectionSelector;
         $this->attributes = $attributes;
-        $this->setLogger($logger);
 
         $this->initializedConnections = new Set;
         $this->isInTransaction = false;
         $this->transactionConnections = new Vector;
+
+        $this->setLogger($logger);
     }
 
     /**
@@ -85,17 +83,11 @@ class ConnectionFacade extends PDO implements
      */
     public function setLogger(LoggerInterface $logger)
     {
-        $this->logger = $logger;
-    }
+        foreach ($this->initializedConnections() as $connection) {
+            $connection->setLogger($logger);
+        }
 
-    /**
-     * Get the logger.
-     *
-     * @return LoggerInterface The logger.
-     */
-    public function logger()
-    {
-        return $this->logger;
+        $this->logger = $logger;
     }
 
     // Implementation of ConnectionFacadeInterface =============================
@@ -134,6 +126,16 @@ class ConnectionFacade extends PDO implements
     public function defaultStrategy()
     {
         return $this->connectionSelector()->defaultStrategy();
+    }
+
+    /**
+     * Get the logger.
+     *
+     * @return LoggerInterface The logger.
+     */
+    public function logger()
+    {
+        return $this->logger;
     }
 
     /**
@@ -725,6 +727,8 @@ class ConnectionFacade extends PDO implements
                     );
                 }
             }
+
+            $connection->setLogger($this->logger());
 
             $this->initializedConnections()->add($connection);
         }

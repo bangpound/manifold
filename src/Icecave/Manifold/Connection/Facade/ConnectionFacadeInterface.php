@@ -5,11 +5,15 @@ use Icecave\Manifold\Connection\PdoConnectionInterface;
 use Icecave\Manifold\Replication\SelectionStrategy\SelectionStrategyInterface;
 use PDOException;
 use PDOStatement;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * The interface implemented by PDO connection facades.
  */
-interface ConnectionFacadeInterface extends PdoConnectionInterface
+interface ConnectionFacadeInterface extends
+    PdoConnectionInterface,
+    LoggerAwareInterface
 {
     /**
      * Get the connection attributes.
@@ -33,6 +37,13 @@ interface ConnectionFacadeInterface extends PdoConnectionInterface
      * @return SelectionStrategyInterface The default selection strategy.
      */
     public function defaultStrategy();
+
+    /**
+     * Get the logger.
+     *
+     * @return LoggerInterface The logger.
+     */
+    public function logger();
 
     /**
      * Prepare an SQL statement to be executed using a connection selection
