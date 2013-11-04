@@ -5,13 +5,11 @@ use Icecave\Collections\Vector;
 use Icecave\Manifold\Configuration\ConfigurationInterface;
 use Icecave\Manifold\Configuration\Exception\UndefinedConnectionException;
 use Icecave\Manifold\Connection\Facade\ConnectionFacadeInterface;
-use Icecave\Manifold\Replication\ConnectionSelectorInterface;
-use Icecave\Manifold\Replication\ReplicationTreeInterface;
 
 /**
- * The interface implemented by drivers.
+ * An abstract base class for implementing drivers.
  */
-interface DriverInterface
+abstract class AbstractDriver implements DriverInterface
 {
     /**
      * Create all PDO connection facades defined in the supplied configuration.
@@ -24,7 +22,20 @@ interface DriverInterface
     public function createConnections(
         ConfigurationInterface $configuration,
         array $attributes = null
-    );
+    ) {
+        $connections = new Vector;
+        foreach ($configuration->replicationTrees() as $replicationTree) {
+            $connections->pushBack(
+                $this->createConnection(
+                    $configuration,
+                    $replicationTree,
+                    $attributes
+                )
+            );
+        }
+
+        return $connections;
+    }
 
     /**
      * Create a PDO connection facade using the supplied configuration and
@@ -41,34 +52,19 @@ interface DriverInterface
         ConfigurationInterface $configuration,
         $connectionName,
         array $attributes = null
-    );
+    ) {
+        foreach ($configuration->replicationTrees() as $replicationTree) {
+            if (
+                $replicationTree->replicationRoot()->name() === $connectionName
+            ) {
+                return $this->createConnection(
+                    $configuration,
+                    $replicationTree,
+                    $attributes
+                );
+            }
+        }
 
-    /**
-     * Create a PDO connection facade using the supplied configuration and
-     * replication tree.
-     *
-     * @param ConfigurationInterface    $configuration   The configuration to use.
-     * @param ReplicationTreeInterface  $replicationTree The replication tree to use.
-     * @param array<integer,mixed>|null $attributes      The connection attributes to use.
-     *
-     * @return ConnectionFacadeInterface The newly created connection facade.
-     */
-    public function createConnection(
-        ConfigurationInterface $configuration,
-        ReplicationTreeInterface $replicationTree,
-        array $attributes = null
-    );
-
-    /**
-     * Create a PDO connection facade using the supplied connection selector.
-     *
-     * @param ConnectionSelectorInterface $connectionSelector The connection selector to use.
-     * @param array<integer,mixed>|null   $attributes         The connection attributes to use.
-     *
-     * @return ConnectionFacadeInterface The newly created connection facade.
-     */
-    public function createConnectionFromSelector(
-        ConnectionSelectorInterface $connectionSelector,
-        array $attributes = null
-    );
+        throw new UndefinedConnectionException($connectionName);
+    }
 }

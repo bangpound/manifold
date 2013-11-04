@@ -11,6 +11,10 @@ use PDO;
 use PHPUnit_Framework_TestCase;
 use Phake;
 
+/**
+ * @covers \Icecave\Manifold\Mysql\MysqlDriver
+ * @covers \Icecave\Manifold\Driver\AbstractDriver
+ */
 class MysqlDriverTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
@@ -21,9 +25,7 @@ class MysqlDriverTest extends PHPUnit_Framework_TestCase
 
         $this->connectionPoolSelector = Phake::mock('Icecave\Manifold\Connection\Pool\ConnectionPoolSelectorInterface');
         $this->replicationTreeA = Phake::mock('Icecave\Manifold\Replication\ReplicationTreeInterface');
-        $this->replicationTreeA->id = 'A';
         $this->replicationTreeB = Phake::mock('Icecave\Manifold\Replication\ReplicationTreeInterface');
-        $this->replicationTreeB->id = 'B';
         $this->configuration = new Configuration(
             new Map,
             new Map,
@@ -45,6 +47,14 @@ class MysqlDriverTest extends PHPUnit_Framework_TestCase
             PDO::ATTR_PERSISTENT => false,
             PDO::ATTR_AUTOCOMMIT => false,
         );
+
+        $this->connectionA = Phake::mock('Icecave\Manifold\Connection\ConnectionInterface');
+        Phake::when($this->connectionA)->name()->thenReturn('A');
+        $this->connectionB = Phake::mock('Icecave\Manifold\Connection\ConnectionInterface');
+        Phake::when($this->connectionB)->name()->thenReturn('B');
+
+        Phake::when($this->replicationTreeA)->replicationRoot()->thenReturn($this->connectionA);
+        Phake::when($this->replicationTreeB)->replicationRoot()->thenReturn($this->connectionB);
     }
 
     public function testCreateConnections()
@@ -111,6 +121,31 @@ class MysqlDriverTest extends PHPUnit_Framework_TestCase
         $actual = $this->driver->createConnections($this->configuration);
 
         $this->assertEquals($expected, $actual);
+    }
+
+    public function testCreateConnectionByName()
+    {
+        $expected = new ConnectionFacade(
+            new QueryConnectionSelector(
+                new ConnectionSelector(
+                    $this->connectionPoolSelector,
+                    new MysqlReplicationManager($this->replicationTreeA)
+                ),
+                new MysqlQueryDiscriminator
+            ),
+            $this->expectedAttributes
+        );
+        $actual = $this->driver->createConnectionByName($this->configuration, 'A', $this->attributes);
+
+        $this->assertEquals($expected, $actual);
+        $this->assertSame($this->connectionPoolSelector, $actual->connectionSelector()->poolSelector());
+        $this->assertSame($this->replicationTreeA, $actual->connectionSelector()->replicationManager()->tree());
+    }
+
+    public function testCreateConnectionByNameFailureUndefined()
+    {
+        $this->setExpectedException('Icecave\Manifold\Configuration\Exception\UndefinedConnectionException');
+        $this->driver->createConnectionByName($this->configuration, 'C');
     }
 
     public function testCreateConnection()

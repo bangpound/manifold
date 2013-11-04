@@ -1,11 +1,10 @@
 <?php
 namespace Icecave\Manifold\Mysql;
 
-use Icecave\Collections\Vector;
 use Icecave\Manifold\Configuration\ConfigurationInterface;
 use Icecave\Manifold\Connection\Facade\ConnectionFacade;
 use Icecave\Manifold\Connection\Facade\ConnectionFacadeInterface;
-use Icecave\Manifold\Driver\DriverInterface;
+use Icecave\Manifold\Driver\AbstractDriver;
 use Icecave\Manifold\Replication\ConnectionSelector;
 use Icecave\Manifold\Replication\ConnectionSelectorInterface;
 use Icecave\Manifold\Replication\QueryConnectionSelector;
@@ -15,34 +14,8 @@ use PDO;
 /**
  * A driver for MySQL.
  */
-class MysqlDriver implements DriverInterface
+class MysqlDriver extends AbstractDriver
 {
-    /**
-     * Create all PDO connection facades defined in the supplied configuration.
-     *
-     * @param ConfigurationInterface    $configuration The configuration to use.
-     * @param array<integer,mixed>|null $attributes    The connection attributes to use.
-     *
-     * @return Vector<ConnectionFacadeInterface> The newly created connection facades.
-     */
-    public function createConnections(
-        ConfigurationInterface $configuration,
-        array $attributes = null
-    ) {
-        $connections = new Vector;
-        foreach ($configuration->replicationTrees() as $replicationTree) {
-            $connections->pushBack(
-                $this->createConnection(
-                    $configuration,
-                    $replicationTree,
-                    $attributes
-                )
-            );
-        }
-
-        return $connections;
-    }
-
     /**
      * Create a PDO connection facade using the supplied configuration and
      * replication tree.
