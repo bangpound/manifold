@@ -1,0 +1,10 @@
+master1:
+    master2: null
+    reporting1:
+        pool1: null
+    reporting2:
+        pool2: null
+    reporting3:
+        slave301: null
+        slave302: null
+master3: null

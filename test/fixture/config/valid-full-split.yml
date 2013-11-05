@@ -1,0 +1,11 @@
+connections:
+    $ref: split-parts/connections.yml
+
+pools:
+    $ref: split-parts/pools.yml
+
+selection:
+    $ref: split-parts/selection.yml
+
+replication:
+    $ref: split-parts/replication.yml

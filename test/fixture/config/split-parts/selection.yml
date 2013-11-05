@@ -1,0 +1,17 @@
+default:
+    read:  pool1
+    write: reporting1
+databases:
+    app_data:
+        read:  pool1
+        write: master1
+    app_reporting:
+        read:  pool2
+        write: reporting2
+    app_temp:
+        read:  pool2
+        write: pool2
+    app_read_only:
+        read: master2
+    app_write_only:
+        write: master2

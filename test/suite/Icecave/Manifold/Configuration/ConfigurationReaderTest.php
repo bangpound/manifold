@@ -97,6 +97,7 @@ EOD;
     public function testFullConfiguration()
     {
         $configuration = $this->reader->readFile($this->fixturePath . '/valid-full.yml');
+        $configurationSplit = $this->reader->readFile($this->fixturePath . '/valid-full-split.yml');
         $expectedConnections = new Map(
             array(
                 'master1' => new LazyConnection('master1', 'mysql:host=master1', 'username', 'password'),
@@ -209,9 +210,13 @@ EOD;
         $expectedReplicationTrees = new Vector(array($expectedReplicationTreeA, $expectedReplicationTreeB));
 
         $this->assertEquals($expectedConnections->elements(), $configuration->connections()->elements());
+        $this->assertEquals($expectedConnections->elements(), $configurationSplit->connections()->elements());
         $this->assertEquals($expectedPools->elements(), $configuration->connectionPools()->elements());
+        $this->assertEquals($expectedPools->elements(), $configurationSplit->connectionPools()->elements());
         $this->assertEquals($expectedSelector, $configuration->connectionPoolSelector());
+        $this->assertEquals($expectedSelector, $configurationSplit->connectionPoolSelector());
         $this->assertSame(0, Parity::compare($expectedReplicationTrees, $configuration->replicationTrees()));
+        $this->assertSame(0, Parity::compare($expectedReplicationTrees, $configurationSplit->replicationTrees()));
     }
 
     public function testConfigurationEnvironmentVariables()

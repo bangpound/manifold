@@ -1,0 +1,6 @@
+pool1:
+    - slave101
+    - slave102
+pool2:
+    - slave201
+    - slave202

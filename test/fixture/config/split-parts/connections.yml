@@ -1,0 +1,26 @@
+master1:
+    dsn: mysql:host=master1
+    username: username
+    password: password
+master2:
+    dsn: mysql:host=master2
+master3:
+    dsn: mysql:host=master3
+reporting1:
+    dsn: mysql:host=reporting1
+slave101:
+    dsn: mysql:host=slave101
+slave102:
+    dsn: mysql:host=slave102
+reporting2:
+    dsn: mysql:host=reporting2
+slave201:
+    dsn: mysql:host=slave201
+slave202:
+    dsn: mysql:host=slave202
+reporting3:
+    dsn: mysql:host=reporting3
+slave301:
+    dsn: mysql:host=slave301
+slave302:
+    dsn: mysql:host=slave302
