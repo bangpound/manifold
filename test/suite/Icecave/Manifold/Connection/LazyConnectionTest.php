@@ -22,6 +22,7 @@ class LazyConnectionTest extends PHPUnit_Framework_TestCase
         );
 
         $this->innerConnection = Phake::mock('PDO');
+        Phake::when($this->innerConnection)->setAttribute(Phake::anyParameters())->thenReturn(true);
         Phake::when($this->connection)->createConnection(Phake::anyParameters())->thenReturn($this->innerConnection);
 
         $this->statement = Phake::mock('PDOStatement');
@@ -270,15 +271,15 @@ class LazyConnectionTest extends PHPUnit_Framework_TestCase
 
     public function testSetAttribute()
     {
-        $this->connection->setAttribute(10101, 'bar');
-
+        $this->assertTrue($this->connection->setAttribute(10101, 'bar'));
         $this->assertSame('bar', $this->connection->getAttribute(10101));
         Phake::verify($this->connection, Phake::never())->createConnection(Phake::anyParameters());
     }
 
     public function testSetAttributeBeforeConnected()
     {
-        $this->connection->setAttribute(10101, 'bar');
+        $this->assertTrue($this->connection->setAttribute(10101, 'bar'));
+
         $this->connection->connect();
 
         Phake::verify($this->connection)->createConnection('dsn', 'username', 'password', array(10101 => 'bar'));
@@ -287,8 +288,17 @@ class LazyConnectionTest extends PHPUnit_Framework_TestCase
     public function testSetAttributeWhenConnected()
     {
         $this->connection->connect();
-        $this->connection->setAttribute(10101, 'bar');
 
+        $this->assertTrue($this->connection->setAttribute(10101, 'bar'));
+        Phake::verify($this->innerConnection)->setAttribute(10101, 'bar');
+    }
+
+    public function testSetAttributeWhenConnectedFailure()
+    {
+        Phake::when($this->innerConnection)->setAttribute(Phake::anyParameters())->thenReturn(false);
+        $this->connection->connect();
+
+        $this->assertFalse($this->connection->setAttribute(10101, 'bar'));
         Phake::verify($this->innerConnection)->setAttribute(10101, 'bar');
     }
 
@@ -296,7 +306,6 @@ class LazyConnectionTest extends PHPUnit_Framework_TestCase
     {
         $this->assertSame('foo', $this->connection->getAttribute(10101));
         $this->assertNull($this->connection->getAttribute(20202));
-
         Phake::verify($this->connection, Phake::never())->createConnection(Phake::anyParameters());
     }
 

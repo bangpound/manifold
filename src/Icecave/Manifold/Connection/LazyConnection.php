@@ -421,10 +421,16 @@ class LazyConnection extends PDO implements ConnectionInterface
         );
 
         if ($this->isConnected()) {
-            $this->connection()->setAttribute($attribute, $value);
+            $result = $this->connection()->setAttribute($attribute, $value);
+        } else {
+            $result = true;
         }
 
-        $this->attributes[$attribute] = $value;
+        if ($result) {
+            $this->attributes[$attribute] = $value;
+        }
+
+        return $result;
     }
 
     /**
