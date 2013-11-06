@@ -38,7 +38,6 @@ class ConnectionFacade extends PDO implements ConnectionFacadeInterface
         if (null === $attributes) {
             $attributes = array(
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                PDO::ATTR_PERSISTENT => false,
                 PDO::ATTR_AUTOCOMMIT => false,
             );
         }

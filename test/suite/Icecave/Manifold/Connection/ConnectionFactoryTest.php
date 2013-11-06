@@ -1,6 +1,7 @@
 <?php
 namespace Icecave\Manifold\Connection;
 
+use PDO;
 use PHPUnit_Framework_TestCase;
 
 class ConnectionFactoryTest extends PHPUnit_Framework_TestCase
@@ -20,7 +21,7 @@ class ConnectionFactoryTest extends PHPUnit_Framework_TestCase
     {
         $this->factory = new ConnectionFactory;
 
-        $this->assertNull($this->factory->attributes());
+        $this->assertSame(array(PDO::ATTR_PERSISTENT => false), $this->factory->attributes());
     }
 
     public function testCreate()

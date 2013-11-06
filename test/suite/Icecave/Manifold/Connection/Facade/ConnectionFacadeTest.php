@@ -80,7 +80,6 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
         $this->assertSame(
             array(
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                PDO::ATTR_PERSISTENT => false,
                 PDO::ATTR_AUTOCOMMIT => false,
             ),
             $this->facade->attributes()

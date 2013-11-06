@@ -38,13 +38,11 @@ class MysqlDriverTest extends PHPUnit_Framework_TestCase
         $this->attributes = array(111 => 'foo');
         $this->defaultAttributes = array(
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_PERSISTENT => false,
             PDO::ATTR_AUTOCOMMIT => false,
         );
         $this->expectedAttributes = array(
             111 => 'foo',
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_PERSISTENT => false,
             PDO::ATTR_AUTOCOMMIT => false,
         );
 

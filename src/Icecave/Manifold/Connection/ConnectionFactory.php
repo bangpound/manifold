@@ -1,6 +1,8 @@
 <?php
 namespace Icecave\Manifold\Connection;
 
+use PDO;
+
 /**
  * Creates connections.
  */
@@ -13,13 +15,19 @@ class ConnectionFactory implements ConnectionFactoryInterface
      */
     public function __construct(array $attributes = null)
     {
+        if (null === $attributes) {
+            $attributes = array(
+                PDO::ATTR_PERSISTENT => false,
+            );
+        }
+
         $this->attributes = $attributes;
     }
 
     /**
      * Get the connection attributes.
      *
-     * @return array<integer,mixed>|null The connection attributes.
+     * @return array<integer,mixed> The connection attributes.
      */
     public function attributes()
     {

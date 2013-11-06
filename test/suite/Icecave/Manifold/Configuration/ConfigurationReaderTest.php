@@ -7,10 +7,11 @@ use Icecave\Isolator\Isolator;
 use Icecave\Manifold\Connection\ConnectionFactory;
 use Icecave\Manifold\Connection\LazyConnection;
 use Icecave\Manifold\Connection\Pool\ConnectionPool;
-use Icecave\Manifold\Connection\Pool\ConnectionPoolSelector;
 use Icecave\Manifold\Connection\Pool\ConnectionPoolPair;
+use Icecave\Manifold\Connection\Pool\ConnectionPoolSelector;
 use Icecave\Manifold\Replication\ReplicationTree;
 use Icecave\Parity\Parity;
+use PDO;
 use PHPUnit_Framework_TestCase;
 use Phake;
 
@@ -55,7 +56,7 @@ EOD;
         $configuration = $this->reader->readString($string);
         $expectedConnections = new Map(
             array(
-                'foo' => new LazyConnection('foo', 'mysql:host=foo'),
+                'foo' => new LazyConnection('foo', 'mysql:host=foo', null, null, array(PDO::ATTR_PERSISTENT => false)),
             )
         );
         $expectedPools = new Map;
@@ -77,7 +78,7 @@ EOD;
         $configuration = $this->reader->readFile($this->fixturePath . '/valid-minimal.yml');
         $expectedConnections = new Map(
             array(
-                'foo' => new LazyConnection('foo', 'mysql:host=foo'),
+                'foo' => new LazyConnection('foo', 'mysql:host=foo', null, null, array(PDO::ATTR_PERSISTENT => false)),
             )
         );
         $expectedPools = new Map;
@@ -100,18 +101,18 @@ EOD;
         $configurationSplit = $this->reader->readFile($this->fixturePath . '/valid-full-split.yml');
         $expectedConnections = new Map(
             array(
-                'master1' => new LazyConnection('master1', 'mysql:host=master1', 'username', 'password'),
-                'master2' => new LazyConnection('master2', 'mysql:host=master2'),
-                'master3' => new LazyConnection('master3', 'mysql:host=master3'),
-                'reporting1' => new LazyConnection('reporting1', 'mysql:host=reporting1'),
-                'slave101' => new LazyConnection('slave101', 'mysql:host=slave101'),
-                'slave102' => new LazyConnection('slave102', 'mysql:host=slave102'),
-                'reporting2' => new LazyConnection('reporting2', 'mysql:host=reporting2'),
-                'slave201' => new LazyConnection('slave201', 'mysql:host=slave201'),
-                'slave202' => new LazyConnection('slave202', 'mysql:host=slave202'),
-                'reporting3' => new LazyConnection('reporting3', 'mysql:host=reporting3'),
-                'slave301' => new LazyConnection('slave301', 'mysql:host=slave301'),
-                'slave302' => new LazyConnection('slave302', 'mysql:host=slave302'),
+                'master1' => new LazyConnection('master1', 'mysql:host=master1', 'username', 'password', array(PDO::ATTR_PERSISTENT => false)),
+                'master2' => new LazyConnection('master2', 'mysql:host=master2', null, null, array(PDO::ATTR_PERSISTENT => false)),
+                'master3' => new LazyConnection('master3', 'mysql:host=master3', null, null, array(PDO::ATTR_PERSISTENT => false)),
+                'reporting1' => new LazyConnection('reporting1', 'mysql:host=reporting1', null, null, array(PDO::ATTR_PERSISTENT => false)),
+                'slave101' => new LazyConnection('slave101', 'mysql:host=slave101', null, null, array(PDO::ATTR_PERSISTENT => false)),
+                'slave102' => new LazyConnection('slave102', 'mysql:host=slave102', null, null, array(PDO::ATTR_PERSISTENT => false)),
+                'reporting2' => new LazyConnection('reporting2', 'mysql:host=reporting2', null, null, array(PDO::ATTR_PERSISTENT => false)),
+                'slave201' => new LazyConnection('slave201', 'mysql:host=slave201', null, null, array(PDO::ATTR_PERSISTENT => false)),
+                'slave202' => new LazyConnection('slave202', 'mysql:host=slave202', null, null, array(PDO::ATTR_PERSISTENT => false)),
+                'reporting3' => new LazyConnection('reporting3', 'mysql:host=reporting3', null, null, array(PDO::ATTR_PERSISTENT => false)),
+                'slave301' => new LazyConnection('slave301', 'mysql:host=slave301', null, null, array(PDO::ATTR_PERSISTENT => false)),
+                'slave302' => new LazyConnection('slave302', 'mysql:host=slave302', null, null, array(PDO::ATTR_PERSISTENT => false)),
             )
         );
         $expectedPools = new Map(
@@ -235,8 +236,8 @@ EOD;
         $configuration = $this->reader->readString($string);
         $expectedConnections = new Map(
             array(
-                'foo' => new LazyConnection('foo', 'mysql:host=foo', new EnvironmentVariable('USERNAME'), '$ESCAPED'),
-                'bar' => new LazyConnection('bar', 'mysql:host=bar', '\\$ESCAPED', 'IG$NORED'),
+                'foo' => new LazyConnection('foo', 'mysql:host=foo', new EnvironmentVariable('USERNAME'), '$ESCAPED', array(PDO::ATTR_PERSISTENT => false)),
+                'bar' => new LazyConnection('bar', 'mysql:host=bar', '\\$ESCAPED', 'IG$NORED', array(PDO::ATTR_PERSISTENT => false)),
             )
         );
         $expectedPools = new Map;
