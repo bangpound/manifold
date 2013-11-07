@@ -64,7 +64,6 @@ class LeastDelayStrategyTest extends PHPUnit_Framework_TestCase
 
     public function testSelect()
     {
-        Phake::when($this->manager)->isReplicating(Phake::anyParameters())->thenReturn(true);
         Phake::when($this->manager)->delay($this->connectionA)->thenReturn(new Duration(222));
         Phake::when($this->manager)->delay($this->connectionB)->thenReturn(new Duration(111));
         Phake::when($this->manager)->delay($this->connectionC)->thenReturn(new Duration(333));
@@ -74,7 +73,6 @@ class LeastDelayStrategyTest extends PHPUnit_Framework_TestCase
 
     public function testSelectLogging()
     {
-        Phake::when($this->manager)->isReplicating(Phake::anyParameters())->thenReturn(true);
         Phake::when($this->manager)->delay($this->connectionA)->thenReturn(new Duration(222));
         Phake::when($this->manager)->delay($this->connectionB)->thenReturn(new Duration(111));
         Phake::when($this->manager)->delay($this->connectionC)->thenReturn(new Duration(333));
@@ -109,7 +107,6 @@ class LeastDelayStrategyTest extends PHPUnit_Framework_TestCase
     public function testSelectNoThreshold()
     {
         $this->strategy = new LeastDelayStrategy(null, $this->clock);
-        Phake::when($this->manager)->isReplicating(Phake::anyParameters())->thenReturn(true);
         Phake::when($this->manager)->delay($this->connectionA)->thenReturn(new Duration(222));
         Phake::when($this->manager)->delay($this->connectionB)->thenReturn(new Duration(111));
         Phake::when($this->manager)->delay($this->connectionC)->thenReturn(new Duration(333));
@@ -120,7 +117,6 @@ class LeastDelayStrategyTest extends PHPUnit_Framework_TestCase
     public function testSelectNoThresholdLogging()
     {
         $this->strategy = new LeastDelayStrategy(null, $this->clock);
-        Phake::when($this->manager)->isReplicating(Phake::anyParameters())->thenReturn(true);
         Phake::when($this->manager)->delay($this->connectionA)->thenReturn(new Duration(222));
         Phake::when($this->manager)->delay($this->connectionB)->thenReturn(new Duration(111));
         Phake::when($this->manager)->delay($this->connectionC)->thenReturn(new Duration(333));
@@ -153,7 +149,6 @@ class LeastDelayStrategyTest extends PHPUnit_Framework_TestCase
 
     public function testSelectFailureThreshold()
     {
-        Phake::when($this->manager)->isReplicating(Phake::anyParameters())->thenReturn(true);
         Phake::when($this->manager)->delay($this->connectionA)->thenReturn(new Duration(666));
         Phake::when($this->manager)->delay($this->connectionB)->thenReturn(new Duration(555));
         Phake::when($this->manager)->delay($this->connectionC)->thenReturn(new Duration(777));
@@ -164,7 +159,6 @@ class LeastDelayStrategyTest extends PHPUnit_Framework_TestCase
 
     public function testSelectFailureThresholdLogging()
     {
-        Phake::when($this->manager)->isReplicating(Phake::anyParameters())->thenReturn(true);
         Phake::when($this->manager)->delay($this->connectionA)->thenReturn(new Duration(666));
         Phake::when($this->manager)->delay($this->connectionB)->thenReturn(new Duration(555));
         Phake::when($this->manager)->delay($this->connectionC)->thenReturn(new Duration(777));
@@ -208,7 +202,7 @@ class LeastDelayStrategyTest extends PHPUnit_Framework_TestCase
 
     public function testSelectFailureNoneReplicating()
     {
-        Phake::when($this->manager)->isReplicating(Phake::anyParameters())->thenReturn(false);
+        Phake::when($this->manager)->delay(Phake::anyParameters())->thenReturn(null);
 
         $this->setExpectedException('Icecave\Manifold\Replication\Exception\NoConnectionAvailableException');
         $this->strategy->select($this->manager, $this->pool);
@@ -216,7 +210,7 @@ class LeastDelayStrategyTest extends PHPUnit_Framework_TestCase
 
     public function testSelectFailureNoneReplicatingLogging()
     {
-        Phake::when($this->manager)->isReplicating(Phake::anyParameters())->thenReturn(false);
+        Phake::when($this->manager)->delay(Phake::anyParameters())->thenReturn(null);
 
         $caught = null;
         try {
@@ -258,7 +252,7 @@ class LeastDelayStrategyTest extends PHPUnit_Framework_TestCase
     public function testSelectFailureNoneReplicatingNoThresholdLogging()
     {
         $this->strategy = new LeastDelayStrategy(null, $this->clock);
-        Phake::when($this->manager)->isReplicating(Phake::anyParameters())->thenReturn(false);
+        Phake::when($this->manager)->delay(Phake::anyParameters())->thenReturn(null);
 
         $caught = null;
         try {

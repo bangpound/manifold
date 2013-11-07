@@ -70,7 +70,9 @@ class TimePointStrategy extends AbstractSelectionStrategy
         $now = $this->clock()->localDateTime();
 
         foreach ($pool->connections() as $connection) {
-            if (!$replicationManager->isReplicating($connection)) {
+            $delay = $replicationManager->delay($connection);
+
+            if (null === $delay) {
                 if (null !== $logger) {
                     $logger->debug(
                         'Connection {connection} ' .
@@ -86,7 +88,6 @@ class TimePointStrategy extends AbstractSelectionStrategy
                 continue;
             }
 
-            $delay = $replicationManager->delay($connection);
             $connectionTime = $now->subtract($delay);
 
             if ($connectionTime->isGreaterThanOrEqualTo($this->timePoint())) {

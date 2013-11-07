@@ -64,17 +64,15 @@ class AcceptableDelayStrategyTest extends PHPUnit_Framework_TestCase
 
     public function testSelect()
     {
-        Phake::when($this->manager)->isReplicating(Phake::anyParameters())->thenReturn(true);
         Phake::when($this->manager)->delay($this->connectionA)->thenReturn(new Duration(333));
         Phake::when($this->manager)->delay($this->connectionB)->thenReturn(new Duration(111));
 
         $this->assertSame($this->connectionB, $this->strategy->select($this->manager, $this->pool));
-        Phake::verify($this->manager, Phake::never())->isReplicating($this->connectionC);
+        Phake::verify($this->manager, Phake::never())->delay($this->connectionC);
     }
 
     public function testSelectLogging()
     {
-        Phake::when($this->manager)->isReplicating(Phake::anyParameters())->thenReturn(true);
         Phake::when($this->manager)->delay($this->connectionA)->thenReturn(new Duration(333));
         Phake::when($this->manager)->delay($this->connectionB)->thenReturn(new Duration(111));
 
@@ -95,12 +93,11 @@ class AcceptableDelayStrategyTest extends PHPUnit_Framework_TestCase
                 array('connection' => 'B', 'pool' => 'pool', 'delay' => 'PT1M51S', 'threshold' => 'PT3M42S')
             )
         );
-        Phake::verify($this->manager, Phake::never())->isReplicating($this->connectionC);
+        Phake::verify($this->manager, Phake::never())->delay($this->connectionC);
     }
 
     public function testSelectFailureThreshold()
     {
-        Phake::when($this->manager)->isReplicating(Phake::anyParameters())->thenReturn(true);
         Phake::when($this->manager)->delay($this->connectionA)->thenReturn(new Duration(444));
         Phake::when($this->manager)->delay($this->connectionB)->thenReturn(new Duration(333));
         Phake::when($this->manager)->delay($this->connectionC)->thenReturn(new Duration(555));
@@ -111,7 +108,6 @@ class AcceptableDelayStrategyTest extends PHPUnit_Framework_TestCase
 
     public function testSelectFailureThresholdLogging()
     {
-        Phake::when($this->manager)->isReplicating(Phake::anyParameters())->thenReturn(true);
         Phake::when($this->manager)->delay($this->connectionA)->thenReturn(new Duration(444));
         Phake::when($this->manager)->delay($this->connectionB)->thenReturn(new Duration(333));
         Phake::when($this->manager)->delay($this->connectionC)->thenReturn(new Duration(555));
@@ -154,7 +150,7 @@ class AcceptableDelayStrategyTest extends PHPUnit_Framework_TestCase
 
     public function testSelectFailureNoneReplicating()
     {
-        Phake::when($this->manager)->isReplicating(Phake::anyParameters())->thenReturn(false);
+        Phake::when($this->manager)->delay(Phake::anyParameters())->thenReturn(null);
 
         $this->setExpectedException('Icecave\Manifold\Replication\Exception\NoConnectionAvailableException');
         $this->strategy->select($this->manager, $this->pool);
@@ -162,7 +158,7 @@ class AcceptableDelayStrategyTest extends PHPUnit_Framework_TestCase
 
     public function testSelectFailureNoneReplicatingLogging()
     {
-        Phake::when($this->manager)->isReplicating(Phake::anyParameters())->thenReturn(false);
+        Phake::when($this->manager)->delay(Phake::anyParameters())->thenReturn(null);
 
         $caught = null;
         try {
