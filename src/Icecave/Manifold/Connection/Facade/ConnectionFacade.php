@@ -85,6 +85,8 @@ class ConnectionFacade extends PDO implements ConnectionFacadeInterface
             $connection->setLogger($logger);
         }
 
+        $this->connectionSelector()->setLogger($logger);
+
         $this->logger = $logger;
     }
 

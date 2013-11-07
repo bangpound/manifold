@@ -98,6 +98,7 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
         $this->facade->setLogger($this->logger);
 
         $this->assertSame($this->logger, $this->facade->logger());
+        Phake::verify($this->connectionSelector)->setLogger($this->logger);
     }
 
     // Implementation of ConnectionFacadeInterface =============================
