@@ -66,65 +66,31 @@ class AbstractReplicationManagerTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(new Duration(222), $this->manager->delay($this->connection3, null, $this->connection2));
         $this->assertEquals(new Duration(111), $this->manager->delay($this->connection2, null, $this->connection1));
         $this->assertEquals(new Duration(333), $this->manager->delay($this->connection3));
-        $this->assertNull($this->manager->delay($this->connection3, new Duration(110), $this->connection1));
-        $this->assertNull($this->manager->delay($this->connection3, 110, $this->connection1));
-        $this->assertNull($this->manager->delay($this->connection3, new Duration(110)));
-        $this->assertNull($this->manager->delay($this->connection3, 110));
+        $this->assertEquals(
+            new Duration(222),
+            $this->manager->delay($this->connection3, new Duration(110), $this->connection1)
+        );
+        $this->assertEquals(new Duration(222), $this->manager->delay($this->connection3, 110, $this->connection1));
+        $this->assertEquals(new Duration(222), $this->manager->delay($this->connection3, new Duration(110)));
+        $this->assertEquals(new Duration(222), $this->manager->delay($this->connection3, 110));
+    }
+
+    public function testDelayNotReplicating()
+    {
+        Phake::when($this->manager)
+            ->amountBehindMaster($this->connection1, $this->connection2)
+            ->thenReturn(new Duration(111));
+        Phake::when($this->manager)
+            ->amountBehindMaster($this->connection2, $this->connection3)
+            ->thenReturn(null);
+
+        $this->assertNull($this->manager->delay($this->connection3, null, $this->connection1));
     }
 
     public function testDelayFailureNoPath()
     {
         $this->setExpectedException(__NAMESPACE__ . '\Exception\NotReplicatingException');
         $this->manager->delay($this->connection4, null, $this->connection3);
-    }
-
-    public function testDelayFailureNotReplicating()
-    {
-        Phake::when($this->manager)
-            ->amountBehindMaster($this->connection1, $this->connection2)
-            ->thenReturn(new Duration(111));
-        Phake::when($this->manager)
-            ->amountBehindMaster($this->connection2, $this->connection3)
-            ->thenReturn(null);
-
-        $this->setExpectedException(__NAMESPACE__ . '\Exception\NotReplicatingException');
-        $this->manager->delay($this->connection3, null, $this->connection1);
-    }
-
-    public function testDelayWithin()
-    {
-        Phake::when($this->manager)
-            ->amountBehindMaster($this->connection1, $this->connection2)
-            ->thenReturn(new Duration(111));
-        Phake::when($this->manager)
-            ->amountBehindMaster($this->connection2, $this->connection3)
-            ->thenReturn(new Duration(222));
-
-        $this->assertTrue($this->manager->delayWithin(new Duration(333), $this->connection3, $this->connection1));
-        $this->assertTrue($this->manager->delayWithin(333, $this->connection3, $this->connection1));
-        $this->assertFalse($this->manager->delayWithin(new Duration(110), $this->connection3, $this->connection1));
-        $this->assertFalse($this->manager->delayWithin(110, $this->connection3, $this->connection1));
-        $this->assertFalse($this->manager->delayWithin(new Duration(110), $this->connection3));
-        $this->assertFalse($this->manager->delayWithin(110, $this->connection3));
-    }
-
-    public function testDelayWithinFailureNoPath()
-    {
-        $this->setExpectedException(__NAMESPACE__ . '\Exception\NotReplicatingException');
-        $this->manager->delayWithin(111, $this->connection4, $this->connection3);
-    }
-
-    public function testDelayWithinFailureNotReplicating()
-    {
-        Phake::when($this->manager)
-            ->amountBehindMaster($this->connection1, $this->connection2)
-            ->thenReturn(new Duration(111));
-        Phake::when($this->manager)
-            ->amountBehindMaster($this->connection2, $this->connection3)
-            ->thenReturn(null);
-
-        $this->setExpectedException(__NAMESPACE__ . '\Exception\NotReplicatingException');
-        $this->manager->delayWithin(111, $this->connection3, $this->connection1);
     }
 
     public function testIsReplicating()

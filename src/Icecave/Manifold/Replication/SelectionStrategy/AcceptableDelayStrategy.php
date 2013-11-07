@@ -70,7 +70,10 @@ class AcceptableDelayStrategy extends AbstractSelectionStrategy
         }
 
         foreach ($pool->connections() as $connection) {
-            $delay = $replicationManager->delay($connection);
+            $delay = $replicationManager->delay(
+                $connection,
+                $this->threshold()
+            );
 
             if (null === $delay) {
                 if (null !== $logger) {
@@ -111,8 +114,8 @@ class AcceptableDelayStrategy extends AbstractSelectionStrategy
                 $logger->debug(
                     'Connection {connection} ' .
                         'not selected from pool {pool}. ' .
-                        'Replication delay of {delay} ' .
-                        'is greater than the threshold {threshold}.',
+                        'Replication delay is at least {delay}, ' .
+                        'and is greater than the threshold {threshold}.',
                     array(
                         'connection' => $connection->name(),
                         'pool' => $pool->name(),

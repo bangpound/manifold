@@ -23,42 +23,24 @@ interface ReplicationManagerInterface
      * This method traverses up the replication path, adding up the replication
      * delay at each link to get a total amount.
      *
-     * An optional threshold can be specified. This will prevent the manager
+     * An optional threshold can be specified. This does not guarantee that the
+     * return value will be non-null. Rather, it is used to prevent the manager
      * from continuing to add up replication delay from further up the path if
-     * the threshold has already been surpassed. In this case, null will be
-     * returned instead of a duration. This allows for improved performance if
-     * the delay must be below a threshold to be useful.
+     * the threshold has already been surpassed. In this case, the returned
+     * duration is only to be considered an 'at least' value. The real
+     * replication delay could be higher. This allows for improved performance
+     * because less connections are potentially made.
      *
      * @param ConnectionInterface            $slaveConnection       The replication slave.
-     * @param TimeSpanInterface|integer|null $threshold             The maximum allowable replication delay, or null to allow any amount of delay.
+     * @param TimeSpanInterface|integer|null $threshold             The maximum checked replication delay, or null to allow any amount of delay.
      * @param ConnectionInterface            $masterConnection|null The replication master to check against, or null to use the replication root.
      *
-     * @return Duration|null                     The replication delay between $masterConnection and $slaveConnection, or null if a threshold is passed, and the duration surpasses that threshold.
-     * @throws Exception\NotReplicatingException If $slaveConnection is not replicating from $masterConnection.
+     * @return Duration|null                     The replication delay between $masterConnection and $slaveConnection, or null if replication is not running.
+     * @throws Exception\NotReplicatingException If there is no replication path from $slaveConnection to $masterConnection.
      */
     public function delay(
         ConnectionInterface $slaveConnection,
         $threshold = null,
-        ConnectionInterface $masterConnection = null
-    );
-
-    /**
-     * Check if a slave's replication delay is within the given threshold.
-     *
-     * This method traverses up the replication path, adding up the replication
-     * delay at each link to get a total amount. Traversal stops immediately if
-     * the delay surpasses the threshold.
-     *
-     * @param TimeSpanInterface|integer $threshold             The threshold delay.
-     * @param ConnectionInterface       $slaveConnection       The replication slave.
-     * @param ConnectionInterface       $masterConnection|null The replication master to check against, or null to use the replication root.
-     *
-     * @return boolean                           True if the slave's replication delay is less than or equal to $threshold.
-     * @throws Exception\NotReplicatingException If $slaveConnection is not replicating from $masterConnection.
-     */
-    public function delayWithin(
-        $threshold,
-        ConnectionInterface $slaveConnection,
         ConnectionInterface $masterConnection = null
     );
 

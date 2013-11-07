@@ -64,18 +64,18 @@ class LeastDelayStrategyTest extends PHPUnit_Framework_TestCase
 
     public function testSelect()
     {
-        Phake::when($this->manager)->delay($this->connectionA)->thenReturn(new Duration(222));
-        Phake::when($this->manager)->delay($this->connectionB)->thenReturn(new Duration(111));
-        Phake::when($this->manager)->delay($this->connectionC)->thenReturn(new Duration(333));
+        Phake::when($this->manager)->delay($this->connectionA, $this->threshold)->thenReturn(new Duration(222));
+        Phake::when($this->manager)->delay($this->connectionB, $this->threshold)->thenReturn(new Duration(111));
+        Phake::when($this->manager)->delay($this->connectionC, $this->threshold)->thenReturn(new Duration(333));
 
         $this->assertSame($this->connectionB, $this->strategy->select($this->manager, $this->pool));
     }
 
     public function testSelectLogging()
     {
-        Phake::when($this->manager)->delay($this->connectionA)->thenReturn(new Duration(222));
-        Phake::when($this->manager)->delay($this->connectionB)->thenReturn(new Duration(111));
-        Phake::when($this->manager)->delay($this->connectionC)->thenReturn(new Duration(333));
+        Phake::when($this->manager)->delay($this->connectionA, $this->threshold)->thenReturn(new Duration(222));
+        Phake::when($this->manager)->delay($this->connectionB, $this->threshold)->thenReturn(new Duration(111));
+        Phake::when($this->manager)->delay($this->connectionC, $this->threshold)->thenReturn(new Duration(333));
 
         $this->assertSame($this->connectionB, $this->strategy->select($this->manager, $this->pool, $this->logger));
         Phake::inOrder(
@@ -107,9 +107,9 @@ class LeastDelayStrategyTest extends PHPUnit_Framework_TestCase
     public function testSelectNoThreshold()
     {
         $this->strategy = new LeastDelayStrategy(null, $this->clock);
-        Phake::when($this->manager)->delay($this->connectionA)->thenReturn(new Duration(222));
-        Phake::when($this->manager)->delay($this->connectionB)->thenReturn(new Duration(111));
-        Phake::when($this->manager)->delay($this->connectionC)->thenReturn(new Duration(333));
+        Phake::when($this->manager)->delay($this->connectionA, null)->thenReturn(new Duration(222));
+        Phake::when($this->manager)->delay($this->connectionB, null)->thenReturn(new Duration(111));
+        Phake::when($this->manager)->delay($this->connectionC, null)->thenReturn(new Duration(333));
 
         $this->assertSame($this->connectionB, $this->strategy->select($this->manager, $this->pool));
     }
@@ -117,9 +117,9 @@ class LeastDelayStrategyTest extends PHPUnit_Framework_TestCase
     public function testSelectNoThresholdLogging()
     {
         $this->strategy = new LeastDelayStrategy(null, $this->clock);
-        Phake::when($this->manager)->delay($this->connectionA)->thenReturn(new Duration(222));
-        Phake::when($this->manager)->delay($this->connectionB)->thenReturn(new Duration(111));
-        Phake::when($this->manager)->delay($this->connectionC)->thenReturn(new Duration(333));
+        Phake::when($this->manager)->delay($this->connectionA, null)->thenReturn(new Duration(222));
+        Phake::when($this->manager)->delay($this->connectionB, null)->thenReturn(new Duration(111));
+        Phake::when($this->manager)->delay($this->connectionC, null)->thenReturn(new Duration(333));
 
         $this->assertSame($this->connectionB, $this->strategy->select($this->manager, $this->pool, $this->logger));
         Phake::inOrder(
@@ -149,9 +149,9 @@ class LeastDelayStrategyTest extends PHPUnit_Framework_TestCase
 
     public function testSelectFailureThreshold()
     {
-        Phake::when($this->manager)->delay($this->connectionA)->thenReturn(new Duration(666));
-        Phake::when($this->manager)->delay($this->connectionB)->thenReturn(new Duration(555));
-        Phake::when($this->manager)->delay($this->connectionC)->thenReturn(new Duration(777));
+        Phake::when($this->manager)->delay($this->connectionA, $this->threshold)->thenReturn(new Duration(666));
+        Phake::when($this->manager)->delay($this->connectionB, $this->threshold)->thenReturn(new Duration(555));
+        Phake::when($this->manager)->delay($this->connectionC, $this->threshold)->thenReturn(new Duration(777));
 
         $this->setExpectedException('Icecave\Manifold\Replication\Exception\NoConnectionAvailableException');
         $this->strategy->select($this->manager, $this->pool);
@@ -159,9 +159,9 @@ class LeastDelayStrategyTest extends PHPUnit_Framework_TestCase
 
     public function testSelectFailureThresholdLogging()
     {
-        Phake::when($this->manager)->delay($this->connectionA)->thenReturn(new Duration(666));
-        Phake::when($this->manager)->delay($this->connectionB)->thenReturn(new Duration(555));
-        Phake::when($this->manager)->delay($this->connectionC)->thenReturn(new Duration(777));
+        Phake::when($this->manager)->delay($this->connectionA, $this->threshold)->thenReturn(new Duration(666));
+        Phake::when($this->manager)->delay($this->connectionB, $this->threshold)->thenReturn(new Duration(555));
+        Phake::when($this->manager)->delay($this->connectionC, $this->threshold)->thenReturn(new Duration(777));
 
         $caught = null;
         try {
@@ -175,17 +175,17 @@ class LeastDelayStrategyTest extends PHPUnit_Framework_TestCase
             ),
             Phake::verify($this->logger)->debug(
                 'Connection {connection} not selected from pool {pool}. ' .
-                    'Replication delay of {delay} is greater than the threshold {threshold}.',
+                    'Replication delay is at least {delay}, and is greater than the threshold {threshold}.',
                 array('connection' => 'A', 'pool' => 'pool', 'delay' => 'PT11M6S', 'threshold' => 'PT7M24S')
             ),
             Phake::verify($this->logger)->debug(
                 'Connection {connection} not selected from pool {pool}. ' .
-                    'Replication delay of {delay} is greater than the threshold {threshold}.',
+                    'Replication delay is at least {delay}, and is greater than the threshold {threshold}.',
                 array('connection' => 'B', 'pool' => 'pool', 'delay' => 'PT9M15S', 'threshold' => 'PT7M24S')
             ),
             Phake::verify($this->logger)->debug(
                 'Connection {connection} not selected from pool {pool}. ' .
-                    'Replication delay of {delay} is greater than the threshold {threshold}.',
+                    'Replication delay is at least {delay}, and is greater than the threshold {threshold}.',
                 array('connection' => 'C', 'pool' => 'pool', 'delay' => 'PT12M57S', 'threshold' => 'PT7M24S')
             ),
             Phake::verify($this->logger)->warning(

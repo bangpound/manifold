@@ -68,9 +68,25 @@ class TimePointStrategy extends AbstractSelectionStrategy
         }
 
         $now = $this->clock()->localDateTime();
+        $delayThreshold = $now->differenceAsDuration($this->timePoint());
+
+        if ($delayThreshold->totalSeconds() < 0) {
+            if (null !== $logger) {
+                $logger->warning(
+                    'No acceptable connection found in pool {pool}. ' .
+                        'Desired time point {timePoint} is in the future.',
+                    array(
+                        'pool' => $pool->name(),
+                        'timePoint' => $this->timePoint()->isoString(),
+                    )
+                );
+            }
+
+            throw new NoConnectionAvailableException;
+        }
 
         foreach ($pool->connections() as $connection) {
-            $delay = $replicationManager->delay($connection);
+            $delay = $replicationManager->delay($connection, $delayThreshold);
 
             if (null === $delay) {
                 if (null !== $logger) {
@@ -113,8 +129,8 @@ class TimePointStrategy extends AbstractSelectionStrategy
                 $logger->debug(
                     'Connection {connection} ' .
                         'not selected from pool {pool}. ' .
-                        'Connection time of {connectionTime} ' .
-                        'is less than {timePoint}.',
+                        'Connection time is no more than {connectionTime}, ' .
+                        'and is less than {timePoint}.',
                     array(
                         'connection' => $connection->name(),
                         'pool' => $pool->name(),

@@ -73,20 +73,20 @@ class TimePointStrategyTest extends PHPUnit_Framework_TestCase
     public function testSelect()
     {
         Phake::when($this->clock)->localDateTime()->thenReturn(new DateTime(2001, 1, 1, 12, 0, 3));
-        Phake::when($this->manager)->isReplicating(Phake::anyParameters())->thenReturn(true);
-        Phake::when($this->manager)->delay($this->connectionA)->thenReturn(new Duration(3));
-        Phake::when($this->manager)->delay($this->connectionB)->thenReturn(new Duration(2));
+        $delayThreshold = new Duration(2);
+        Phake::when($this->manager)->delay($this->connectionA, $delayThreshold)->thenReturn(new Duration(3));
+        Phake::when($this->manager)->delay($this->connectionB, $delayThreshold)->thenReturn(new Duration(2));
 
         $this->assertSame($this->connectionB, $this->strategy->select($this->manager, $this->pool));
-        Phake::verify($this->manager, Phake::never())->isReplicating($this->connectionC);
+        Phake::verify($this->manager, Phake::never())->delay($this->connectionC, $delayThreshold);
     }
 
     public function testSelectLogging()
     {
         Phake::when($this->clock)->localDateTime()->thenReturn(new DateTime(2001, 1, 1, 12, 0, 3));
-        Phake::when($this->manager)->isReplicating(Phake::anyParameters())->thenReturn(true);
-        Phake::when($this->manager)->delay($this->connectionA)->thenReturn(new Duration(3));
-        Phake::when($this->manager)->delay($this->connectionB)->thenReturn(new Duration(2));
+        $delayThreshold = new Duration(2);
+        Phake::when($this->manager)->delay($this->connectionA, $delayThreshold)->thenReturn(new Duration(3));
+        Phake::when($this->manager)->delay($this->connectionB, $delayThreshold)->thenReturn(new Duration(2));
 
         $this->assertSame($this->connectionB, $this->strategy->select($this->manager, $this->pool, $this->logger));
         Phake::inOrder(
@@ -96,7 +96,7 @@ class TimePointStrategyTest extends PHPUnit_Framework_TestCase
             ),
             Phake::verify($this->logger)->debug(
                 'Connection {connection} not selected from pool {pool}. ' .
-                    'Connection time of {connectionTime} is less than {timePoint}.',
+                    'Connection time is no more than {connectionTime}, and is less than {timePoint}.',
                 array(
                     'connection' => 'A',
                     'pool' => 'pool',
@@ -115,16 +115,16 @@ class TimePointStrategyTest extends PHPUnit_Framework_TestCase
                 )
             )
         );
-        Phake::verify($this->manager, Phake::never())->isReplicating($this->connectionC);
+        Phake::verify($this->manager, Phake::never())->delay($this->connectionC, $delayThreshold);
     }
 
     public function testSelectFailureThreshold()
     {
         Phake::when($this->clock)->localDateTime()->thenReturn(new DateTime(2001, 1, 1, 12, 0, 2));
-        Phake::when($this->manager)->isReplicating(Phake::anyParameters())->thenReturn(true);
-        Phake::when($this->manager)->delay($this->connectionA)->thenReturn(new Duration(4));
-        Phake::when($this->manager)->delay($this->connectionB)->thenReturn(new Duration(3));
-        Phake::when($this->manager)->delay($this->connectionC)->thenReturn(new Duration(2));
+        $delayThreshold = new Duration(1);
+        Phake::when($this->manager)->delay($this->connectionA, $delayThreshold)->thenReturn(new Duration(4));
+        Phake::when($this->manager)->delay($this->connectionB, $delayThreshold)->thenReturn(new Duration(3));
+        Phake::when($this->manager)->delay($this->connectionC, $delayThreshold)->thenReturn(new Duration(2));
 
         $this->setExpectedException('Icecave\Manifold\Replication\Exception\NoConnectionAvailableException');
         $this->strategy->select($this->manager, $this->pool);
@@ -133,10 +133,10 @@ class TimePointStrategyTest extends PHPUnit_Framework_TestCase
     public function testSelectFailureThresholdLogging()
     {
         Phake::when($this->clock)->localDateTime()->thenReturn(new DateTime(2001, 1, 1, 12, 0, 2));
-        Phake::when($this->manager)->isReplicating(Phake::anyParameters())->thenReturn(true);
-        Phake::when($this->manager)->delay($this->connectionA)->thenReturn(new Duration(4));
-        Phake::when($this->manager)->delay($this->connectionB)->thenReturn(new Duration(3));
-        Phake::when($this->manager)->delay($this->connectionC)->thenReturn(new Duration(2));
+        $delayThreshold = new Duration(1);
+        Phake::when($this->manager)->delay($this->connectionA, $delayThreshold)->thenReturn(new Duration(4));
+        Phake::when($this->manager)->delay($this->connectionB, $delayThreshold)->thenReturn(new Duration(3));
+        Phake::when($this->manager)->delay($this->connectionC, $delayThreshold)->thenReturn(new Duration(2));
 
         $caught = null;
         try {
@@ -149,7 +149,7 @@ class TimePointStrategyTest extends PHPUnit_Framework_TestCase
             ),
             Phake::verify($this->logger)->debug(
                 'Connection {connection} not selected from pool {pool}. ' .
-                    'Connection time of {connectionTime} is less than {timePoint}.',
+                    'Connection time is no more than {connectionTime}, and is less than {timePoint}.',
                 array(
                     'connection' => 'A',
                     'pool' => 'pool',
@@ -159,7 +159,7 @@ class TimePointStrategyTest extends PHPUnit_Framework_TestCase
             ),
             Phake::verify($this->logger)->debug(
                 'Connection {connection} not selected from pool {pool}. ' .
-                    'Connection time of {connectionTime} is less than {timePoint}.',
+                    'Connection time is no more than {connectionTime}, and is less than {timePoint}.',
                 array(
                     'connection' => 'B',
                     'pool' => 'pool',
@@ -169,7 +169,7 @@ class TimePointStrategyTest extends PHPUnit_Framework_TestCase
             ),
             Phake::verify($this->logger)->debug(
                 'Connection {connection} not selected from pool {pool}. ' .
-                    'Connection time of {connectionTime} is less than {timePoint}.',
+                    'Connection time is no more than {connectionTime}, and is less than {timePoint}.',
                 array(
                     'connection' => 'C',
                     'pool' => 'pool',
@@ -191,7 +191,7 @@ class TimePointStrategyTest extends PHPUnit_Framework_TestCase
 
     public function testSelectFailureNoneReplicating()
     {
-        Phake::when($this->manager)->isReplicating(Phake::anyParameters())->thenReturn(false);
+        Phake::when($this->manager)->delay(Phake::anyParameters())->thenReturn(null);
 
         $this->setExpectedException('Icecave\Manifold\Replication\Exception\NoConnectionAvailableException');
         $this->strategy->select($this->manager, $this->pool);
@@ -199,7 +199,7 @@ class TimePointStrategyTest extends PHPUnit_Framework_TestCase
 
     public function testSelectFailureNoneReplicatingLogging()
     {
-        Phake::when($this->manager)->isReplicating(Phake::anyParameters())->thenReturn(false);
+        Phake::when($this->manager)->delay(Phake::anyParameters())->thenReturn(null);
 
         $caught = null;
         try {
@@ -229,6 +229,38 @@ class TimePointStrategyTest extends PHPUnit_Framework_TestCase
                 'No acceptable connection found in pool {pool}. ' .
                     'No connection found with connection time of at least {timePoint}.',
                 array('pool' => 'pool', 'timePoint' => '2001-01-01T12:00:01+00:00')
+            )
+        );
+        $this->setExpectedException('Icecave\Manifold\Replication\Exception\NoConnectionAvailableException');
+        if (null !== $caught) {
+            throw $caught;
+        }
+    }
+
+    public function testSelectFailureTimePointInFuture()
+    {
+        $this->timePoint = new DateTime(2010, 1, 1, 12, 0, 0);
+        $this->strategy = new TimePointStrategy($this->timePoint, $this->clock);
+        Phake::when($this->clock)->localDateTime()->thenReturn(new DateTime(2001, 1, 1, 12, 0, 0));
+
+        $this->setExpectedException('Icecave\Manifold\Replication\Exception\NoConnectionAvailableException');
+        $this->strategy->select($this->manager, $this->pool);
+    }
+
+    public function testSelectFailureTimePointInFutureLogging()
+    {
+        $this->timePoint = new DateTime(2010, 1, 1, 12, 0, 0);
+        $this->strategy = new TimePointStrategy($this->timePoint, $this->clock);
+        Phake::when($this->clock)->localDateTime()->thenReturn(new DateTime(2001, 1, 1, 12, 0, 0));
+
+        $caught = null;
+        try {
+            $this->strategy->select($this->manager, $this->pool, $this->logger);
+        } catch (NoConnectionAvailableException $caught) {}
+        Phake::inOrder(
+            Phake::verify($this->logger)->warning(
+                'No acceptable connection found in pool {pool}. Desired time point {timePoint} is in the future.',
+                array('pool' => 'pool', 'timePoint' => '2010-01-01T12:00:00+00:00')
             )
         );
         $this->setExpectedException('Icecave\Manifold\Replication\Exception\NoConnectionAvailableException');
