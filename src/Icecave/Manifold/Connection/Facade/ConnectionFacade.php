@@ -348,6 +348,7 @@ class ConnectionFacade extends PDO implements ConnectionFacadeInterface
         $this->logger()->debug('Beginning transaction on facade.');
 
         $this->transactionConnections()->clear();
+        $this->setTransactionWriteConnection(null);
         $this->isInTransaction = true;
 
         return true;
@@ -627,6 +628,35 @@ class ConnectionFacade extends PDO implements ConnectionFacadeInterface
     }
 
     /**
+     * Set the transaction write connection.
+     *
+     * Once a write has been made inside a transaction, all subsequent queries
+     * must execute on the same connection. This method sets the connection to
+     * use in this circumstance.
+     *
+     * @param ConnectionInterface|null $transactionWriteConnection The write connection to use, or null to remove the current connection.
+     */
+    protected function setTransactionWriteConnection(
+        ConnectionInterface $transactionWriteConnection = null
+    ) {
+        $this->transactionWriteConnection = $transactionWriteConnection;
+    }
+
+    /**
+     * Get the current transaction write connection.
+     *
+     * Once a write has been made inside a transaction, all subsequent queries
+     * must execute on the same connection. This method returns the connection
+     * to use in this circumstance.
+     *
+     * @return ConnectionInterface|null The current transaction write connection, or null if no write has happened, or no transaction is active.
+     */
+    public function transactionWriteConnection()
+    {
+        return $this->transactionWriteConnection;
+    }
+
+    /**
      * Select a connection for writing and set it as the current connection.
      *
      * @param string|null                     $databaseName The name of the database to write to, or null for a generic connection.
@@ -639,6 +669,13 @@ class ConnectionFacade extends PDO implements ConnectionFacadeInterface
         $databaseName = null,
         SelectionStrategyInterface $strategy = null
     ) {
+        if (
+            $this->inTransaction() &&
+            null !== $this->transactionWriteConnection()
+        ) {
+            return $this->transactionWriteConnection();
+        }
+
         try {
             $connection = $this->connectionSelector()
                 ->forWrite($databaseName, $strategy);
@@ -647,6 +684,10 @@ class ConnectionFacade extends PDO implements ConnectionFacadeInterface
         }
 
         $this->activateConnection($connection);
+
+        if ($this->inTransaction()) {
+            $this->setTransactionWriteConnection($connection);
+        }
 
         return $connection;
     }
@@ -664,6 +705,13 @@ class ConnectionFacade extends PDO implements ConnectionFacadeInterface
         $databaseName = null,
         SelectionStrategyInterface $strategy = null
     ) {
+        if (
+            $this->inTransaction() &&
+            null !== $this->transactionWriteConnection()
+        ) {
+            return $this->transactionWriteConnection();
+        }
+
         try {
             $connection = $this->connectionSelector()
                 ->forRead($databaseName, $strategy);
@@ -690,8 +738,15 @@ class ConnectionFacade extends PDO implements ConnectionFacadeInterface
         $statement,
         SelectionStrategyInterface $strategy = null
     ) {
+        if (
+            $this->inTransaction() &&
+            null !== $this->transactionWriteConnection()
+        ) {
+            return $this->transactionWriteConnection();
+        }
+
         try {
-            $connection = $this->queryConnectionSelector()
+            list($connection, $isWrite) = $this->queryConnectionSelector()
                 ->select($statement, $strategy);
         } catch (UnsupportedQueryException $e) {
             throw new Exception\PdoException($e->getMessage(), null, null, $e);
@@ -700,6 +755,10 @@ class ConnectionFacade extends PDO implements ConnectionFacadeInterface
         }
 
         $this->activateConnection($connection);
+
+        if ($isWrite && $this->inTransaction()) {
+            $this->setTransactionWriteConnection($connection);
+        }
 
         return $connection;
     }
@@ -753,4 +812,5 @@ class ConnectionFacade extends PDO implements ConnectionFacadeInterface
     private $currentConnection;
     private $isInTransaction;
     private $transactionConnections;
+    private $transactionWriteConnection;
 }

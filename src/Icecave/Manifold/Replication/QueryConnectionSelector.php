@@ -52,7 +52,7 @@ class QueryConnectionSelector implements QueryConnectionSelectorInterface
      * @param string                                            $query    The query to select a connection for.
      * @param SelectionStrategy\SelectionStrategyInterface|null $strategy The selection strategy to use.
      *
-     * @return ConnectionInterface                      The selected connection.
+     * @return tuple<ConnectionInterface,boolean>       A 2-tuple containing the selected connection, and a boolean value indicating if the query is a write query.
      * @throws Exception\UnsupportedQueryException      If the query type is unsupported, or cannot be determined.
      * @throws Exception\NoConnectionAvailableException If no connection is available for selection.
      */
@@ -69,7 +69,7 @@ class QueryConnectionSelector implements QueryConnectionSelectorInterface
             $connection = $this->selector()->forRead($databaseName, $strategy);
         }
 
-        return $connection;
+        return array($connection, $isWrite);
     }
 
     private $selector;

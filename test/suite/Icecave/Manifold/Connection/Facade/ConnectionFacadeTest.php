@@ -125,7 +125,7 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
     {
         $query = 'SELECT * FROM foo.bar';
         $attributes = array('baz' => 'qux');
-        Phake::when($this->queryConnectionSelector)->select($query, $this->strategy)->thenReturn($this->connectionA);
+        Phake::when($this->queryConnectionSelector)->select($query, $this->strategy)->thenReturn(array($this->connectionA, false));
         Phake::when($this->connectionA)->prepare($query, $attributes)->thenReturn($this->statement);
 
         $this->assertSame(
@@ -148,7 +148,7 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
     public function testPrepareWithStrategyDefaultOptions()
     {
         $query = 'SELECT * FROM foo.bar';
-        Phake::when($this->queryConnectionSelector)->select($query, $this->strategy)->thenReturn($this->connectionA);
+        Phake::when($this->queryConnectionSelector)->select($query, $this->strategy)->thenReturn(array($this->connectionA, false));
         Phake::when($this->connectionA)->prepare($query, array())->thenReturn($this->statement);
 
         $this->assertSame($this->statement, $this->facade->prepareWithStrategy($this->strategy, $query));
@@ -157,7 +157,7 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
     public function testQueryWithStrategy()
     {
         $query = 'SELECT * FROM foo.bar';
-        Phake::when($this->queryConnectionSelector)->select($query, $this->strategy)->thenReturn($this->connectionA);
+        Phake::when($this->queryConnectionSelector)->select($query, $this->strategy)->thenReturn(array($this->connectionA, false));
         Phake::when($this->connectionA)->query($query, 'one', 'two', 'three')->thenReturn($this->statement);
 
         $this->assertSame(
@@ -180,7 +180,7 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
     public function testExecWithStrategy()
     {
         $query = 'SELECT * FROM foo.bar';
-        Phake::when($this->queryConnectionSelector)->select($query, $this->strategy)->thenReturn($this->connectionA);
+        Phake::when($this->queryConnectionSelector)->select($query, $this->strategy)->thenReturn(array($this->connectionA, false));
         Phake::when($this->connectionA)->exec($query)->thenReturn(111);
 
         $this->assertSame(111, $this->facade->execWithStrategy($this->strategy, $query));
@@ -203,7 +203,7 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
     {
         $query = 'SELECT * FROM foo.bar';
         $attributes = array('baz' => 'qux');
-        Phake::when($this->queryConnectionSelector)->select($query, null)->thenReturn($this->connectionA);
+        Phake::when($this->queryConnectionSelector)->select($query, null)->thenReturn(array($this->connectionA, false));
         Phake::when($this->connectionA)->prepare($query, $attributes)->thenReturn($this->statement);
 
         $this->assertSame($this->statement, $this->facade->prepare($query, $attributes));
@@ -223,7 +223,7 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
     public function testPrepareDefaultOptions()
     {
         $query = 'SELECT * FROM foo.bar';
-        Phake::when($this->queryConnectionSelector)->select($query, null)->thenReturn($this->connectionA);
+        Phake::when($this->queryConnectionSelector)->select($query, null)->thenReturn(array($this->connectionA, false));
         Phake::when($this->connectionA)->prepare($query, array())->thenReturn($this->statement);
 
         $this->assertSame($this->statement, $this->facade->prepare($query));
@@ -232,7 +232,7 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
     public function testQuery()
     {
         $query = 'SELECT * FROM foo.bar';
-        Phake::when($this->queryConnectionSelector)->select($query, null)->thenReturn($this->connectionA);
+        Phake::when($this->queryConnectionSelector)->select($query, null)->thenReturn(array($this->connectionA, false));
         Phake::when($this->connectionA)->query($query, 'one', 'two', 'three')->thenReturn($this->statement);
 
         $this->assertSame($this->statement, $this->facade->query($query, 'one', 'two', 'three'));
@@ -258,7 +258,7 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
     public function testExec()
     {
         $query = 'SELECT * FROM foo.bar';
-        Phake::when($this->queryConnectionSelector)->select($query, null)->thenReturn($this->connectionA);
+        Phake::when($this->queryConnectionSelector)->select($query, null)->thenReturn(array($this->connectionA, false));
         Phake::when($this->connectionA)->exec($query)->thenReturn(111);
 
         $this->assertSame(111, $this->facade->exec($query));
@@ -294,8 +294,12 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
     {
         $queryA = 'SELECT a FROM foo.bar';
         $queryB = 'SELECT b FROM foo.bar';
-        Phake::when($this->queryConnectionSelector)->select($queryA, null)->thenReturn($this->connectionA);
-        Phake::when($this->queryConnectionSelector)->select($queryB, null)->thenReturn($this->connectionB);
+        Phake::when($this->queryConnectionSelector)->select($queryA, null)->thenReturn(
+            array($this->connectionA, false)
+        );
+        Phake::when($this->queryConnectionSelector)->select($queryB, null)->thenReturn(
+            array($this->connectionB, false)
+        );
         Phake::when($this->connectionA)->exec($queryA)->thenReturn(111);
         Phake::when($this->connectionB)->exec($queryB)->thenReturn(222);
         $this->facade->beginTransaction();
@@ -318,8 +322,12 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
     {
         $queryA = 'SELECT a FROM foo.bar';
         $queryB = 'SELECT b FROM foo.bar';
-        Phake::when($this->queryConnectionSelector)->select($queryA, null)->thenReturn($this->connectionA);
-        Phake::when($this->queryConnectionSelector)->select($queryB, null)->thenReturn($this->connectionB);
+        Phake::when($this->queryConnectionSelector)->select($queryA, null)->thenReturn(
+            array($this->connectionA, false)
+        );
+        Phake::when($this->queryConnectionSelector)->select($queryB, null)->thenReturn(
+            array($this->connectionB, false)
+        );
         Phake::when($this->connectionA)->exec($queryA)->thenReturn(111);
         Phake::when($this->connectionB)->exec($queryB)->thenReturn(222);
         $this->facade->beginTransaction();
@@ -343,8 +351,12 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
     {
         $queryA = 'SELECT a FROM foo.bar';
         $queryB = 'SELECT b FROM foo.bar';
-        Phake::when($this->queryConnectionSelector)->select($queryA, null)->thenReturn($this->connectionA);
-        Phake::when($this->queryConnectionSelector)->select($queryB, null)->thenReturn($this->connectionB);
+        Phake::when($this->queryConnectionSelector)->select($queryA, null)->thenReturn(
+            array($this->connectionA, false)
+        );
+        Phake::when($this->queryConnectionSelector)->select($queryB, null)->thenReturn(
+            array($this->connectionB, false)
+        );
         Phake::when($this->connectionA)->exec($queryA)->thenReturn(111);
         Phake::when($this->connectionB)->exec($queryB)->thenReturn(222);
         $this->facade->beginTransaction();
@@ -379,8 +391,12 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
     {
         $queryA = 'SELECT a FROM foo.bar';
         $queryB = 'SELECT b FROM foo.bar';
-        Phake::when($this->queryConnectionSelector)->select($queryA, null)->thenReturn($this->connectionA);
-        Phake::when($this->queryConnectionSelector)->select($queryB, null)->thenReturn($this->connectionB);
+        Phake::when($this->queryConnectionSelector)->select($queryA, null)->thenReturn(
+            array($this->connectionA, false)
+        );
+        Phake::when($this->queryConnectionSelector)->select($queryB, null)->thenReturn(
+            array($this->connectionB, false)
+        );
         Phake::when($this->connectionA)->exec($queryA)->thenReturn(111);
         Phake::when($this->connectionB)->exec($queryB)->thenReturn(222);
         $this->facade->beginTransaction();
@@ -403,8 +419,12 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
     {
         $queryA = 'SELECT a FROM foo.bar';
         $queryB = 'SELECT b FROM foo.bar';
-        Phake::when($this->queryConnectionSelector)->select($queryA, null)->thenReturn($this->connectionA);
-        Phake::when($this->queryConnectionSelector)->select($queryB, null)->thenReturn($this->connectionB);
+        Phake::when($this->queryConnectionSelector)->select($queryA, null)->thenReturn(
+            array($this->connectionA, false)
+        );
+        Phake::when($this->queryConnectionSelector)->select($queryB, null)->thenReturn(
+            array($this->connectionB, false)
+        );
         Phake::when($this->connectionA)->exec($queryA)->thenReturn(111);
         Phake::when($this->connectionB)->exec($queryB)->thenReturn(222);
         $this->facade->beginTransaction();
@@ -428,8 +448,12 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
     {
         $queryA = 'SELECT a FROM foo.bar';
         $queryB = 'SELECT b FROM foo.bar';
-        Phake::when($this->queryConnectionSelector)->select($queryA, null)->thenReturn($this->connectionA);
-        Phake::when($this->queryConnectionSelector)->select($queryB, null)->thenReturn($this->connectionB);
+        Phake::when($this->queryConnectionSelector)->select($queryA, null)->thenReturn(
+            array($this->connectionA, false)
+        );
+        Phake::when($this->queryConnectionSelector)->select($queryB, null)->thenReturn(
+            array($this->connectionB, false)
+        );
         Phake::when($this->connectionA)->exec($queryA)->thenReturn(111);
         Phake::when($this->connectionB)->exec($queryB)->thenReturn(222);
         $this->facade->beginTransaction();
@@ -463,7 +487,7 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
     public function testLastInsertId()
     {
         $query = 'SELECT * FROM foo.bar';
-        Phake::when($this->queryConnectionSelector)->select($query, null)->thenReturn($this->connectionA);
+        Phake::when($this->queryConnectionSelector)->select($query, null)->thenReturn(array($this->connectionA, false));
         Phake::when($this->connectionA)->exec($query)->thenReturn(111);
         Phake::when($this->connectionA)->lastInsertId(null)->thenReturn('222');
         Phake::when($this->connectionA)->lastInsertId('foo')->thenReturn('333');
@@ -481,7 +505,7 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
     public function testErrorCode()
     {
         $query = 'SELECT * FROM foo.bar';
-        Phake::when($this->queryConnectionSelector)->select($query, null)->thenReturn($this->connectionA);
+        Phake::when($this->queryConnectionSelector)->select($query, null)->thenReturn(array($this->connectionA, false));
         Phake::when($this->connectionA)->exec($query)->thenReturn(111);
         Phake::when($this->connectionA)->errorCode()->thenReturn('22222');
         $this->facade->exec($query);
@@ -497,7 +521,7 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
     public function testErrorInfo()
     {
         $query = 'SELECT * FROM foo.bar';
-        Phake::when($this->queryConnectionSelector)->select($query, null)->thenReturn($this->connectionA);
+        Phake::when($this->queryConnectionSelector)->select($query, null)->thenReturn(array($this->connectionA, false));
         Phake::when($this->connectionA)->exec($query)->thenReturn(111);
         Phake::when($this->connectionA)->errorInfo()->thenReturn(array('22222', 333, 'message'));
         $this->facade->exec($query);
@@ -513,7 +537,7 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
     public function testQuote()
     {
         $query = 'SELECT * FROM foo.bar';
-        Phake::when($this->queryConnectionSelector)->select($query, null)->thenReturn($this->connectionA);
+        Phake::when($this->queryConnectionSelector)->select($query, null)->thenReturn(array($this->connectionA, false));
         Phake::when($this->connectionA)->exec($query)->thenReturn(111);
         Phake::when($this->connectionA)->quote(111, PDO::PARAM_INT)->thenReturn('111');
         $this->facade->exec($query);
@@ -541,8 +565,12 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
     {
         $queryA = 'SELECT a FROM foo.bar';
         $queryB = 'SELECT b FROM foo.bar';
-        Phake::when($this->queryConnectionSelector)->select($queryA, null)->thenReturn($this->connectionA);
-        Phake::when($this->queryConnectionSelector)->select($queryB, null)->thenReturn($this->connectionB);
+        Phake::when($this->queryConnectionSelector)->select($queryA, null)->thenReturn(
+            array($this->connectionA, false)
+        );
+        Phake::when($this->queryConnectionSelector)->select($queryB, null)->thenReturn(
+            array($this->connectionB, false)
+        );
         Phake::when($this->connectionA)->exec($queryA)->thenReturn(111);
         Phake::when($this->connectionA)->exec($queryB)->thenReturn(222);
         $this->facade->exec($queryA);
@@ -563,8 +591,12 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
     {
         $queryA = 'SELECT a FROM foo.bar';
         $queryB = 'SELECT b FROM foo.bar';
-        Phake::when($this->queryConnectionSelector)->select($queryA, null)->thenReturn($this->connectionA);
-        Phake::when($this->queryConnectionSelector)->select($queryB, null)->thenReturn($this->connectionB);
+        Phake::when($this->queryConnectionSelector)->select($queryA, null)->thenReturn(
+            array($this->connectionA, false)
+        );
+        Phake::when($this->queryConnectionSelector)->select($queryB, null)->thenReturn(
+            array($this->connectionB, false)
+        );
         Phake::when($this->connectionA)->exec($queryA)->thenReturn(111);
         Phake::when($this->connectionA)->exec($queryB)->thenReturn(222);
         Phake::when($this->connectionA)->setAttribute(Phake::anyParameters())
@@ -589,8 +621,12 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
     {
         $queryA = 'SELECT a FROM foo.bar';
         $queryB = 'SELECT b FROM foo.bar';
-        Phake::when($this->queryConnectionSelector)->select($queryA, null)->thenReturn($this->connectionA);
-        Phake::when($this->queryConnectionSelector)->select($queryB, null)->thenReturn($this->connectionB);
+        Phake::when($this->queryConnectionSelector)->select($queryA, null)->thenReturn(
+            array($this->connectionA, false)
+        );
+        Phake::when($this->queryConnectionSelector)->select($queryB, null)->thenReturn(
+            array($this->connectionB, false)
+        );
         Phake::when($this->connectionA)->exec($queryA)->thenReturn(111);
         Phake::when($this->connectionA)->exec($queryB)->thenReturn(222);
         $error = new Exception\PdoException('Unable to set attribute.');
@@ -619,7 +655,7 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
     public function testGetAttribute()
     {
         $query = 'SELECT * FROM foo.bar';
-        Phake::when($this->queryConnectionSelector)->select($query, null)->thenReturn($this->connectionA);
+        Phake::when($this->queryConnectionSelector)->select($query, null)->thenReturn(array($this->connectionA, false));
         Phake::when($this->connectionA)->exec($query)->thenReturn(111);
         Phake::when($this->connectionA)->getAttribute(222)->thenReturn('foo');
         $this->facade->exec($query);
@@ -675,11 +711,21 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
         $queryC = 'SELECT c FROM foo.bar';
         $queryD = 'SELECT d FROM foo.bar';
         $queryE = 'SELECT e FROM foo.bar';
-        Phake::when($this->queryConnectionSelector)->select($queryA, null)->thenReturn($this->connectionA);
-        Phake::when($this->queryConnectionSelector)->select($queryB, null)->thenReturn($this->connectionA);
-        Phake::when($this->queryConnectionSelector)->select($queryC, null)->thenReturn($this->connectionB);
-        Phake::when($this->queryConnectionSelector)->select($queryD, null)->thenReturn($this->connectionC);
-        Phake::when($this->queryConnectionSelector)->select($queryE, null)->thenReturn($this->connectionD);
+        Phake::when($this->queryConnectionSelector)->select($queryA, null)->thenReturn(
+            array($this->connectionA, false)
+        );
+        Phake::when($this->queryConnectionSelector)->select($queryB, null)->thenReturn(
+            array($this->connectionA, false)
+        );
+        Phake::when($this->queryConnectionSelector)->select($queryC, null)->thenReturn(
+            array($this->connectionB, false)
+        );
+        Phake::when($this->queryConnectionSelector)->select($queryD, null)->thenReturn(
+            array($this->connectionC, false)
+        );
+        Phake::when($this->queryConnectionSelector)->select($queryE, null)->thenReturn(
+            array($this->connectionD, false)
+        );
         Phake::when($this->connectionA)->exec($queryA)->thenReturn(111);
         Phake::when($this->connectionA)->exec($queryB)->thenReturn(222);
         Phake::when($this->connectionB)->exec($queryC)->thenReturn(333);
@@ -755,23 +801,23 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
 
     public function testConnectionActivationFailureAttribute()
     {
-        $queryA = 'SELECT a FROM foo.bar';
-        Phake::when($this->queryConnectionSelector)->select($queryA, null)->thenReturn($this->connectionA);
+        $query = 'SELECT a FROM foo.bar';
+        Phake::when($this->queryConnectionSelector)->select($query, null)->thenReturn(array($this->connectionA, false));
         Phake::when($this->connectionA)->setAttribute(Phake::anyParameters())->thenReturn(false);
 
         $this->setExpectedException('PDOException', 'Unable to set attribute on child connection.');
-        $this->facade->exec($queryA);
+        $this->facade->exec($query);
     }
 
     public function testConnectionActivationFailureTransaction()
     {
-        $queryA = 'SELECT a FROM foo.bar';
-        Phake::when($this->queryConnectionSelector)->select($queryA, null)->thenReturn($this->connectionA);
+        $query = 'SELECT a FROM foo.bar';
+        Phake::when($this->queryConnectionSelector)->select($query, null)->thenReturn(array($this->connectionA, false));
         Phake::when($this->connectionA)->beginTransaction(Phake::anyParameters())->thenReturn(false);
         $this->facade->beginTransaction();
 
         $this->setExpectedException('PDOException', 'Unable to begin transaction on child connection.');
-        $this->facade->exec($queryA);
+        $this->facade->exec($query);
     }
 
     public function testQueryConnectionSelectionFailureUnsupportedQuery()
@@ -800,5 +846,66 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
 
         $this->setExpectedException('PDOException', 'No suitable connection available.');
         $this->facade->quote('foo');
+    }
+
+    public function testTransactionWriteConnection()
+    {
+        $queryA = 'SELECT a FROM a.a';
+        $queryB = 'DELETE FROM b.b';
+        $queryC = 'SELECT c FROM c.c';
+        $queryD = 'DELETE FROM d.d';
+        $queryE = 'SELECT e FROM e.e';
+        Phake::when($this->queryConnectionSelector)->select($queryA, null)->thenReturn(
+            array($this->connectionA, false)
+        );
+        Phake::when($this->queryConnectionSelector)->select($queryB, null)->thenReturn(
+            array($this->connectionB, true)
+        );
+        Phake::when($this->queryConnectionSelector)->select($queryE, null)->thenReturn(
+            array($this->connectionC, false)
+        );
+        $this->facade->beginTransaction();
+        $this->facade->exec($queryA);
+        $this->facade->exec($queryB);
+        $this->facade->exec($queryC);
+        $this->facade->exec($queryD);
+        $this->facade->commit();
+        $this->facade->exec($queryE);
+
+        Phake::inOrder(
+            Phake::verify($this->connectionA)->beginTransaction(),
+            Phake::verify($this->connectionA)->exec($queryA),
+            Phake::verify($this->connectionB)->beginTransaction(),
+            Phake::verify($this->connectionB)->exec($queryB),
+            Phake::verify($this->connectionB)->exec($queryC),
+            Phake::verify($this->connectionB)->exec($queryD),
+            Phake::verify($this->connectionA)->commit(),
+            Phake::verify($this->connectionB)->commit(),
+            Phake::verify($this->connectionC)->exec($queryE)
+        );
+        Phake::when($this->queryConnectionSelector, Phake::never())->select($queryC, null);
+        Phake::when($this->queryConnectionSelector, Phake::never())->select($queryD, null);
+    }
+
+    public function testTransactionWriteConnectionNonStatementSelection()
+    {
+        Phake::when($this->connectionSelector)->forWrite('foo', $this->strategy)->thenReturn($this->connectionA);
+        Phake::when($this->connectionSelector)->forRead('foo', $this->strategy)->thenReturn($this->connectionB);
+        $this->facade->beginTransaction();
+
+        $this->assertSame(
+            $this->connectionA,
+            Liberator::liberate($this->facade)->selectConnectionForWrite('foo', $this->strategy)
+        );
+        $this->assertSame($this->connectionA, Liberator::liberate($this->facade)->selectConnectionForWrite());
+        $this->assertSame($this->connectionA, Liberator::liberate($this->facade)->selectConnectionForRead());
+        $this->assertSame($this->connectionA, Liberator::liberate($this->facade)->selectConnectionForRead());
+
+        $this->facade->rollBack();
+
+        $this->assertSame(
+            $this->connectionB,
+            Liberator::liberate($this->facade)->selectConnectionForRead('foo', $this->strategy)
+        );
     }
 }

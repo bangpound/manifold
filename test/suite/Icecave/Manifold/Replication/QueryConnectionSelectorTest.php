@@ -46,9 +46,9 @@ class QueryConnectionSelectorTest extends PHPUnit_Framework_TestCase
         Phake::when($this->innerSelector)->forWrite('bar', null)->thenReturn($this->connectionC);
         Phake::when($this->innerSelector)->forWrite('bar', $this->strategy)->thenReturn($this->connectionD);
 
-        $this->assertSame($this->connectionA, $this->selector->select('SELECT * FROM foo.bar'));
-        $this->assertSame($this->connectionB, $this->selector->select('SELECT * FROM foo.bar', $this->strategy));
-        $this->assertSame($this->connectionC, $this->selector->select('DELETE FROM bar.baz'));
-        $this->assertSame($this->connectionD, $this->selector->select('DELETE FROM bar.baz', $this->strategy));
+        $this->assertSame(array($this->connectionA, false), $this->selector->select('SELECT * FROM foo.bar'));
+        $this->assertSame(array($this->connectionB, false), $this->selector->select('SELECT * FROM foo.bar', $this->strategy));
+        $this->assertSame(array($this->connectionC, true), $this->selector->select('DELETE FROM bar.baz'));
+        $this->assertSame(array($this->connectionD, true), $this->selector->select('DELETE FROM bar.baz', $this->strategy));
     }
 }
