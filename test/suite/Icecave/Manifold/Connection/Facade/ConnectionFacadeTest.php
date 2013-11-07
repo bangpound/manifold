@@ -134,12 +134,12 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
         Phake::inOrder(
             Phake::verify($this->logger)->debug(
                 'Preparing statement {statement} with strategy {strategy}.',
-                array('statement' => var_export($query, true), 'strategy' => get_class($this->strategy))
+                array('statement' => $query, 'strategy' => get_class($this->strategy))
             ),
             Phake::verify($this->queryConnectionSelector)->select($query, $this->strategy),
             Phake::verify($this->logger)->debug(
                 'Setting current connection to {connection}.',
-                array('connection' => "'A'")
+                array('connection' => 'A')
             )
         );
     }
@@ -165,13 +165,13 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
         );
         Phake::inOrder(
             Phake::verify($this->logger)->debug(
-                'Querying statement {statement} with strategy {strategy}.',
-                array('statement' => var_export($query, true), 'strategy' => get_class($this->strategy))
+                'Executing statement {statement} with strategy {strategy}.',
+                array('statement' => $query, 'strategy' => get_class($this->strategy))
             ),
             Phake::verify($this->queryConnectionSelector)->select($query, $this->strategy),
             Phake::verify($this->logger)->debug(
                 'Setting current connection to {connection}.',
-                array('connection' => "'A'")
+                array('connection' => 'A')
             )
         );
     }
@@ -186,12 +186,12 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
         Phake::inOrder(
             Phake::verify($this->logger)->debug(
                 'Executing statement {statement} with strategy {strategy}.',
-                array('statement' => var_export($query, true), 'strategy' => get_class($this->strategy))
+                array('statement' => $query, 'strategy' => get_class($this->strategy))
             ),
             Phake::verify($this->queryConnectionSelector)->select($query, $this->strategy),
             Phake::verify($this->logger)->debug(
                 'Setting current connection to {connection}.',
-                array('connection' => "'A'")
+                array('connection' => 'A')
             )
         );
     }
@@ -208,13 +208,13 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->statement, $this->facade->prepare($query, $attributes));
         Phake::inOrder(
             Phake::verify($this->logger)->debug(
-                'Preparing statement {statement} on facade.',
-                array('statement' => var_export($query, true))
+                'Preparing statement {statement} with strategy {strategy}.',
+                array('statement' => $query, 'strategy' => get_class($this->defaultStrategy))
             ),
             Phake::verify($this->queryConnectionSelector)->select($query, null),
             Phake::verify($this->logger)->debug(
                 'Setting current connection to {connection}.',
-                array('connection' => "'A'")
+                array('connection' => 'A')
             )
         );
     }
@@ -237,13 +237,13 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->statement, $this->facade->query($query, 'one', 'two', 'three'));
         Phake::inOrder(
             Phake::verify($this->logger)->debug(
-                'Querying statement {statement} on facade.',
-                array('statement' => var_export($query, true))
+                'Executing statement {statement} with strategy {strategy}.',
+                array('statement' => $query, 'strategy' => get_class($this->defaultStrategy))
             ),
             Phake::verify($this->queryConnectionSelector)->select($query, null),
             Phake::verify($this->logger)->debug(
                 'Setting current connection to {connection}.',
-                array('connection' => "'A'")
+                array('connection' => 'A')
             )
         );
     }
@@ -263,13 +263,13 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
         $this->assertSame(111, $this->facade->exec($query));
         Phake::inOrder(
             Phake::verify($this->logger)->debug(
-                'Executing statement {statement} on facade.',
-                array('statement' => var_export($query, true))
+                'Executing statement {statement} with strategy {strategy}.',
+                array('statement' => $query, 'strategy' => get_class($this->defaultStrategy))
             ),
             Phake::verify($this->queryConnectionSelector)->select($query, null),
             Phake::verify($this->logger)->debug(
                 'Setting current connection to {connection}.',
-                array('connection' => "'A'")
+                array('connection' => 'A')
             )
         );
     }
@@ -531,9 +531,9 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
     public function testQuoteDefaults()
     {
         Phake::when($this->connectionSelector)->forRead(null, new AnyStrategy)->thenReturn($this->connectionA);
-        Phake::when($this->connectionA)->quote('foo', PDO::PARAM_STR)->thenReturn("'foo'");
+        Phake::when($this->connectionA)->quote('foo', PDO::PARAM_STR)->thenReturn('foo');
 
-        $this->assertSame("'foo'", $this->facade->quote('foo'));
+        $this->assertSame('foo', $this->facade->quote('foo'));
     }
 
     public function testSetAttribute()
@@ -550,7 +550,7 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($this->facade->setAttribute(333, 'baz'));
         $log = Phake::verify($this->logger)->debug(
             'Setting attribute {attribute} to {value} on facade.',
-            array('attribute' => '333', 'value' => "'baz'")
+            array('attribute' => '333', 'value' => 'baz')
         );
         $setA = Phake::verify($this->connectionA)->setAttribute(333, 'baz');
         $setB = Phake::verify($this->connectionB)->setAttribute(333, 'baz');
@@ -576,7 +576,7 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($this->facade->setAttribute(333, 'baz'));
         $log = Phake::verify($this->logger)->debug(
             'Setting attribute {attribute} to {value} on facade.',
-            array('attribute' => '333', 'value' => "'baz'")
+            array('attribute' => '333', 'value' => 'baz')
         );
         $setA = Phake::verify($this->connectionA)->setAttribute(333, 'baz');
         $setB = Phake::verify($this->connectionB)->setAttribute(333, 'baz');
@@ -607,7 +607,7 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
         $this->assertSame($error, $thrown);
         $log = Phake::verify($this->logger)->debug(
             'Setting attribute {attribute} to {value} on facade.',
-            array('attribute' => '333', 'value' => "'baz'")
+            array('attribute' => '333', 'value' => 'baz')
         );
         $setA = Phake::verify($this->connectionA)->setAttribute(333, 'baz');
         $setB = Phake::verify($this->connectionB)->setAttribute(333, 'baz');
@@ -700,14 +700,14 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
             Phake::verify($this->connectionA)->setLogger($this->logger),
             Phake::verify($this->logger)->debug(
                 'Setting current connection to {connection}.',
-                array('connection' => "'A'")
+                array('connection' => 'A')
             ),
             Phake::verify($this->connectionA)->exec($queryA),
             Phake::verify($this->connectionA)->setAttribute(666, 'baz'),
             Phake::verify($this->connectionA)->setLogger($logger),
             Phake::verify($logger)->debug(
                 'Setting current connection to {connection}.',
-                array('connection' => "'A'")
+                array('connection' => 'A')
             ),
             Phake::verify($this->connectionA)->exec($queryB),
 
@@ -718,7 +718,7 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
             Phake::verify($this->connectionB)->beginTransaction(),
             Phake::verify($logger)->debug(
                 'Setting current connection to {connection}.',
-                array('connection' => "'B'")
+                array('connection' => 'B')
             ),
             Phake::verify($this->connectionB)->exec($queryC),
 
@@ -729,7 +729,7 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
             Phake::verify($this->connectionC)->beginTransaction(),
             Phake::verify($logger)->debug(
                 'Setting current connection to {connection}.',
-                array('connection' => "'C'")
+                array('connection' => 'C')
             ),
             Phake::verify($this->connectionC)->exec($queryD),
 
@@ -742,7 +742,7 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
             Phake::verify($this->connectionD)->setLogger($logger),
             Phake::verify($logger)->debug(
                 'Setting current connection to {connection}.',
-                array('connection' => "'D'")
+                array('connection' => 'D')
             ),
             Phake::verify($this->connectionD)->exec($queryE)
         );

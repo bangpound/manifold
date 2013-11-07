@@ -81,7 +81,7 @@ class LazyConnectionTest extends PHPUnit_Framework_TestCase
             Phake::verify($this->connection)->beforeConnect(),
             Phake::verify($this->logger)->debug(
                 'Establishing connection {connection} to {dsn}.',
-                array('connection' => "'name'", 'dsn' => "'dsn'")
+                array('connection' => 'name', 'dsn' => 'dsn')
             ),
             Phake::verify($this->connection)->createConnection('dsn', 'username', 'password', array(10101 => 'foo')),
             Phake::verify($this->connection)->afterConnect()
@@ -131,7 +131,7 @@ class LazyConnectionTest extends PHPUnit_Framework_TestCase
         Phake::inOrder(
             Phake::verify($this->logger)->debug(
                 'Preparing statement {statement} on {connection}.',
-                array('statement' => var_export($statement, true), 'connection' => "'name'")
+                array('statement' => $statement, 'connection' => 'name')
             ),
             Phake::verify($this->innerConnection)->prepare($statement, $attributes)
         );
@@ -145,8 +145,8 @@ class LazyConnectionTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->statement, $this->connection->query($statement, 'one', 'two'));
         Phake::inOrder(
             Phake::verify($this->logger)->debug(
-                'Querying statement {statement} on {connection}.',
-                array('statement' => var_export($statement, true), 'connection' => "'name'")
+                'Executing statement {statement} on {connection}.',
+                array('statement' => $statement, 'connection' => 'name')
             ),
             Phake::verify($this->innerConnection)->query($statement, 'one', 'two')
         );
@@ -167,7 +167,7 @@ class LazyConnectionTest extends PHPUnit_Framework_TestCase
         Phake::inOrder(
             Phake::verify($this->logger)->debug(
                 'Executing statement {statement} on {connection}.',
-                array('statement' => var_export($statement, true), 'connection' => "'name'")
+                array('statement' => $statement, 'connection' => 'name')
             ),
             Phake::verify($this->innerConnection)->exec($statement)
         );
@@ -193,7 +193,7 @@ class LazyConnectionTest extends PHPUnit_Framework_TestCase
         Phake::inOrder(
             Phake::verify($this->logger)->debug(
                 'Beginning transaction on {connection}.',
-                array('connection' => "'name'")
+                array('connection' => 'name')
             ),
             Phake::verify($this->innerConnection)->beginTransaction()
         );
@@ -207,7 +207,7 @@ class LazyConnectionTest extends PHPUnit_Framework_TestCase
         Phake::inOrder(
             Phake::verify($this->logger)->debug(
                 'Committing transaction on {connection}.',
-                array('connection' => "'name'")
+                array('connection' => 'name')
             ),
             Phake::verify($this->innerConnection)->commit()
         );
@@ -221,7 +221,7 @@ class LazyConnectionTest extends PHPUnit_Framework_TestCase
         Phake::inOrder(
             Phake::verify($this->logger)->debug(
                 'Rolling back transaction on {connection}.',
-                array('connection' => "'name'")
+                array('connection' => 'name')
             ),
             Phake::verify($this->innerConnection)->rollBack()
         );

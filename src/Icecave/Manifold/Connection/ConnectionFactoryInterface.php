@@ -1,11 +1,21 @@
 <?php
 namespace Icecave\Manifold\Connection;
 
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerInterface;
+
 /**
  * The interface implemented by connection factories.
  */
-interface ConnectionFactoryInterface
+interface ConnectionFactoryInterface extends LoggerAwareInterface
 {
+    /**
+     * Get the logger.
+     *
+     * @return LoggerInterface The logger.
+     */
+    public function logger();
+
     /**
      * Create a connection.
      *

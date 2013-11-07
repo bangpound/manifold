@@ -4,6 +4,7 @@ namespace Icecave\Manifold\Replication\SelectionStrategy;
 use Icecave\Chrono\TimeSpan\Duration;
 use Icecave\Collections\Vector;
 use Icecave\Manifold\Connection\Pool\ConnectionPool;
+use Icecave\Manifold\Replication\Exception\NoConnectionAvailableException;
 use PHPUnit_Framework_TestCase;
 use Phake;
 
@@ -21,11 +22,11 @@ class AcceptableDelayStrategyTest extends PHPUnit_Framework_TestCase
 
         $this->manager = Phake::mock('Icecave\Manifold\Replication\ReplicationManagerInterface');
         $this->connectionA = Phake::mock('Icecave\Manifold\Connection\ConnectionInterface');
-        $this->connectionA->id = 'A';
+        Phake::when($this->connectionA)->name()->thenReturn('A');
         $this->connectionB = Phake::mock('Icecave\Manifold\Connection\ConnectionInterface');
-        $this->connectionB->id = 'B';
+        Phake::when($this->connectionB)->name()->thenReturn('B');
         $this->connectionC = Phake::mock('Icecave\Manifold\Connection\ConnectionInterface');
-        $this->connectionC->id = 'C';
+        Phake::when($this->connectionC)->name()->thenReturn('C');
         $this->pool = new ConnectionPool(
             'pool',
             new Vector(
@@ -36,6 +37,8 @@ class AcceptableDelayStrategyTest extends PHPUnit_Framework_TestCase
                 )
             )
         );
+
+        $this->logger = Phake::mock('Psr\Log\LoggerInterface');
     }
 
     public function testConstructor()
@@ -66,7 +69,32 @@ class AcceptableDelayStrategyTest extends PHPUnit_Framework_TestCase
         Phake::when($this->manager)->delay($this->connectionB)->thenReturn(new Duration(111));
 
         $this->assertSame($this->connectionB, $this->strategy->select($this->manager, $this->pool));
-        $this->assertSame($this->connectionB, $this->strategy->select($this->manager, $this->pool));
+        Phake::verify($this->manager, Phake::never())->isReplicating($this->connectionC);
+    }
+
+    public function testSelectLogging()
+    {
+        Phake::when($this->manager)->isReplicating(Phake::anyParameters())->thenReturn(true);
+        Phake::when($this->manager)->delay($this->connectionA)->thenReturn(new Duration(333));
+        Phake::when($this->manager)->delay($this->connectionB)->thenReturn(new Duration(111));
+
+        $this->assertSame($this->connectionB, $this->strategy->select($this->manager, $this->pool, $this->logger));
+        Phake::inOrder(
+            Phake::verify($this->logger)->debug(
+                'Selecting connection from pool {pool} with replication delay less than the threshold {threshold}.',
+                array('pool' => 'pool', 'threshold' => 'PT3M42S')
+            ),
+            Phake::verify($this->logger)->debug(
+                'Connection {connection} not selected from pool {pool}. ' .
+                    'Replication delay of {delay} is greater than the threshold {threshold}.',
+                array('connection' => 'A', 'pool' => 'pool', 'delay' => 'PT5M33S', 'threshold' => 'PT3M42S')
+            ),
+            Phake::verify($this->logger)->debug(
+                'Connection {connection} selected from pool {pool}. ' .
+                    'Replication delay of {delay} is within the threshold {threshold}.',
+                array('connection' => 'B', 'pool' => 'pool', 'delay' => 'PT1M51S', 'threshold' => 'PT3M42S')
+            )
+        );
         Phake::verify($this->manager, Phake::never())->isReplicating($this->connectionC);
     }
 
@@ -81,11 +109,94 @@ class AcceptableDelayStrategyTest extends PHPUnit_Framework_TestCase
         $this->strategy->select($this->manager, $this->pool);
     }
 
+    public function testSelectFailureThresholdLogging()
+    {
+        Phake::when($this->manager)->isReplicating(Phake::anyParameters())->thenReturn(true);
+        Phake::when($this->manager)->delay($this->connectionA)->thenReturn(new Duration(444));
+        Phake::when($this->manager)->delay($this->connectionB)->thenReturn(new Duration(333));
+        Phake::when($this->manager)->delay($this->connectionC)->thenReturn(new Duration(555));
+
+        $caught = null;
+        try {
+            $this->strategy->select($this->manager, $this->pool, $this->logger);
+        } catch (NoConnectionAvailableException $caught) {}
+        Phake::inOrder(
+            Phake::verify($this->logger)->debug(
+                'Selecting connection from pool {pool} with replication delay less than the threshold {threshold}.',
+                array('pool' => 'pool', 'threshold' => 'PT3M42S')
+            ),
+            Phake::verify($this->logger)->debug(
+                'Connection {connection} not selected from pool {pool}. ' .
+                    'Replication delay of {delay} is greater than the threshold {threshold}.',
+                array('connection' => 'A', 'pool' => 'pool', 'delay' => 'PT7M24S', 'threshold' => 'PT3M42S')
+            ),
+            Phake::verify($this->logger)->debug(
+                'Connection {connection} not selected from pool {pool}. ' .
+                    'Replication delay of {delay} is greater than the threshold {threshold}.',
+                array('connection' => 'B', 'pool' => 'pool', 'delay' => 'PT5M33S', 'threshold' => 'PT3M42S')
+            ),
+            Phake::verify($this->logger)->debug(
+                'Connection {connection} not selected from pool {pool}. ' .
+                    'Replication delay of {delay} is greater than the threshold {threshold}.',
+                array('connection' => 'C', 'pool' => 'pool', 'delay' => 'PT9M15S', 'threshold' => 'PT3M42S')
+            ),
+            Phake::verify($this->logger)->warning(
+                'No acceptable connection found in pool {pool}. ' .
+                    'No connection found with replication delay within the threshold {threshold}.',
+                array('pool' => 'pool', 'threshold' => 'PT3M42S')
+            )
+        );
+        $this->setExpectedException('Icecave\Manifold\Replication\Exception\NoConnectionAvailableException');
+        if (null !== $caught) {
+            throw $caught;
+        }
+    }
+
     public function testSelectFailureNoneReplicating()
     {
         Phake::when($this->manager)->isReplicating(Phake::anyParameters())->thenReturn(false);
 
         $this->setExpectedException('Icecave\Manifold\Replication\Exception\NoConnectionAvailableException');
         $this->strategy->select($this->manager, $this->pool);
+    }
+
+    public function testSelectFailureNoneReplicatingLogging()
+    {
+        Phake::when($this->manager)->isReplicating(Phake::anyParameters())->thenReturn(false);
+
+        $caught = null;
+        try {
+            $this->strategy->select($this->manager, $this->pool, $this->logger);
+        } catch (NoConnectionAvailableException $caught) {}
+        Phake::inOrder(
+            Phake::verify($this->logger)->debug(
+                'Selecting connection from pool {pool} with replication delay less than the threshold {threshold}.',
+                array('pool' => 'pool', 'threshold' => 'PT3M42S')
+            ),
+            Phake::verify($this->logger)->debug(
+                'Connection {connection} not selected from pool {pool}. ' .
+                    'The connection is not replicating.',
+                array('connection' => 'A', 'pool' => 'pool')
+            ),
+            Phake::verify($this->logger)->debug(
+                'Connection {connection} not selected from pool {pool}. ' .
+                    'The connection is not replicating.',
+                array('connection' => 'B', 'pool' => 'pool')
+            ),
+            Phake::verify($this->logger)->debug(
+                'Connection {connection} not selected from pool {pool}. ' .
+                    'The connection is not replicating.',
+                array('connection' => 'C', 'pool' => 'pool')
+            ),
+            Phake::verify($this->logger)->warning(
+                'No acceptable connection found in pool {pool}. ' .
+                    'No connection found with replication delay within the threshold {threshold}.',
+                array('pool' => 'pool', 'threshold' => 'PT3M42S')
+            )
+        );
+        $this->setExpectedException('Icecave\Manifold\Replication\Exception\NoConnectionAvailableException');
+        if (null !== $caught) {
+            throw $caught;
+        }
     }
 }

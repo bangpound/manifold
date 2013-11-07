@@ -32,19 +32,19 @@ class ConfigurationReader implements ConfigurationReaderInterface
     /**
      * Construct a new configuration reader.
      *
-     * @param ReaderInterface|null            $reader            The internal reader to use.
-     * @param ConnectionFactoryInterface|null $connectionFactory The connection factory to use.
+     * @param ReaderInterface|null            $reader                   The internal reader to use.
+     * @param ConnectionFactoryInterface|null $defaultConnectionFactory The default connection factory to use.
      */
     public function __construct(
         ReaderInterface $reader = null,
-        ConnectionFactoryInterface $connectionFactory = null
+        ConnectionFactoryInterface $defaultConnectionFactory = null
     ) {
-        if (null === $connectionFactory) {
-            $connectionFactory = new ConnectionFactory;
+        if (null === $defaultConnectionFactory) {
+            $defaultConnectionFactory = new ConnectionFactory;
         }
 
         $this->reader = $reader;
-        $this->connectionFactory = $connectionFactory;
+        $this->defaultConnectionFactory = $defaultConnectionFactory;
     }
 
     /**
@@ -70,64 +70,78 @@ class ConfigurationReader implements ConfigurationReaderInterface
     }
 
     /**
-     * Get the connection factory.
+     * Get the default connection factory.
      *
-     * @return ConnectionFactoryInterface The connection factory.
+     * @return ConnectionFactoryInterface The default connection factory.
      */
-    public function connectionFactory()
+    public function defaultConnectionFactory()
     {
-        return $this->connectionFactory;
+        return $this->defaultConnectionFactory;
     }
 
     /**
      * Read configuration from a file.
      *
-     * @param string      $path     The path to the file.
-     * @param string|null $mimeType The mime type of the configuration data.
+     * @param string                          $path              The path to the file.
+     * @param string|null                     $mimeType          The mime type of the configuration data.
+     * @param ConnectionFactoryInterface|null $connectionFactory The connection factory to use.
      *
      * @return ConfigurationInterface The parsed configuration.
      */
-    public function readFile($path, $mimeType = null)
-    {
+    public function readFile(
+        $path,
+        $mimeType = null,
+        ConnectionFactoryInterface $connectionFactory = null
+    ) {
         if (null === $mimeType) {
             $mimeType = ContentType::YAML()->primaryMimeType();
         }
 
         return $this->createConfiguration(
-            $this->reader()->readPath($path, $mimeType)
+            $this->reader()->readPath($path, $mimeType),
+            $connectionFactory
         );
     }
 
     /**
      * Read configuration from a string.
      *
-     * @param string      $data     The configuration data.
-     * @param string|null $mimeType The mime type of the configuration data.
+     * @param string                          $data              The configuration data.
+     * @param string|null                     $mimeType          The mime type of the configuration data.
+     * @param ConnectionFactoryInterface|null $connectionFactory The connection factory to use.
      *
      * @return ConfigurationInterface The parsed configuration.
      */
-    public function readString($data, $mimeType = null)
-    {
+    public function readString(
+        $data,
+        $mimeType = null,
+        ConnectionFactoryInterface $connectionFactory = null
+    ) {
         if (null === $mimeType) {
             $mimeType = ContentType::YAML()->primaryMimeType();
         }
 
         return $this->createConfiguration(
-            $this->reader()->readString($data, $mimeType)
+            $this->reader()->readString($data, $mimeType),
+            $connectionFactory
         );
     }
 
     /**
      * Builds a new Manifold configuration instance from raw configuration data.
      *
-     * @param ObjectValue $value The raw configuration data.
+     * @param ObjectValue                     $value             The raw configuration data.
+     * @param ConnectionFactoryInterface|null $connectionFactory The connection factory to use.
      *
      * @return ConfigurationInterface The newly built configuration instance.
      */
-    protected function createConfiguration(ObjectValue $value)
-    {
+    protected function createConfiguration(
+        ObjectValue $value,
+        ConnectionFactoryInterface $connectionFactory = null
+    ) {
         list($connections, $defaultConnection) = $this->createConnections(
-            $value
+            $value,
+            $connectionFactory
         );
 
         $pools = $this->createPools($value, $connections);
@@ -155,16 +169,23 @@ class ConfigurationReader implements ConfigurationReaderInterface
     /**
      * Creates a map of connections from raw configuration data.
      *
-     * @param ObjectValue $value The raw configuration data.
+     * @param ObjectValue                     $value             The raw configuration data.
+     * @param ConnectionFactoryInterface|null $connectionFactory The connection factory to use.
      *
      * @return tuple<Map<string,ConnectionInterface>,ConnectionInterface> A tuple of the connection map, and the default connection.
      */
-    protected function createConnections(ObjectValue $value)
-    {
+    protected function createConnections(
+        ObjectValue $value,
+        ConnectionFactoryInterface $connectionFactory = null
+    ) {
+        if (null === $connectionFactory) {
+            $connectionFactory = $this->defaultConnectionFactory();
+        }
+
         $connections = new Map;
         $defaultConnection = null;
         foreach ($value->get('connections') as $name => $options) {
-            $connection = $this->connectionFactory()->create(
+            $connection = $connectionFactory->create(
                 $name,
                 $this->stringOrVariable($options->getRaw('dsn')),
                 $this->stringOrVariable($options->getRawDefault('username')),
@@ -473,5 +494,5 @@ class ConfigurationReader implements ConfigurationReaderInterface
     }
 
     private $reader;
-    private $connectionFactory;
+    private $defaultConnectionFactory;
 }

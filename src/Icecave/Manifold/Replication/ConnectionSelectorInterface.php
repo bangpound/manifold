@@ -3,11 +3,13 @@ namespace Icecave\Manifold\Replication;
 
 use Icecave\Manifold\Connection\ConnectionInterface;
 use Icecave\Manifold\Connection\ConnectionPairInterface;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * The interface implemented by connection selectors.
  */
-interface ConnectionSelectorInterface
+interface ConnectionSelectorInterface extends LoggerAwareInterface
 {
     /**
      * Set the default selection strategy.
@@ -24,6 +26,13 @@ interface ConnectionSelectorInterface
      * @return SelectionStrategy\SelectionStrategyInterface The default selection strategy.
      */
     public function defaultStrategy();
+
+    /**
+     * Get the logger.
+     *
+     * @return LoggerInterface The logger.
+     */
+    public function logger();
 
     /**
      * Get the connection to use for writing the specified database.

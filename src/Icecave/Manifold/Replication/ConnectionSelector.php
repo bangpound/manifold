@@ -6,6 +6,8 @@ use Icecave\Manifold\Connection\ConnectionPair;
 use Icecave\Manifold\Connection\ConnectionPairInterface;
 use Icecave\Manifold\Connection\Pool\ConnectionPoolSelectorInterface;
 use Icecave\Manifold\Replication\ReplicationManagerInterface;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 /**
  * Selects a single connection, taking into account a replication hierarchy, the
@@ -19,18 +21,26 @@ class ConnectionSelector implements ConnectionSelectorInterface
      * @param ConnectionPoolSelectorInterface                   $poolSelector       The connection pool selector to use.
      * @param ReplicationManagerInterface                       $replicationManager The replication manager to use.
      * @param SelectionStrategy\SelectionStrategyInterface|null $defaultStrategy    The default selection strategy to use.
+     * @param LoggerInterface|null                              $logger             The logger to use.
      */
+    // @codeCoverageIgnoreStart
     public function __construct(
         ConnectionPoolSelectorInterface $poolSelector,
         ReplicationManagerInterface $replicationManager,
-        SelectionStrategy\SelectionStrategyInterface $defaultStrategy = null
+        SelectionStrategy\SelectionStrategyInterface $defaultStrategy = null,
+        LoggerInterface $logger = null
     ) {
+        // @codeCoverageIgnoreEnd
         if (null === $defaultStrategy) {
             $defaultStrategy = new SelectionStrategy\AcceptableDelayStrategy;
+        }
+        if (null === $logger) {
+            $logger = new NullLogger;
         }
 
         $this->poolSelector = $poolSelector;
         $this->replicationManager = $replicationManager;
+        $this->logger = $logger;
         $this->setDefaultStrategy($defaultStrategy);
     }
 
@@ -76,6 +86,26 @@ class ConnectionSelector implements ConnectionSelectorInterface
     }
 
     /**
+     * Set the logger.
+     *
+     * @param LoggerInterface $logger The logger to use.
+     */
+    public function setLogger(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
+
+    /**
+     * Get the logger.
+     *
+     * @return LoggerInterface The logger.
+     */
+    public function logger()
+    {
+        return $this->logger;
+    }
+
+    /**
      * Get the connection to use for writing the specified database.
      *
      * @param string|null                                       $databaseName The name of the database to write to, or null for a generic connection.
@@ -94,7 +124,8 @@ class ConnectionSelector implements ConnectionSelectorInterface
 
         return $strategy->select(
             $this->replicationManager(),
-            $this->poolSelector()->forWrite($databaseName)
+            $this->poolSelector()->forWrite($databaseName),
+            $this->logger()
         );
     }
 
@@ -117,7 +148,8 @@ class ConnectionSelector implements ConnectionSelectorInterface
 
         return $strategy->select(
             $this->replicationManager(),
-            $this->poolSelector()->forRead($databaseName)
+            $this->poolSelector()->forRead($databaseName),
+            $this->logger()
         );
     }
 
@@ -143,4 +175,5 @@ class ConnectionSelector implements ConnectionSelectorInterface
     private $poolSelector;
     private $replicationManager;
     private $defaultStrategy;
+    private $logger;
 }

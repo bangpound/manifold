@@ -69,10 +69,7 @@ class LazyConnection extends PDO implements ConnectionInterface
 
         $this->logger()->debug(
             'Establishing connection {connection} to {dsn}.',
-            array(
-                'connection' => var_export($this->name(), true),
-                'dsn' => var_export($this->dsn(), true),
-            )
+            array('connection' => $this->name(), 'dsn' => $this->dsn())
         );
 
         $this->connection = $this->createConnection(
@@ -187,10 +184,7 @@ class LazyConnection extends PDO implements ConnectionInterface
     {
         $this->logger()->debug(
             'Preparing statement {statement} on {connection}.',
-            array(
-                'statement' => var_export($statement, true),
-                'connection' => var_export($this->name(), true),
-            )
+            array('statement' => $statement, 'connection' => $this->name())
         );
 
         return $this->connection()->prepare($statement, $attributes);
@@ -219,11 +213,8 @@ class LazyConnection extends PDO implements ConnectionInterface
         }
 
         $this->logger()->debug(
-            'Querying statement {statement} on {connection}.',
-            array(
-                'statement' => var_export($arguments[0], true),
-                'connection' => var_export($this->name(), true),
-            )
+            'Executing statement {statement} on {connection}.',
+            array('statement' => $arguments[0], 'connection' => $this->name())
         );
 
         return call_user_func_array(
@@ -246,10 +237,7 @@ class LazyConnection extends PDO implements ConnectionInterface
     {
         $this->logger()->debug(
             'Executing statement {statement} on {connection}.',
-            array(
-                'statement' => var_export($statement, true),
-                'connection' => var_export($this->name(), true),
-            )
+            array('statement' => $statement, 'connection' => $this->name())
         );
 
         return $this->connection()->exec($statement);
@@ -283,7 +271,7 @@ class LazyConnection extends PDO implements ConnectionInterface
     {
         $this->logger()->debug(
             'Beginning transaction on {connection}.',
-            array('connection' => var_export($this->name(), true))
+            array('connection' => $this->name())
         );
 
         return $this->connection()->beginTransaction();
@@ -301,7 +289,7 @@ class LazyConnection extends PDO implements ConnectionInterface
     {
         $this->logger()->debug(
             'Committing transaction on {connection}.',
-            array('connection' => var_export($this->name(), true))
+            array('connection' => $this->name())
         );
 
         return $this->connection()->commit();
@@ -319,7 +307,7 @@ class LazyConnection extends PDO implements ConnectionInterface
     {
         $this->logger()->debug(
             'Rolling back transaction on {connection}.',
-            array('connection' => var_export($this->name(), true))
+            array('connection' => $this->name())
         );
 
         return $this->connection()->rollBack();
@@ -414,9 +402,9 @@ class LazyConnection extends PDO implements ConnectionInterface
         $this->logger()->debug(
             'Setting attribute {attribute} to {value} on {connection}.',
             array(
-                'attribute' => var_export($attribute, true),
-                'value' => var_export($value, true),
-                'connection' => var_export($this->name(), true),
+                'attribute' => $attribute,
+                'value' => $value,
+                'connection' => $this->name(),
             )
         );
 

@@ -47,12 +47,11 @@ class ConnectionFacade extends PDO implements ConnectionFacadeInterface
 
         $this->queryConnectionSelector = $queryConnectionSelector;
         $this->attributes = $attributes;
+        $this->logger = $logger;
 
         $this->initializedConnections = new Set;
         $this->isInTransaction = false;
         $this->transactionConnections = new Vector;
-
-        $this->setLogger($logger);
     }
 
     /**
@@ -161,10 +160,7 @@ class ConnectionFacade extends PDO implements ConnectionFacadeInterface
 
         $this->logger()->debug(
             'Preparing statement {statement} with strategy {strategy}.',
-            array(
-                'statement' => var_export($statement, true),
-                'strategy' => get_class($strategy),
-            )
+            array('statement' => $statement, 'strategy' => get_class($strategy))
         );
 
         return $this->selectConnectionForStatement($statement, $strategy)
@@ -192,11 +188,8 @@ class ConnectionFacade extends PDO implements ConnectionFacadeInterface
         $statement
     ) {
         $this->logger()->debug(
-            'Querying statement {statement} with strategy {strategy}.',
-            array(
-                'statement' => var_export($statement, true),
-                'strategy' => get_class($strategy),
-            )
+            'Executing statement {statement} with strategy {strategy}.',
+            array('statement' => $statement, 'strategy' => get_class($strategy))
         );
 
         $connection = $this->selectConnectionForStatement(
@@ -228,10 +221,7 @@ class ConnectionFacade extends PDO implements ConnectionFacadeInterface
     ) {
         $this->logger()->debug(
             'Executing statement {statement} with strategy {strategy}.',
-            array(
-                'statement' => var_export($statement, true),
-                'strategy' => get_class($strategy),
-            )
+            array('statement' => $statement, 'strategy' => get_class($strategy))
         );
 
         return $this->selectConnectionForStatement($statement, $strategy)
@@ -254,8 +244,11 @@ class ConnectionFacade extends PDO implements ConnectionFacadeInterface
     public function prepare($statement, $attributes = array())
     {
         $this->logger()->debug(
-            'Preparing statement {statement} on facade.',
-            array('statement' => var_export($statement, true))
+            'Preparing statement {statement} with strategy {strategy}.',
+            array(
+                'statement' => $statement,
+                'strategy' => get_class($this->defaultStrategy()),
+            )
         );
 
         return $this->selectConnectionForStatement($statement)
@@ -285,8 +278,11 @@ class ConnectionFacade extends PDO implements ConnectionFacadeInterface
         }
 
         $this->logger()->debug(
-            'Querying statement {statement} on facade.',
-            array('statement' => var_export($arguments[0], true))
+            'Executing statement {statement} with strategy {strategy}.',
+            array(
+                'statement' => $arguments[0],
+                'strategy' => get_class($this->defaultStrategy()),
+            )
         );
 
         return call_user_func_array(
@@ -308,8 +304,11 @@ class ConnectionFacade extends PDO implements ConnectionFacadeInterface
     public function exec($statement)
     {
         $this->logger()->debug(
-            'Executing statement {statement} on facade.',
-            array('statement' => var_export($statement, true))
+            'Executing statement {statement} with strategy {strategy}.',
+            array(
+                'statement' => $statement,
+                'strategy' => get_class($this->defaultStrategy()),
+            )
         );
 
         return $this->selectConnectionForStatement($statement)
@@ -522,10 +521,7 @@ class ConnectionFacade extends PDO implements ConnectionFacadeInterface
     {
         $this->logger()->debug(
             'Setting attribute {attribute} to {value} on facade.',
-            array(
-                'attribute' => var_export($attribute, true),
-                'value' => var_export($value, true),
-            )
+            array('attribute' => $attribute, 'value' => $value)
         );
 
         $this->attributes[$attribute] = $value;
@@ -594,7 +590,7 @@ class ConnectionFacade extends PDO implements ConnectionFacadeInterface
     ) {
         $this->logger()->debug(
             'Setting current connection to {connection}.',
-            array('connection' => var_export($currentConnection->name(), true))
+            array('connection' => $currentConnection->name())
         );
 
         $this->currentConnection = $currentConnection;

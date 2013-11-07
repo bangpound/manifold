@@ -23,19 +23,21 @@ class ConfigurationReaderTest extends PHPUnit_Framework_TestCase
 
         $this->isolator = Phake::mock(Isolator::className());
         $this->innerReader = Phake::mock('Eloquent\Schemer\Reader\ReaderInterface');
-        $this->connectionFactory = new ConnectionFactory;
+        $this->defaultConnectionFactory = new ConnectionFactory;
 
-        $this->reader = new ConfigurationReader(null, $this->connectionFactory);
+        $this->reader = new ConfigurationReader(null, $this->defaultConnectionFactory);
 
         $this->fixturePath = __DIR__ . '/../../../../fixture/config';
+
+        $this->connectionFactory = new ConnectionFactory;
     }
 
     public function testConstructor()
     {
-        $this->reader = new ConfigurationReader($this->innerReader, $this->connectionFactory);
+        $this->reader = new ConfigurationReader($this->innerReader, $this->defaultConnectionFactory);
 
         $this->assertSame($this->innerReader, $this->reader->reader());
-        $this->assertSame($this->connectionFactory, $this->reader->connectionFactory());
+        $this->assertSame($this->defaultConnectionFactory, $this->reader->defaultConnectionFactory());
     }
 
     public function testConstructorDefaults()
@@ -43,7 +45,10 @@ class ConfigurationReaderTest extends PHPUnit_Framework_TestCase
         $this->reader = new ConfigurationReader;
 
         $this->assertInstanceOf('Eloquent\Schemer\Reader\ValidatingReader', $this->reader->reader());
-        $this->assertInstanceOf('Icecave\Manifold\Connection\ConnectionFactory', $this->reader->connectionFactory());
+        $this->assertInstanceOf(
+            'Icecave\Manifold\Connection\ConnectionFactory',
+            $this->reader->defaultConnectionFactory()
+        );
     }
 
     public function testConfigurationFromString()
@@ -73,9 +78,62 @@ EOD;
         $this->assertSame(0, Parity::compare($expectedReplicationTrees, $configuration->replicationTrees()));
     }
 
+    public function testConfigurationFromStringCustomFactory()
+    {
+        $string = <<<'EOD'
+connections:
+    foo:
+        dsn: mysql:host=foo
+EOD;
+        $configuration = $this->reader->readString($string, null, $this->connectionFactory);
+        $expectedConnections = new Map(
+            array(
+                'foo' => new LazyConnection('foo', 'mysql:host=foo', null, null, array(PDO::ATTR_PERSISTENT => false)),
+            )
+        );
+        $expectedPools = new Map;
+        $expectedPool = new ConnectionPool('foo', new Vector(array($expectedConnections->get('foo'))));
+        $expectedSelector = new ConnectionPoolSelector(
+            new ConnectionPoolPair($expectedPool, $expectedPool)
+        );
+        $expectedReplicationTree = new ReplicationTree($expectedConnections->get('foo'));
+        $expectedReplicationTrees = new Vector(array($expectedReplicationTree));
+
+        $this->assertEquals($expectedConnections->elements(), $configuration->connections()->elements());
+        $this->assertEquals($expectedPools->elements(), $configuration->connectionPools()->elements());
+        $this->assertEquals($expectedSelector, $configuration->connectionPoolSelector());
+        $this->assertSame(0, Parity::compare($expectedReplicationTrees, $configuration->replicationTrees()));
+    }
+
     public function testMinimalConfiguration()
     {
         $configuration = $this->reader->readFile($this->fixturePath . '/valid-minimal.yml');
+        $expectedConnections = new Map(
+            array(
+                'foo' => new LazyConnection('foo', 'mysql:host=foo', null, null, array(PDO::ATTR_PERSISTENT => false)),
+            )
+        );
+        $expectedPools = new Map;
+        $expectedPool = new ConnectionPool('foo', new Vector(array($expectedConnections->get('foo'))));
+        $expectedSelector = new ConnectionPoolSelector(
+            new ConnectionPoolPair($expectedPool, $expectedPool)
+        );
+        $expectedReplicationTree = new ReplicationTree($expectedConnections->get('foo'));
+        $expectedReplicationTrees = new Vector(array($expectedReplicationTree));
+
+        $this->assertEquals($expectedConnections->elements(), $configuration->connections()->elements());
+        $this->assertEquals($expectedPools->elements(), $configuration->connectionPools()->elements());
+        $this->assertEquals($expectedSelector, $configuration->connectionPoolSelector());
+        $this->assertSame(0, Parity::compare($expectedReplicationTrees, $configuration->replicationTrees()));
+    }
+
+    public function testConfigurationCustomFactory()
+    {
+        $configuration = $this->reader->readFile(
+            $this->fixturePath . '/valid-minimal.yml',
+            null,
+            $this->connectionFactory
+        );
         $expectedConnections = new Map(
             array(
                 'foo' => new LazyConnection('foo', 'mysql:host=foo', null, null, array(PDO::ATTR_PERSISTENT => false)),

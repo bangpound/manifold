@@ -6,6 +6,7 @@ use Icecave\Manifold\Connection\ConnectionPair;
 use Icecave\Manifold\Connection\Pool\ConnectionPool;
 use PHPUnit_Framework_TestCase;
 use Phake;
+use Psr\Log\NullLogger;
 
 class ConnectionSelectorTest extends PHPUnit_Framework_TestCase
 {
@@ -16,10 +17,12 @@ class ConnectionSelectorTest extends PHPUnit_Framework_TestCase
         $this->poolSelector = Phake::mock('Icecave\Manifold\Connection\Pool\ConnectionPoolSelectorInterface');
         $this->replicationManager = Phake::mock('Icecave\Manifold\Replication\ReplicationManagerInterface');
         $this->defaultStrategy = Phake::mock(__NAMESPACE__ . '\SelectionStrategy\SelectionStrategyInterface');
+        $this->logger = Phake::mock('Psr\Log\LoggerInterface');
         $this->selector = new ConnectionSelector(
             $this->poolSelector,
             $this->replicationManager,
-            $this->defaultStrategy
+            $this->defaultStrategy,
+            $this->logger
         );
 
         $this->strategy = Phake::mock(__NAMESPACE__ . '\SelectionStrategy\SelectionStrategyInterface');
@@ -71,6 +74,7 @@ class ConnectionSelectorTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->poolSelector, $this->selector->poolSelector());
         $this->assertSame($this->replicationManager, $this->selector->replicationManager());
         $this->assertSame($this->defaultStrategy, $this->selector->defaultStrategy());
+        $this->assertSame($this->logger, $this->selector->logger());
     }
 
     public function testConstructorDefaults()
@@ -78,6 +82,7 @@ class ConnectionSelectorTest extends PHPUnit_Framework_TestCase
         $this->selector = new ConnectionSelector($this->poolSelector, $this->replicationManager);
 
         $this->assertEquals(new SelectionStrategy\AcceptableDelayStrategy, $this->selector->defaultStrategy());
+        $this->assertEquals(new NullLogger, $this->selector->logger());
     }
 
     public function testSetDefaultStrategy()
@@ -87,16 +92,25 @@ class ConnectionSelectorTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->strategy, $this->selector->defaultStrategy());
     }
 
+    public function testSetLogger()
+    {
+        $this->logger = Phake::mock('Psr\Log\LoggerInterface');
+        $this->selector->setLogger($this->logger);
+
+        $this->assertSame($this->logger, $this->selector->logger());
+    }
+
     public function testForWrite()
     {
         Phake::when($this->poolSelector)->forWrite(null)->thenReturn($this->poolA);
         Phake::when($this->poolSelector)->forWrite('foo')->thenReturn($this->poolB);
         Phake::when($this->poolSelector)->forWrite('bar')->thenReturn($this->poolC);
-        Phake::when($this->defaultStrategy)->select($this->replicationManager, $this->poolA)
+        Phake::when($this->defaultStrategy)->select($this->replicationManager, $this->poolA, $this->logger)
             ->thenReturn($this->connectionA1);
-        Phake::when($this->defaultStrategy)->select($this->replicationManager, $this->poolB)
+        Phake::when($this->defaultStrategy)->select($this->replicationManager, $this->poolB, $this->logger)
             ->thenReturn($this->connectionB1);
-        Phake::when($this->strategy)->select($this->replicationManager, $this->poolC)->thenReturn($this->connectionC1);
+        Phake::when($this->strategy)->select($this->replicationManager, $this->poolC, $this->logger)
+            ->thenReturn($this->connectionC1);
 
         $this->assertSame($this->connectionA1, $this->selector->forWrite());
         $this->assertSame($this->connectionB1, $this->selector->forWrite('foo'));
@@ -108,11 +122,12 @@ class ConnectionSelectorTest extends PHPUnit_Framework_TestCase
         Phake::when($this->poolSelector)->forRead(null)->thenReturn($this->poolA);
         Phake::when($this->poolSelector)->forRead('foo')->thenReturn($this->poolB);
         Phake::when($this->poolSelector)->forRead('bar')->thenReturn($this->poolC);
-        Phake::when($this->defaultStrategy)->select($this->replicationManager, $this->poolA)
+        Phake::when($this->defaultStrategy)->select($this->replicationManager, $this->poolA, $this->logger)
             ->thenReturn($this->connectionA1);
-        Phake::when($this->defaultStrategy)->select($this->replicationManager, $this->poolB)
+        Phake::when($this->defaultStrategy)->select($this->replicationManager, $this->poolB, $this->logger)
             ->thenReturn($this->connectionB1);
-        Phake::when($this->strategy)->select($this->replicationManager, $this->poolC)->thenReturn($this->connectionC1);
+        Phake::when($this->strategy)->select($this->replicationManager, $this->poolC, $this->logger)
+            ->thenReturn($this->connectionC1);
 
         $this->assertSame($this->connectionA1, $this->selector->forRead());
         $this->assertSame($this->connectionB1, $this->selector->forRead('foo'));
@@ -127,13 +142,13 @@ class ConnectionSelectorTest extends PHPUnit_Framework_TestCase
         Phake::when($this->poolSelector)->forRead(null)->thenReturn($this->poolA);
         Phake::when($this->poolSelector)->forRead('foo')->thenReturn($this->poolB);
         Phake::when($this->poolSelector)->forRead('bar')->thenReturn($this->poolC);
-        Phake::when($this->defaultStrategy)->select($this->replicationManager, $this->poolA)
+        Phake::when($this->defaultStrategy)->select($this->replicationManager, $this->poolA, $this->logger)
             ->thenReturn($this->connectionA1)
             ->thenReturn($this->connectionA2);
-        Phake::when($this->defaultStrategy)->select($this->replicationManager, $this->poolB)
+        Phake::when($this->defaultStrategy)->select($this->replicationManager, $this->poolB, $this->logger)
             ->thenReturn($this->connectionB1)
             ->thenReturn($this->connectionB2);
-        Phake::when($this->strategy)->select($this->replicationManager, $this->poolC)
+        Phake::when($this->strategy)->select($this->replicationManager, $this->poolC, $this->logger)
             ->thenReturn($this->connectionC1)
             ->thenReturn($this->connectionC2);
 
