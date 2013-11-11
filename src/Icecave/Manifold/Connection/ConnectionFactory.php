@@ -3,7 +3,6 @@ namespace Icecave\Manifold\Connection;
 
 use PDO;
 use Psr\Log\LoggerInterface;
-use Psr\Log\NullLogger;
 
 /**
  * Creates connections.
@@ -25,9 +24,6 @@ class ConnectionFactory implements ConnectionFactoryInterface
                 PDO::ATTR_PERSISTENT => false,
             );
         }
-        if (null === $logger) {
-            $logger = new NullLogger;
-        }
 
         $this->attributes = $attributes;
         $this->logger = $logger;
@@ -46,9 +42,9 @@ class ConnectionFactory implements ConnectionFactoryInterface
     /**
      * Set the logger.
      *
-     * @param LoggerInterface $logger The logger to use.
+     * @param LoggerInterface|null $logger The logger to use, or null to remove the current logger.
      */
-    public function setLogger(LoggerInterface $logger)
+    public function setLogger(LoggerInterface $logger = null)
     {
         $this->logger = $logger;
     }
@@ -56,7 +52,7 @@ class ConnectionFactory implements ConnectionFactoryInterface
     /**
      * Get the logger.
      *
-     * @return LoggerInterface The logger.
+     * @return LoggerInterface|null The logger, or null if no logger is in use.
      */
     public function logger()
     {

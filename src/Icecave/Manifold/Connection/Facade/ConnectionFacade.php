@@ -16,7 +16,6 @@ use PDO;
 use PDOException;
 use PDOStatement;
 use Psr\Log\LoggerInterface;
-use Psr\Log\NullLogger;
 
 /**
  * Implements the PDO interface to allow a replication tree to behave as a
@@ -41,9 +40,6 @@ class ConnectionFacade extends PDO implements ConnectionFacadeInterface
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                 PDO::ATTR_AUTOCOMMIT => false,
             );
-        }
-        if (null === $logger) {
-            $logger = new NullLogger;
         }
 
         $this->queryConnectionSelector = $queryConnectionSelector;
@@ -78,9 +74,9 @@ class ConnectionFacade extends PDO implements ConnectionFacadeInterface
     /**
      * Set the logger.
      *
-     * @param LoggerInterface $logger The logger to use.
+     * @param LoggerInterface|null $logger The logger to use, or null to remove the current logger.
      */
-    public function setLogger(LoggerInterface $logger)
+    public function setLogger(LoggerInterface $logger = null)
     {
         foreach ($this->initializedConnections() as $connection) {
             $connection->setLogger($logger);
@@ -111,10 +107,12 @@ class ConnectionFacade extends PDO implements ConnectionFacadeInterface
     public function setDefaultStrategy(
         SelectionStrategyInterface $defaultStrategy
     ) {
-        $this->logger()->debug(
-            'Setting default strategy to {strategy}.',
-            array('strategy' => $defaultStrategy->string())
-        );
+        if (null !== $this->logger()) {
+            $this->logger()->debug(
+                'Setting default strategy to {strategy}.',
+                array('strategy' => $defaultStrategy->string())
+            );
+        }
 
         $this->connectionSelector()->setDefaultStrategy($defaultStrategy);
     }
@@ -132,7 +130,7 @@ class ConnectionFacade extends PDO implements ConnectionFacadeInterface
     /**
      * Get the logger.
      *
-     * @return LoggerInterface The logger.
+     * @return LoggerInterface|null The logger, or null if no logger is in use.
      */
     public function logger()
     {
@@ -161,10 +159,15 @@ class ConnectionFacade extends PDO implements ConnectionFacadeInterface
             $attributes = array();
         }
 
-        $this->logger()->debug(
-            'Preparing statement {statement} with strategy {strategy}.',
-            array('statement' => $statement, 'strategy' => $strategy->string())
-        );
+        if (null !== $this->logger()) {
+            $this->logger()->debug(
+                'Preparing statement {statement} with strategy {strategy}.',
+                array(
+                    'statement' => $statement,
+                    'strategy' => $strategy->string(),
+                )
+            );
+        }
 
         return $this->selectConnectionForStatement($statement, $strategy)
             ->prepare($statement, $attributes);
@@ -190,10 +193,15 @@ class ConnectionFacade extends PDO implements ConnectionFacadeInterface
         SelectionStrategyInterface $strategy,
         $statement
     ) {
-        $this->logger()->debug(
-            'Executing statement {statement} with strategy {strategy}.',
-            array('statement' => $statement, 'strategy' => $strategy->string())
-        );
+        if (null !== $this->logger()) {
+            $this->logger()->debug(
+                'Executing statement {statement} with strategy {strategy}.',
+                array(
+                    'statement' => $statement,
+                    'strategy' => $strategy->string(),
+                )
+            );
+        }
 
         $connection = $this->selectConnectionForStatement(
             $statement,
@@ -222,10 +230,15 @@ class ConnectionFacade extends PDO implements ConnectionFacadeInterface
         SelectionStrategyInterface $strategy,
         $statement
     ) {
-        $this->logger()->debug(
-            'Executing statement {statement} with strategy {strategy}.',
-            array('statement' => $statement, 'strategy' => $strategy->string())
-        );
+        if (null !== $this->logger()) {
+            $this->logger()->debug(
+                'Executing statement {statement} with strategy {strategy}.',
+                array(
+                    'statement' => $statement,
+                    'strategy' => $strategy->string(),
+                )
+            );
+        }
 
         return $this->selectConnectionForStatement($statement, $strategy)
             ->exec($statement);
@@ -246,13 +259,15 @@ class ConnectionFacade extends PDO implements ConnectionFacadeInterface
      */
     public function prepare($statement, $attributes = array())
     {
-        $this->logger()->debug(
-            'Preparing statement {statement} with strategy {strategy}.',
-            array(
-                'statement' => $statement,
-                'strategy' => $this->defaultStrategy()->string(),
-            )
-        );
+        if (null !== $this->logger()) {
+            $this->logger()->debug(
+                'Preparing statement {statement} with strategy {strategy}.',
+                array(
+                    'statement' => $statement,
+                    'strategy' => $this->defaultStrategy()->string(),
+                )
+            );
+        }
 
         return $this->selectConnectionForStatement($statement)
             ->prepare($statement, $attributes);
@@ -280,13 +295,15 @@ class ConnectionFacade extends PDO implements ConnectionFacadeInterface
             );
         }
 
-        $this->logger()->debug(
-            'Executing statement {statement} with strategy {strategy}.',
-            array(
-                'statement' => $arguments[0],
-                'strategy' => $this->defaultStrategy()->string(),
-            )
-        );
+        if (null !== $this->logger()) {
+            $this->logger()->debug(
+                'Executing statement {statement} with strategy {strategy}.',
+                array(
+                    'statement' => $arguments[0],
+                    'strategy' => $this->defaultStrategy()->string(),
+                )
+            );
+        }
 
         return call_user_func_array(
             array($this->selectConnectionForStatement($arguments[0]), 'query'),
@@ -306,13 +323,15 @@ class ConnectionFacade extends PDO implements ConnectionFacadeInterface
      */
     public function exec($statement)
     {
-        $this->logger()->debug(
-            'Executing statement {statement} with strategy {strategy}.',
-            array(
-                'statement' => $statement,
-                'strategy' => $this->defaultStrategy()->string(),
-            )
-        );
+        if (null !== $this->logger()) {
+            $this->logger()->debug(
+                'Executing statement {statement} with strategy {strategy}.',
+                array(
+                    'statement' => $statement,
+                    'strategy' => $this->defaultStrategy()->string(),
+                )
+            );
+        }
 
         return $this->selectConnectionForStatement($statement)
             ->exec($statement);
@@ -346,7 +365,9 @@ class ConnectionFacade extends PDO implements ConnectionFacadeInterface
             );
         }
 
-        $this->logger()->debug('Beginning transaction on facade.');
+        if (null !== $this->logger()) {
+            $this->logger()->debug('Beginning transaction on facade.');
+        }
 
         $this->transactionConnections()->clear();
         $this->setTransactionWriteConnection(null);
@@ -369,7 +390,9 @@ class ConnectionFacade extends PDO implements ConnectionFacadeInterface
             throw new Exception\PdoException('There is no active transaction');
         }
 
-        $this->logger()->debug('Committing transaction on facade.');
+        if (null !== $this->logger()) {
+            $this->logger()->debug('Committing transaction on facade.');
+        }
 
         $result = true;
         $error = null;
@@ -409,7 +432,9 @@ class ConnectionFacade extends PDO implements ConnectionFacadeInterface
             throw new Exception\PdoException('There is no active transaction');
         }
 
-        $this->logger()->debug('Rolling back transaction on facade.');
+        if (null !== $this->logger()) {
+            $this->logger()->debug('Rolling back transaction on facade.');
+        }
 
         $result = true;
         $error = null;
@@ -523,14 +548,17 @@ class ConnectionFacade extends PDO implements ConnectionFacadeInterface
      */
     public function setAttribute($attribute, $value)
     {
-        $this->logger()->debug(
-            'Setting attribute {attribute} to {value} on facade.',
-            array(
-                'attribute' => PdoConnectionAttribute::memberByValue($attribute)
-                    ->qualifiedName(),
-                'value' => $value,
-            )
-        );
+        if (null !== $this->logger()) {
+            $this->logger()->debug(
+                'Setting attribute {attribute} to {value} on facade.',
+                array(
+                    'attribute' =>
+                        PdoConnectionAttribute::memberByValue($attribute)
+                        ->qualifiedName(),
+                    'value' => $value,
+                )
+            );
+        }
 
         $this->attributes[$attribute] = $value;
 
@@ -596,10 +624,12 @@ class ConnectionFacade extends PDO implements ConnectionFacadeInterface
     protected function setCurrentConnection(
         ConnectionInterface $currentConnection
     ) {
-        $this->logger()->debug(
-            'Setting current connection to {connection}.',
-            array('connection' => $currentConnection->name())
-        );
+        if (null !== $this->logger()) {
+            $this->logger()->debug(
+                'Setting current connection to {connection}.',
+                array('connection' => $currentConnection->name())
+            );
+        }
 
         $this->currentConnection = $currentConnection;
     }

@@ -5,7 +5,6 @@ use Icecave\Manifold\Connection\PdoConnectionAttribute;
 use InvalidArgumentException;
 use PDO;
 use Psr\Log\LoggerInterface;
-use Psr\Log\NullLogger;
 
 /**
  * A PDO connection with lazy-connection semantics.
@@ -32,9 +31,6 @@ class LazyConnection extends PDO implements ConnectionInterface
     ) {
         if (null === $attributes) {
             $attributes = array();
-        }
-        if (null === $logger) {
-            $logger = new NullLogger;
         }
 
         $this->name = $name;
@@ -68,10 +64,12 @@ class LazyConnection extends PDO implements ConnectionInterface
 
         $this->beforeConnect();
 
-        $this->logger()->debug(
-            'Establishing connection {connection} to {dsn}.',
-            array('connection' => $this->name(), 'dsn' => $this->dsn())
-        );
+        if (null !== $this->logger()) {
+            $this->logger()->debug(
+                'Establishing connection {connection} to {dsn}.',
+                array('connection' => $this->name(), 'dsn' => $this->dsn())
+            );
+        }
 
         $this->connection = $this->createConnection(
             $this->resolveStringable($this->dsn()),
@@ -151,9 +149,9 @@ class LazyConnection extends PDO implements ConnectionInterface
     /**
      * Set the logger.
      *
-     * @param LoggerInterface $logger The logger to use.
+     * @param LoggerInterface|null $logger The logger to use, or null to remove the current logger.
      */
-    public function setLogger(LoggerInterface $logger)
+    public function setLogger(LoggerInterface $logger = null)
     {
         $this->logger = $logger;
     }
@@ -161,7 +159,7 @@ class LazyConnection extends PDO implements ConnectionInterface
     /**
      * Get the logger.
      *
-     * @return LoggerInterface The logger.
+     * @return LoggerInterface|null The logger, or null if no logger is in use.
      */
     public function logger()
     {
@@ -183,10 +181,12 @@ class LazyConnection extends PDO implements ConnectionInterface
      */
     public function prepare($statement, $attributes = array())
     {
-        $this->logger()->debug(
-            'Preparing statement {statement} on {connection}.',
-            array('statement' => $statement, 'connection' => $this->name())
-        );
+        if (null !== $this->logger()) {
+            $this->logger()->debug(
+                'Preparing statement {statement} on {connection}.',
+                array('statement' => $statement, 'connection' => $this->name())
+            );
+        }
 
         return $this->connection()->prepare($statement, $attributes);
     }
@@ -213,10 +213,15 @@ class LazyConnection extends PDO implements ConnectionInterface
             );
         }
 
-        $this->logger()->debug(
-            'Executing statement {statement} on {connection}.',
-            array('statement' => $arguments[0], 'connection' => $this->name())
-        );
+        if (null !== $this->logger()) {
+            $this->logger()->debug(
+                'Executing statement {statement} on {connection}.',
+                array(
+                    'statement' => $arguments[0],
+                    'connection' => $this->name(),
+                )
+            );
+        }
 
         return call_user_func_array(
             array($this->connection(), 'query'),
@@ -236,10 +241,12 @@ class LazyConnection extends PDO implements ConnectionInterface
      */
     public function exec($statement)
     {
-        $this->logger()->debug(
-            'Executing statement {statement} on {connection}.',
-            array('statement' => $statement, 'connection' => $this->name())
-        );
+        if (null !== $this->logger()) {
+            $this->logger()->debug(
+                'Executing statement {statement} on {connection}.',
+                array('statement' => $statement, 'connection' => $this->name())
+            );
+        }
 
         return $this->connection()->exec($statement);
     }
@@ -270,10 +277,12 @@ class LazyConnection extends PDO implements ConnectionInterface
      */
     public function beginTransaction()
     {
-        $this->logger()->debug(
-            'Beginning transaction on {connection}.',
-            array('connection' => $this->name())
-        );
+        if (null !== $this->logger()) {
+            $this->logger()->debug(
+                'Beginning transaction on {connection}.',
+                array('connection' => $this->name())
+            );
+        }
 
         return $this->connection()->beginTransaction();
     }
@@ -288,10 +297,12 @@ class LazyConnection extends PDO implements ConnectionInterface
      */
     public function commit()
     {
-        $this->logger()->debug(
-            'Committing transaction on {connection}.',
-            array('connection' => $this->name())
-        );
+        if (null !== $this->logger()) {
+            $this->logger()->debug(
+                'Committing transaction on {connection}.',
+                array('connection' => $this->name())
+            );
+        }
 
         return $this->connection()->commit();
     }
@@ -306,10 +317,12 @@ class LazyConnection extends PDO implements ConnectionInterface
      */
     public function rollBack()
     {
-        $this->logger()->debug(
-            'Rolling back transaction on {connection}.',
-            array('connection' => $this->name())
-        );
+        if (null !== $this->logger()) {
+            $this->logger()->debug(
+                'Rolling back transaction on {connection}.',
+                array('connection' => $this->name())
+            );
+        }
 
         return $this->connection()->rollBack();
     }
@@ -400,15 +413,18 @@ class LazyConnection extends PDO implements ConnectionInterface
      */
     public function setAttribute($attribute, $value)
     {
-        $this->logger()->debug(
-            'Setting attribute {attribute} to {value} on {connection}.',
-            array(
-                'attribute' => PdoConnectionAttribute::memberByValue($attribute)
-                    ->qualifiedName(),
-                'value' => $value,
-                'connection' => $this->name(),
-            )
-        );
+        if (null !== $this->logger()) {
+            $this->logger()->debug(
+                'Setting attribute {attribute} to {value} on {connection}.',
+                array(
+                    'attribute' =>
+                        PdoConnectionAttribute::memberByValue($attribute)
+                        ->qualifiedName(),
+                    'value' => $value,
+                    'connection' => $this->name(),
+                )
+            );
+        }
 
         if ($this->isConnected()) {
             $result = $this->connection()->setAttribute($attribute, $value);

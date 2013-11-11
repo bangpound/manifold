@@ -4,7 +4,6 @@ namespace Icecave\Manifold\Connection;
 use PDO;
 use Phake;
 use PHPUnit_Framework_TestCase;
-use Psr\Log\NullLogger;
 
 class ConnectionFactoryTest extends PHPUnit_Framework_TestCase
 {
@@ -26,7 +25,7 @@ class ConnectionFactoryTest extends PHPUnit_Framework_TestCase
         $this->factory = new ConnectionFactory;
 
         $this->assertSame(array(PDO::ATTR_PERSISTENT => false), $this->factory->attributes());
-        $this->assertEquals(new NullLogger, $this->factory->logger());
+        $this->assertNull($this->factory->logger());
     }
 
     public function testSetLogger()

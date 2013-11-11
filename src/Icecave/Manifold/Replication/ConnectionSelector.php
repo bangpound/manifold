@@ -7,7 +7,6 @@ use Icecave\Manifold\Connection\ConnectionPairInterface;
 use Icecave\Manifold\Connection\Pool\ConnectionPoolSelectorInterface;
 use Icecave\Manifold\Replication\ReplicationManagerInterface;
 use Psr\Log\LoggerInterface;
-use Psr\Log\NullLogger;
 
 /**
  * Selects a single connection, taking into account a replication hierarchy, the
@@ -33,9 +32,6 @@ class ConnectionSelector implements ConnectionSelectorInterface
         // @codeCoverageIgnoreEnd
         if (null === $defaultStrategy) {
             $defaultStrategy = new SelectionStrategy\AcceptableDelayStrategy;
-        }
-        if (null === $logger) {
-            $logger = new NullLogger;
         }
 
         $this->poolSelector = $poolSelector;
@@ -88,9 +84,9 @@ class ConnectionSelector implements ConnectionSelectorInterface
     /**
      * Set the logger.
      *
-     * @param LoggerInterface $logger The logger to use.
+     * @param LoggerInterface|null $logger The logger to use, or null to remove the current logger.
      */
-    public function setLogger(LoggerInterface $logger)
+    public function setLogger(LoggerInterface $logger = null)
     {
         $this->logger = $logger;
     }
@@ -98,7 +94,7 @@ class ConnectionSelector implements ConnectionSelectorInterface
     /**
      * Get the logger.
      *
-     * @return LoggerInterface The logger.
+     * @return LoggerInterface|null The logger, or null if no logger is in use.
      */
     public function logger()
     {

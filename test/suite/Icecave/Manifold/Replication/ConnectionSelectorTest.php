@@ -6,7 +6,6 @@ use Icecave\Manifold\Connection\ConnectionPair;
 use Icecave\Manifold\Connection\Pool\ConnectionPool;
 use PHPUnit_Framework_TestCase;
 use Phake;
-use Psr\Log\NullLogger;
 
 class ConnectionSelectorTest extends PHPUnit_Framework_TestCase
 {
@@ -82,7 +81,7 @@ class ConnectionSelectorTest extends PHPUnit_Framework_TestCase
         $this->selector = new ConnectionSelector($this->poolSelector, $this->replicationManager);
 
         $this->assertEquals(new SelectionStrategy\AcceptableDelayStrategy, $this->selector->defaultStrategy());
-        $this->assertEquals(new NullLogger, $this->selector->logger());
+        $this->assertNull($this->selector->logger());
     }
 
     public function testSetDefaultStrategy()

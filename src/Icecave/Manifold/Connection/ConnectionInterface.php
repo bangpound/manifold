@@ -52,7 +52,7 @@ interface ConnectionInterface extends
     /**
      * Get the logger.
      *
-     * @return LoggerInterface The logger.
+     * @return LoggerInterface|null The logger, or null if no logger is in use.
      */
     public function logger();
 }

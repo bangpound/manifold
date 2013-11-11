@@ -9,7 +9,6 @@ use PDO;
 use PDOException;
 use PHPUnit_Framework_TestCase;
 use Phake;
-use Psr\Log\NullLogger;
 
 class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
 {
@@ -86,7 +85,7 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
             ),
             $this->facade->attributes()
         );
-        $this->assertEquals(new NullLogger, $this->facade->logger());
+        $this->assertNull($this->facade->logger());
     }
 
     public function testConnectionSelector()

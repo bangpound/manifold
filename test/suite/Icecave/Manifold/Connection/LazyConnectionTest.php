@@ -4,7 +4,6 @@ namespace Icecave\Manifold\Connection;
 use PDO;
 use PHPUnit_Framework_TestCase;
 use Phake;
-use Psr\Log\NullLogger;
 
 class LazyConnectionTest extends PHPUnit_Framework_TestCase
 {
@@ -45,7 +44,7 @@ class LazyConnectionTest extends PHPUnit_Framework_TestCase
         $this->assertNull($this->connection->username());
         $this->assertNull($this->connection->password());
         $this->assertSame(array(), $this->connection->attributes());
-        $this->assertEquals(new NullLogger, $this->connection->logger());
+        $this->assertNull($this->connection->logger());
     }
 
     public function testSetLogger()
