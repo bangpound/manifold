@@ -268,4 +268,12 @@ class TimePointStrategyTest extends PHPUnit_Framework_TestCase
             throw $caught;
         }
     }
+
+    public function testString()
+    {
+        $expected = "Any replicating connection up to date with, at least, '2001-01-01T12:00:01+00:00'.";
+
+        $this->assertSame($expected, $this->strategy->string());
+        $this->assertSame($expected, strval($this->strategy));
+    }
 }

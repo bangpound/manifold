@@ -39,6 +39,16 @@ abstract class AbstractSelectionStrategy implements SelectionStrategyInterface
     }
 
     /**
+     * Generate a string representation of this strategy.
+     *
+     * @return string The generated string representation of this strategy.
+     */
+    public function __toString()
+    {
+        return $this->string();
+    }
+
+    /**
      * Normalizes various representations of a duration into a Duration
      * instance.
      *

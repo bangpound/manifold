@@ -195,4 +195,12 @@ class AcceptableDelayStrategyTest extends PHPUnit_Framework_TestCase
             throw $caught;
         }
     }
+
+    public function testString()
+    {
+        $expected = "Any replicating connection with a delay less than 'PT3M42S'.";
+
+        $this->assertSame($expected, $this->strategy->string());
+        $this->assertSame($expected, strval($this->strategy));
+    }
 }

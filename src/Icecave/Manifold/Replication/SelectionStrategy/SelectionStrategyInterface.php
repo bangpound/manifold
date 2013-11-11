@@ -27,4 +27,18 @@ interface SelectionStrategyInterface
         ConnectionPoolInterface $pool,
         LoggerInterface $logger = null
     );
+
+    /**
+     * Generate a string representation of this strategy.
+     *
+     * @return string The generated string representation of this strategy.
+     */
+    public function string();
+
+    /**
+     * Generate a string representation of this strategy.
+     *
+     * @return string The generated string representation of this strategy.
+     */
+    public function __toString();
 }

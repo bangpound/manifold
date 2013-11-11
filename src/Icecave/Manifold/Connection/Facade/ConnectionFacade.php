@@ -113,7 +113,7 @@ class ConnectionFacade extends PDO implements ConnectionFacadeInterface
     ) {
         $this->logger()->debug(
             'Setting default strategy to {strategy}.',
-            array('strategy' => get_class($defaultStrategy))
+            array('strategy' => $defaultStrategy->string())
         );
 
         $this->connectionSelector()->setDefaultStrategy($defaultStrategy);
@@ -163,7 +163,7 @@ class ConnectionFacade extends PDO implements ConnectionFacadeInterface
 
         $this->logger()->debug(
             'Preparing statement {statement} with strategy {strategy}.',
-            array('statement' => $statement, 'strategy' => get_class($strategy))
+            array('statement' => $statement, 'strategy' => $strategy->string())
         );
 
         return $this->selectConnectionForStatement($statement, $strategy)
@@ -192,7 +192,7 @@ class ConnectionFacade extends PDO implements ConnectionFacadeInterface
     ) {
         $this->logger()->debug(
             'Executing statement {statement} with strategy {strategy}.',
-            array('statement' => $statement, 'strategy' => get_class($strategy))
+            array('statement' => $statement, 'strategy' => $strategy->string())
         );
 
         $connection = $this->selectConnectionForStatement(
@@ -224,7 +224,7 @@ class ConnectionFacade extends PDO implements ConnectionFacadeInterface
     ) {
         $this->logger()->debug(
             'Executing statement {statement} with strategy {strategy}.',
-            array('statement' => $statement, 'strategy' => get_class($strategy))
+            array('statement' => $statement, 'strategy' => $strategy->string())
         );
 
         return $this->selectConnectionForStatement($statement, $strategy)
@@ -250,7 +250,7 @@ class ConnectionFacade extends PDO implements ConnectionFacadeInterface
             'Preparing statement {statement} with strategy {strategy}.',
             array(
                 'statement' => $statement,
-                'strategy' => get_class($this->defaultStrategy()),
+                'strategy' => $this->defaultStrategy()->string(),
             )
         );
 
@@ -284,7 +284,7 @@ class ConnectionFacade extends PDO implements ConnectionFacadeInterface
             'Executing statement {statement} with strategy {strategy}.',
             array(
                 'statement' => $arguments[0],
-                'strategy' => get_class($this->defaultStrategy()),
+                'strategy' => $this->defaultStrategy()->string(),
             )
         );
 
@@ -310,7 +310,7 @@ class ConnectionFacade extends PDO implements ConnectionFacadeInterface
             'Executing statement {statement} with strategy {strategy}.',
             array(
                 'statement' => $statement,
-                'strategy' => get_class($this->defaultStrategy()),
+                'strategy' => $this->defaultStrategy()->string(),
             )
         );
 

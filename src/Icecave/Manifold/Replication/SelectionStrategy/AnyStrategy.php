@@ -51,4 +51,24 @@ class AnyStrategy implements SelectionStrategyInterface
 
         return $connection;
     }
+
+    /**
+     * Generate a string representation of this strategy.
+     *
+     * @return string The generated string representation of this strategy.
+     */
+    public function string()
+    {
+        return 'Any connection.';
+    }
+
+    /**
+     * Generate a string representation of this strategy.
+     *
+     * @return string The generated string representation of this strategy.
+     */
+    public function __toString()
+    {
+        return $this->string();
+    }
 }

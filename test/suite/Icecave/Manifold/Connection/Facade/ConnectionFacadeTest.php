@@ -28,7 +28,9 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
         $this->defaultStrategy = Phake::mock(
             'Icecave\Manifold\Replication\SelectionStrategy\SelectionStrategyInterface'
         );
+        Phake::when($this->defaultStrategy)->string()->thenReturn('defaultStrategy');
         $this->strategy = Phake::mock('Icecave\Manifold\Replication\SelectionStrategy\SelectionStrategyInterface');
+        Phake::when($this->strategy)->string()->thenReturn('strategy');
 
         $this->connectionA = Phake::mock('Icecave\Manifold\Connection\ConnectionInterface');
         Phake::when($this->connectionA)->name()->thenReturn('A');
@@ -110,7 +112,7 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
         Phake::inOrder(
             Phake::verify($this->logger)->debug(
                 'Setting default strategy to {strategy}.',
-                array('strategy' => get_class($this->strategy))
+                array('strategy' => 'strategy')
             ),
             Phake::verify($this->connectionSelector)->setDefaultStrategy($this->strategy)
         );
@@ -135,7 +137,7 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
         Phake::inOrder(
             Phake::verify($this->logger)->debug(
                 'Preparing statement {statement} with strategy {strategy}.',
-                array('statement' => $query, 'strategy' => get_class($this->strategy))
+                array('statement' => $query, 'strategy' => 'strategy')
             ),
             Phake::verify($this->queryConnectionSelector)->select($query, $this->strategy),
             Phake::verify($this->logger)->debug(
@@ -167,7 +169,7 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
         Phake::inOrder(
             Phake::verify($this->logger)->debug(
                 'Executing statement {statement} with strategy {strategy}.',
-                array('statement' => $query, 'strategy' => get_class($this->strategy))
+                array('statement' => $query, 'strategy' => 'strategy')
             ),
             Phake::verify($this->queryConnectionSelector)->select($query, $this->strategy),
             Phake::verify($this->logger)->debug(
@@ -187,7 +189,7 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
         Phake::inOrder(
             Phake::verify($this->logger)->debug(
                 'Executing statement {statement} with strategy {strategy}.',
-                array('statement' => $query, 'strategy' => get_class($this->strategy))
+                array('statement' => $query, 'strategy' => 'strategy')
             ),
             Phake::verify($this->queryConnectionSelector)->select($query, $this->strategy),
             Phake::verify($this->logger)->debug(
@@ -210,7 +212,7 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
         Phake::inOrder(
             Phake::verify($this->logger)->debug(
                 'Preparing statement {statement} with strategy {strategy}.',
-                array('statement' => $query, 'strategy' => get_class($this->defaultStrategy))
+                array('statement' => $query, 'strategy' => 'defaultStrategy')
             ),
             Phake::verify($this->queryConnectionSelector)->select($query, null),
             Phake::verify($this->logger)->debug(
@@ -239,7 +241,7 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
         Phake::inOrder(
             Phake::verify($this->logger)->debug(
                 'Executing statement {statement} with strategy {strategy}.',
-                array('statement' => $query, 'strategy' => get_class($this->defaultStrategy))
+                array('statement' => $query, 'strategy' => 'defaultStrategy')
             ),
             Phake::verify($this->queryConnectionSelector)->select($query, null),
             Phake::verify($this->logger)->debug(
@@ -265,7 +267,7 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
         Phake::inOrder(
             Phake::verify($this->logger)->debug(
                 'Executing statement {statement} with strategy {strategy}.',
-                array('statement' => $query, 'strategy' => get_class($this->defaultStrategy))
+                array('statement' => $query, 'strategy' => 'defaultStrategy')
             ),
             Phake::verify($this->queryConnectionSelector)->select($query, null),
             Phake::verify($this->logger)->debug(

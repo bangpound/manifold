@@ -51,4 +51,12 @@ class AnyStrategyTest extends PHPUnit_Framework_TestCase
         );
         Phake::verifyNoInteraction($this->manager);
     }
+
+    public function testString()
+    {
+        $expected = "Any connection.";
+
+        $this->assertSame($expected, $this->strategy->string());
+        $this->assertSame($expected, strval($this->strategy));
+    }
 }

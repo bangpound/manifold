@@ -174,5 +174,23 @@ class LeastDelayStrategy extends AbstractSelectionStrategy
         return $connection;
     }
 
+    /**
+     * Generate a string representation of this strategy.
+     *
+     * @return string The generated string representation of this strategy.
+     */
+    public function string()
+    {
+        if (null === $this->threshold()) {
+            return 'The connection with the least replication delay.';
+        }
+
+        return sprintf(
+            'The connection with the least replication delay, ' .
+                'but also less than %s.',
+            var_export($this->threshold()->isoString(), true)
+        );
+    }
+
     private $threshold;
 }

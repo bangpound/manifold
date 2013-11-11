@@ -288,4 +288,21 @@ class LeastDelayStrategyTest extends PHPUnit_Framework_TestCase
             throw $caught;
         }
     }
+
+    public function testString()
+    {
+        $expected = "The connection with the least replication delay, but also less than 'PT7M24S'.";
+
+        $this->assertSame($expected, $this->strategy->string());
+        $this->assertSame($expected, strval($this->strategy));
+    }
+
+    public function testStringWithNoThreshold()
+    {
+        $this->strategy = new LeastDelayStrategy;
+        $expected = "The connection with the least replication delay.";
+
+        $this->assertSame($expected, $this->strategy->string());
+        $this->assertSame($expected, strval($this->strategy));
+    }
 }

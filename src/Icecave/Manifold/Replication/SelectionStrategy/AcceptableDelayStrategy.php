@@ -141,5 +141,18 @@ class AcceptableDelayStrategy extends AbstractSelectionStrategy
         throw new NoConnectionAvailableException;
     }
 
+    /**
+     * Generate a string representation of this strategy.
+     *
+     * @return string The generated string representation of this strategy.
+     */
+    public function string()
+    {
+        return sprintf(
+            'Any replicating connection with a delay less than %s.',
+            var_export($this->threshold()->isoString(), true)
+        );
+    }
+
     private $threshold;
 }

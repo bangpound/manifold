@@ -156,5 +156,18 @@ class TimePointStrategy extends AbstractSelectionStrategy
         throw new NoConnectionAvailableException;
     }
 
+    /**
+     * Generate a string representation of this strategy.
+     *
+     * @return string The generated string representation of this strategy.
+     */
+    public function string()
+    {
+        return sprintf(
+            'Any replicating connection up to date with, at least, %s.',
+            var_export($this->timePoint()->isoString(), true)
+        );
+    }
+
     private $timePoint;
 }
