@@ -4,6 +4,7 @@ namespace Icecave\Manifold\Connection\Facade;
 use Icecave\Collections\Set;
 use Icecave\Collections\Vector;
 use Icecave\Manifold\Connection\ConnectionInterface;
+use Icecave\Manifold\Connection\PdoConnectionAttribute;
 use Icecave\Manifold\Connection\PdoConnectionInterface;
 use Icecave\Manifold\Replication\Exception\NoConnectionAvailableException;
 use Icecave\Manifold\Replication\Exception\UnsupportedQueryException;
@@ -524,7 +525,11 @@ class ConnectionFacade extends PDO implements ConnectionFacadeInterface
     {
         $this->logger()->debug(
             'Setting attribute {attribute} to {value} on facade.',
-            array('attribute' => $attribute, 'value' => $value)
+            array(
+                'attribute' => PdoConnectionAttribute::memberByValue($attribute)
+                    ->qualifiedName(),
+                'value' => $value,
+            )
         );
 
         $this->attributes[$attribute] = $value;

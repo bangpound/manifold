@@ -18,7 +18,7 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
         parent::setUp();
 
         $this->queryConnectionSelector = Phake::mock('Icecave\Manifold\Replication\QueryConnectionSelectorInterface');
-        $this->attributes = array(123 => 'foo', 456 => 'bar');
+        $this->attributes = array(PDO::ATTR_TIMEOUT => 'foo', PDO::ATTR_CURSOR => 'bar');
         $this->logger = Phake::mock('Psr\Log\LoggerInterface');
         $this->logger->id = 'default';
         $this->facade = new ConnectionFacade($this->queryConnectionSelector, $this->attributes, $this->logger);
@@ -576,13 +576,13 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
         $this->facade->exec($queryA);
         $this->facade->exec($queryB);
 
-        $this->assertTrue($this->facade->setAttribute(333, 'baz'));
+        $this->assertTrue($this->facade->setAttribute(PDO::ATTR_PREFETCH, 'baz'));
         $log = Phake::verify($this->logger)->debug(
             'Setting attribute {attribute} to {value} on facade.',
-            array('attribute' => '333', 'value' => 'baz')
+            array('attribute' => 'PDO::ATTR_PREFETCH', 'value' => 'baz')
         );
-        $setA = Phake::verify($this->connectionA)->setAttribute(333, 'baz');
-        $setB = Phake::verify($this->connectionB)->setAttribute(333, 'baz');
+        $setA = Phake::verify($this->connectionA)->setAttribute(PDO::ATTR_PREFETCH, 'baz');
+        $setB = Phake::verify($this->connectionB)->setAttribute(PDO::ATTR_PREFETCH, 'baz');
         Phake::inOrder($log, $setA);
         Phake::inOrder($log, $setB);
     }
@@ -606,13 +606,13 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
         $this->facade->exec($queryA);
         $this->facade->exec($queryB);
 
-        $this->assertFalse($this->facade->setAttribute(333, 'baz'));
+        $this->assertFalse($this->facade->setAttribute(PDO::ATTR_PREFETCH, 'baz'));
         $log = Phake::verify($this->logger)->debug(
             'Setting attribute {attribute} to {value} on facade.',
-            array('attribute' => '333', 'value' => 'baz')
+            array('attribute' => 'PDO::ATTR_PREFETCH', 'value' => 'baz')
         );
-        $setA = Phake::verify($this->connectionA)->setAttribute(333, 'baz');
-        $setB = Phake::verify($this->connectionB)->setAttribute(333, 'baz');
+        $setA = Phake::verify($this->connectionA)->setAttribute(PDO::ATTR_PREFETCH, 'baz');
+        $setB = Phake::verify($this->connectionB)->setAttribute(PDO::ATTR_PREFETCH, 'baz');
         Phake::inOrder($log, $setA);
         Phake::inOrder($log, $setB);
     }
@@ -639,15 +639,15 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
 
         $thrown = null;
         try {
-            $this->facade->setAttribute(333, 'baz');
+            $this->facade->setAttribute(PDO::ATTR_PREFETCH, 'baz');
         } catch (PDOException $thrown) {}
         $this->assertSame($error, $thrown);
         $log = Phake::verify($this->logger)->debug(
             'Setting attribute {attribute} to {value} on facade.',
-            array('attribute' => '333', 'value' => 'baz')
+            array('attribute' => 'PDO::ATTR_PREFETCH', 'value' => 'baz')
         );
-        $setA = Phake::verify($this->connectionA)->setAttribute(333, 'baz');
-        $setB = Phake::verify($this->connectionB)->setAttribute(333, 'baz');
+        $setA = Phake::verify($this->connectionA)->setAttribute(PDO::ATTR_PREFETCH, 'baz');
+        $setB = Phake::verify($this->connectionB)->setAttribute(PDO::ATTR_PREFETCH, 'baz');
         Phake::inOrder($log, $setA);
         Phake::inOrder($log, $setB);
     }
@@ -679,8 +679,8 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
             $this->connectionA,
             Liberator::liberate($this->facade)->selectConnectionForWrite('foo', $this->strategy)
         );
-        Phake::verify($this->connectionA)->setAttribute(123, 'foo');
-        Phake::verify($this->connectionA)->setAttribute(456, 'bar');
+        Phake::verify($this->connectionA)->setAttribute(PDO::ATTR_TIMEOUT, 'foo');
+        Phake::verify($this->connectionA)->setAttribute(PDO::ATTR_CURSOR, 'bar');
     }
 
     public function testSelectConnectionForWriteDefaults()
@@ -688,8 +688,8 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
         Phake::when($this->connectionSelector)->forWrite(null, null)->thenReturn($this->connectionA);
 
         $this->assertSame($this->connectionA, Liberator::liberate($this->facade)->selectConnectionForWrite());
-        Phake::verify($this->connectionA)->setAttribute(123, 'foo');
-        Phake::verify($this->connectionA)->setAttribute(456, 'bar');
+        Phake::verify($this->connectionA)->setAttribute(PDO::ATTR_TIMEOUT, 'foo');
+        Phake::verify($this->connectionA)->setAttribute(PDO::ATTR_CURSOR, 'bar');
     }
 
     public function testSelectConnectionForWriteFailureNoConnection()
@@ -732,7 +732,7 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
         Phake::when($this->connectionC)->exec($queryD)->thenReturn(444);
         Phake::when($this->connectionD)->exec($queryE)->thenReturn(555);
         $this->facade->exec($queryA);
-        $this->facade->setAttribute(666, 'baz');
+        $this->facade->setAttribute(PDO::ATTR_PREFETCH, 'baz');
         $this->facade->setLogger($logger);
         $this->facade->exec($queryB);
         $this->facade->beginTransaction();
@@ -742,15 +742,15 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
         $this->facade->exec($queryE);
 
         Phake::inOrder(
-            Phake::verify($this->connectionA)->setAttribute(123, 'foo'),
-            Phake::verify($this->connectionA)->setAttribute(456, 'bar'),
+            Phake::verify($this->connectionA)->setAttribute(PDO::ATTR_TIMEOUT, 'foo'),
+            Phake::verify($this->connectionA)->setAttribute(PDO::ATTR_CURSOR, 'bar'),
             Phake::verify($this->connectionA)->setLogger($this->logger),
             Phake::verify($this->logger)->debug(
                 'Setting current connection to {connection}.',
                 array('connection' => 'A')
             ),
             Phake::verify($this->connectionA)->exec($queryA),
-            Phake::verify($this->connectionA)->setAttribute(666, 'baz'),
+            Phake::verify($this->connectionA)->setAttribute(PDO::ATTR_PREFETCH, 'baz'),
             Phake::verify($this->connectionA)->setLogger($logger),
             Phake::verify($logger)->debug(
                 'Setting current connection to {connection}.',
@@ -758,9 +758,9 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
             ),
             Phake::verify($this->connectionA)->exec($queryB),
 
-            Phake::verify($this->connectionB)->setAttribute(123, 'foo'),
-            Phake::verify($this->connectionB)->setAttribute(456, 'bar'),
-            Phake::verify($this->connectionB)->setAttribute(666, 'baz'),
+            Phake::verify($this->connectionB)->setAttribute(PDO::ATTR_TIMEOUT, 'foo'),
+            Phake::verify($this->connectionB)->setAttribute(PDO::ATTR_CURSOR, 'bar'),
+            Phake::verify($this->connectionB)->setAttribute(PDO::ATTR_PREFETCH, 'baz'),
             Phake::verify($this->connectionB)->setLogger($logger),
             Phake::verify($this->connectionB)->beginTransaction(),
             Phake::verify($logger)->debug(
@@ -769,9 +769,9 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
             ),
             Phake::verify($this->connectionB)->exec($queryC),
 
-            Phake::verify($this->connectionC)->setAttribute(123, 'foo'),
-            Phake::verify($this->connectionC)->setAttribute(456, 'bar'),
-            Phake::verify($this->connectionC)->setAttribute(666, 'baz'),
+            Phake::verify($this->connectionC)->setAttribute(PDO::ATTR_TIMEOUT, 'foo'),
+            Phake::verify($this->connectionC)->setAttribute(PDO::ATTR_CURSOR, 'bar'),
+            Phake::verify($this->connectionC)->setAttribute(PDO::ATTR_PREFETCH, 'baz'),
             Phake::verify($this->connectionC)->setLogger($logger),
             Phake::verify($this->connectionC)->beginTransaction(),
             Phake::verify($logger)->debug(
@@ -783,9 +783,9 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
             Phake::verify($this->connectionB)->commit(),
             Phake::verify($this->connectionC)->commit(),
 
-            Phake::verify($this->connectionD)->setAttribute(123, 'foo'),
-            Phake::verify($this->connectionD)->setAttribute(456, 'bar'),
-            Phake::verify($this->connectionD)->setAttribute(666, 'baz'),
+            Phake::verify($this->connectionD)->setAttribute(PDO::ATTR_TIMEOUT, 'foo'),
+            Phake::verify($this->connectionD)->setAttribute(PDO::ATTR_CURSOR, 'bar'),
+            Phake::verify($this->connectionD)->setAttribute(PDO::ATTR_PREFETCH, 'baz'),
             Phake::verify($this->connectionD)->setLogger($logger),
             Phake::verify($logger)->debug(
                 'Setting current connection to {connection}.',

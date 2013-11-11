@@ -1,6 +1,7 @@
 <?php
 namespace Icecave\Manifold\Connection;
 
+use Icecave\Manifold\Connection\PdoConnectionAttribute;
 use InvalidArgumentException;
 use PDO;
 use Psr\Log\LoggerInterface;
@@ -402,7 +403,8 @@ class LazyConnection extends PDO implements ConnectionInterface
         $this->logger()->debug(
             'Setting attribute {attribute} to {value} on {connection}.',
             array(
-                'attribute' => $attribute,
+                'attribute' => PdoConnectionAttribute::memberByValue($attribute)
+                    ->qualifiedName(),
                 'value' => $value,
                 'connection' => $this->name(),
             )

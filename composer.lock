@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "5116665ff9c468568b91b977d04f0f6d",
+    "hash": "c959226505ec82eed294b18ecf3d5d81",
     "packages": [
         {
             "name": "eloquent/asplode",
@@ -57,24 +57,74 @@
             "time": "2013-08-01 10:46:05"
         },
         {
-            "name": "eloquent/enumeration",
-            "version": "3.0.2",
+            "name": "eloquent/constance",
+            "version": "dev-develop",
             "source": {
                 "type": "git",
-                "url": "https://github.com/eloquent/enumeration.git",
-                "reference": "ee87a3062d71a00cb61167f2d59dd479a129caf6"
+                "url": "https://github.com/eloquent/constance.git",
+                "reference": "6161b0ba70b612e1a7a6af7b876add6dcae7aeec"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/eloquent/enumeration/zipball/ee87a3062d71a00cb61167f2d59dd479a129caf6",
-                "reference": "ee87a3062d71a00cb61167f2d59dd479a129caf6",
+                "url": "https://api.github.com/repos/eloquent/constance/zipball/6161b0ba70b612e1a7a6af7b876add6dcae7aeec",
+                "reference": "6161b0ba70b612e1a7a6af7b876add6dcae7aeec",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.0"
+                "eloquent/enumeration": "~5",
+                "icecave/isolator": "~2",
+                "php": ">=5.3"
             },
             "require-dev": {
-                "icecave/archer": "~0.2"
+                "icecave/archer": "~1"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Eloquent\\Constance": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Erin Millard",
+                    "email": "ezzatron@gmail.com",
+                    "homepage": "http://ezzatron.com/"
+                }
+            ],
+            "description": "PHP constants as enumerations.",
+            "homepage": "https://github.com/eloquent/constance",
+            "keywords": [
+                "constant",
+                "enum",
+                "enumeration",
+                "name",
+                "value"
+            ],
+            "time": "2013-11-11 05:39:36"
+        },
+        {
+            "name": "eloquent/enumeration",
+            "version": "5.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/eloquent/enumeration.git",
+                "reference": "f5a1d326221dfef3694fe960ed4bdca96ae5c900"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/eloquent/enumeration/zipball/f5a1d326221dfef3694fe960ed4bdca96ae5c900",
+                "reference": "f5a1d326221dfef3694fe960ed4bdca96ae5c900",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3"
+            },
+            "require-dev": {
+                "icecave/archer": "~1"
             },
             "type": "library",
             "autoload": {
@@ -99,9 +149,11 @@
                 "class",
                 "enum",
                 "enumeration",
-                "set"
+                "multiton",
+                "set",
+                "type"
             ],
-            "time": "2013-03-04 09:52:52"
+            "time": "2013-11-11 02:48:55"
         },
         {
             "name": "eloquent/equality",
@@ -153,35 +205,35 @@
         },
         {
             "name": "eloquent/schemer",
-            "version": "0.3.3",
+            "version": "dev-develop",
             "source": {
                 "type": "git",
                 "url": "https://github.com/eloquent/schemer.git",
-                "reference": "adfb80329ecaf4fbab2d0baccf5f190b3452d71a"
+                "reference": "951fb321d1f50f5d2e905620fbe3b4a6f816b4b3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/eloquent/schemer/zipball/adfb80329ecaf4fbab2d0baccf5f190b3452d71a",
-                "reference": "adfb80329ecaf4fbab2d0baccf5f190b3452d71a",
+                "url": "https://api.github.com/repos/eloquent/schemer/zipball/951fb321d1f50f5d2e905620fbe3b4a6f816b4b3",
+                "reference": "951fb321d1f50f5d2e905620fbe3b4a6f816b4b3",
                 "shasum": ""
             },
             "require": {
-                "eloquent/enumeration": "~3",
+                "eloquent/enumeration": "~5",
                 "eloquent/equality": "~2",
                 "ext-mbstring": "*",
                 "icecave/isolator": "~2",
-                "kriswallsmith/buzz": "~0.10",
+                "kriswallsmith/buzz": "~0.10.0",
                 "php": ">=5.3.0",
                 "zendframework/zend-uri": "~2,!=2.1.4",
                 "zendframework/zend-validator": "~2,!=2.1.4"
             },
             "require-dev": {
-                "icecave/archer": "1.0.0-alpha.2",
-                "jamesmoss/toml": "~0.1",
+                "icecave/archer": "~1",
+                "jamesmoss/toml": "~0.1.0",
                 "symfony/yaml": "~2"
             },
             "suggest": {
-                "jamesmoss/toml": "~0.1",
+                "jamesmoss/toml": "~0.1.0",
                 "symfony/yaml": "~2"
             },
             "type": "library",
@@ -210,7 +262,7 @@
                 "validation",
                 "yaml"
             ],
-            "time": "2013-08-01 07:43:08"
+            "time": "2013-11-11 05:49:20"
         },
         {
             "name": "icecave/chrono",
@@ -1801,6 +1853,8 @@
     ],
     "minimum-stability": "dev",
     "stability-flags": {
+        "eloquent/constance": 20,
+        "eloquent/schemer": 20,
         "icecave/chrono": 20,
         "icecave/collections": 20,
         "icecave/parity": 20
