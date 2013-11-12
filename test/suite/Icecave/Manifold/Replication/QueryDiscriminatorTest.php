@@ -18,6 +18,8 @@ class QueryDiscriminatorTest extends PHPUnit_Framework_TestCase
         return array(
             'Select'                    => array("SELECT * FROM foo.bar",                         false,  'foo'),
             'Multi-line select'         => array("SELECT\n*\nFROM\n    foo.bar",                  false,  'foo'),
+            'Non-dotted name select'    => array("SELECT * FROM foo",                             false,  null),
+            'Expression select'         => array("SELECT 1",                                      false,  null),
 
             'Insert'                    => array("INSERT INTO foo.bar VALUES (true)",             true,   'foo'),
             'Multi-line insert'         => array("INSERT\nINTO\n    foo.bar\nVALUES\n(true)",     true,   'foo'),
@@ -47,8 +49,8 @@ class QueryDiscriminatorTest extends PHPUnit_Framework_TestCase
     public function discriminateUnsupportedQueryData()
     {
         return array(
-            'Non-dotted name' => array("SELECT * FROM foo"),
-            'DDL statement'   => array("SHOW CREATE foo.bar"),
+            'Non-dotted name outside select' => array("DELETE FROM foo"),
+            'DDL statement'                  => array("SHOW CREATE foo.bar"),
         );
     }
 

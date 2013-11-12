@@ -12,7 +12,7 @@ class QueryDiscriminator implements QueryDiscriminatorInterface
      *
      * @param string $query The query to discriminate.
      *
-     * @return tuple<boolean,string>               A 2-tuple composed of a boolean that will be true if the query includes writes, and the name of the primary database affected, or null if the database could not be determined.
+     * @return tuple<boolean,string|null>          A 2-tuple composed of a boolean that will be true if the query includes writes, and the name of the primary database affected, or null if the database could not be determined.
      * @throws Exception\UnsupportedQueryException If the query type is unsupported, or cannot be determined.
      */
     public function discriminate($query)
@@ -20,21 +20,28 @@ class QueryDiscriminator implements QueryDiscriminatorInterface
         $trim = trim($query);
         $isWrite = true;
 
-        if (preg_match('/^SELECT.*\s+FROM\s+([^.]+)\./si', $query, $matches)) {
+        if (preg_match('{^SELECT\s}i', $query)) {
             $isWrite = false;
-            $database = $matches[1];
+
+            if (
+                preg_match('{.*\s+FROM\s+([^.]+)\.}si', $query, $matches, 0, 7)
+            ) {
+                $database = $matches[1];
+            } else {
+                $database = null;
+            }
         } elseif (
             preg_match(
-                '/^(?:INSERT|INSERT\s+IGNORE|REPLACE)\s+INTO\s+([^.]+)\./i',
+                '{^(?:INSERT|INSERT\s+IGNORE|REPLACE)\s+INTO\s+([^.]+)\.}i',
                 $query,
                 $matches
             )
         ) {
             $database = $matches[1];
-        } elseif (preg_match('/^UPDATE\s+([^.]+)\./i', $query, $matches)) {
+        } elseif (preg_match('{^UPDATE\s+([^.]+)\.}i', $query, $matches)) {
             $database = $matches[1];
         } elseif (
-            preg_match('/^DELETE\s+FROM\s+([^.]+)\./i', $query, $matches)
+            preg_match('{^DELETE\s+FROM\s+([^.]+)\.}i', $query, $matches)
         ) {
             $database = $matches[1];
         } else {
