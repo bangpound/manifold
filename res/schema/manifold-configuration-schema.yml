@@ -2,20 +2,6 @@ title: Manifold configuration
 description: A complete set of configuration settings for Manifold.
 
 definitions:
-    connection:
-        type: object
-        required:
-            - dsn
-        additionalProperties: false
-        properties:
-            dsn:
-                type: string
-                format: uri
-            username:
-                type: string
-            password:
-                type: string
-
     connectionPool:
         type: array
         additionalItems:
@@ -52,7 +38,8 @@ properties:
         default: {}
         minProperties: 1
         additionalProperties:
-            $ref: '#/definitions/connection'
+            type: string
+            format: uri
 
     pools:
         type: object

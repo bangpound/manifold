@@ -6,7 +6,7 @@ use Exception;
 /**
  * The supplied query is unsupported, or its type could not be determined.
  */
-class UnsupportedQueryException extends Exception
+final class UnsupportedQueryException extends Exception
 {
     /**
      * Construct a new unsupported query exception.

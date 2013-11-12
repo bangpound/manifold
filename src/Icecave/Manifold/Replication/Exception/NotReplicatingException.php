@@ -7,7 +7,7 @@ use Icecave\Manifold\Connection\ConnectionInterface;
 /**
  * The connection is not currently replicating.
  */
-class NotReplicatingException extends Exception
+final class NotReplicatingException extends Exception
 {
     /**
      * Construct a new not replicating exception.

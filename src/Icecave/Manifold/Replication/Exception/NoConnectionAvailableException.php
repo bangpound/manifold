@@ -6,7 +6,7 @@ use Exception;
 /**
  * No suitable connection was found for selection.
  */
-class NoConnectionAvailableException extends Exception
+final class NoConnectionAvailableException extends Exception
 {
     /**
      * Construct a new no connection available exception.

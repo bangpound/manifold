@@ -1,6 +1,8 @@
 <?php
 namespace Icecave\Manifold\Connection;
 
+use Icecave\Manifold\Authentication\CredentialsProvider;
+use Icecave\Manifold\Authentication\CredentialsProviderInterface;
 use Icecave\Manifold\Connection\PdoConnectionAttribute;
 use InvalidArgumentException;
 use PDO;
@@ -14,29 +16,29 @@ class LazyConnection extends PDO implements ConnectionInterface
     /**
      * Construct a new lazy PDO connection.
      *
-     * @param string                    $name       The connection name.
-     * @param stringable                $dsn        The connection data source name.
-     * @param stringable|null           $username   The database username, this parameter is optional for some PDO drivers.
-     * @param stringable|null           $password   The database password, this parameter is optional for some PDO drivers.
-     * @param array<integer,mixed>|null $attributes The connection attributes to use.
-     * @param LoggerInterface|null      $logger     The logger to use.
+     * @param string                            $name                The connection name.
+     * @param string                            $dsn                 The connection data source name.
+     * @param CredentialsProviderInterface|null $credentialsProvider The credentials provider to use.
+     * @param array<integer,mixed>|null         $attributes          The connection attributes to use.
+     * @param LoggerInterface|null              $logger              The logger to use.
      */
     public function __construct(
         $name,
         $dsn,
-        $username = null,
-        $password = null,
+        CredentialsProviderInterface $credentialsProvider = null,
         array $attributes = null,
         LoggerInterface $logger = null
     ) {
+        if (null === $credentialsProvider) {
+            $credentialsProvider = new CredentialsProvider;
+        }
         if (null === $attributes) {
             $attributes = array();
         }
 
         $this->name = $name;
         $this->dsn = $dsn;
-        $this->username = $username;
-        $this->password = $password;
+        $this->credentialsProvider = $credentialsProvider;
         $this->attributes = $attributes;
         $this->logger = $logger;
     }
@@ -71,10 +73,12 @@ class LazyConnection extends PDO implements ConnectionInterface
             );
         }
 
+        $credentials = $this->credentialsProvider()->forConnection($this);
+
         $this->connection = $this->createConnection(
-            $this->resolveStringable($this->dsn()),
-            $this->resolveStringable($this->username()),
-            $this->resolveStringable($this->password()),
+            $this->dsn(),
+            $credentials->username(),
+            $credentials->password(),
             $this->attributes()
         );
 
@@ -109,7 +113,7 @@ class LazyConnection extends PDO implements ConnectionInterface
     /**
      * Get the data source name.
      *
-     * @return stringable The data source name.
+     * @return string The data source name.
      */
     public function dsn()
     {
@@ -117,23 +121,13 @@ class LazyConnection extends PDO implements ConnectionInterface
     }
 
     /**
-     * Get the username.
+     * Get the credentials provider.
      *
-     * @return stringable|null The username, or null if no username is in use.
+     * @return CredentialsProviderInterface The credentials provider.
      */
-    public function username()
+    public function credentialsProvider()
     {
-        return $this->username;
-    }
-
-    /**
-     * Get the password.
-     *
-     * @return stringable|null The password, or null if no password is in use.
-     */
-    public function password()
-    {
-        return $this->password;
+        return $this->credentialsProvider;
     }
 
     /**
@@ -488,22 +482,6 @@ class LazyConnection extends PDO implements ConnectionInterface
     }
 
     /**
-     * Resolves a stringable value into a string.
-     *
-     * @param stringable|null $value The value to resolve.
-     *
-     * @return string|null The resolved value.
-     */
-    protected function resolveStringable($value)
-    {
-        if (null === $value) {
-            return null;
-        }
-
-        return strval($value);
-    }
-
-    /**
      * Creates a real PDO connection.
      *
      * @param string               $dsn        The data source name.
@@ -524,8 +502,7 @@ class LazyConnection extends PDO implements ConnectionInterface
     }
 
     private $dsn;
-    private $username;
-    private $password;
+    private $credentialsProvider;
     private $attributes;
     private $logger;
     private $connection;

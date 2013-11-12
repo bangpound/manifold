@@ -24,23 +24,9 @@ interface ConnectionInterface extends
     /**
      * Get the data source name.
      *
-     * @return stringable The data source name.
+     * @return string The data source name.
      */
     public function dsn();
-
-    /**
-     * Get the username.
-     *
-     * @return stringable|null The username, or null if no username is in use.
-     */
-    public function username();
-
-    /**
-     * Get the password.
-     *
-     * @return stringable|null The password, or null if no password is in use.
-     */
-    public function password();
 
     /**
      * Get the connection attributes.

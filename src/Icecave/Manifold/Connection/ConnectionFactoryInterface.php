@@ -19,12 +19,10 @@ interface ConnectionFactoryInterface extends LoggerAwareInterface
     /**
      * Create a connection.
      *
-     * @param string          $name     The connection name.
-     * @param stringable      $dsn      The data source name.
-     * @param stringable|null $username The username.
-     * @param stringable|null $password The password.
+     * @param string $name The connection name.
+     * @param string $dsn  The data source name.
      *
      * @return PDO The newly created connection.
      */
-    public function create($name, $dsn, $username = null, $password = null);
+    public function create($name, $dsn);
 }

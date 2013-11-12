@@ -184,12 +184,10 @@ class ConfigurationReader implements ConfigurationReaderInterface
 
         $connections = new Map;
         $defaultConnection = null;
-        foreach ($value->get('connections') as $name => $options) {
+        foreach ($value->get('connections') as $name => $dsn) {
             $connection = $connectionFactory->create(
                 $name,
-                $this->stringOrVariable($options->getRaw('dsn')),
-                $this->stringOrVariable($options->getRawDefault('username')),
-                $this->stringOrVariable($options->getRawDefault('password'))
+                $dsn->value()
             );
             $connections->add($name, $connection);
 
@@ -466,31 +464,6 @@ class ConfigurationReader implements ConfigurationReaderInterface
         $connections->pushBack($connection);
 
         return new ConnectionPool($connection->name(), $connections);
-    }
-
-    /**
-     * Look for environment variable names in the supplied string value, and
-     * return an environment variable instead of a string if found.
-     *
-     * @param string $string The string to inspect.
-     *
-     * @return string|EnvironmentVariableInterface The resulting value.
-     */
-    protected function stringOrVariable($string)
-    {
-        if (null === $string) {
-            return null;
-        }
-
-        $firstCharacter = $string[0];
-        if ('$' === $firstCharacter) {
-            return new EnvironmentVariable(substr($string, 1));
-        }
-        if ('\\' === $firstCharacter) {
-            return substr($string, 1);
-        }
-
-        return $string;
     }
 
     private $reader;

@@ -7,7 +7,7 @@ use Icecave\Manifold\Connection\ConnectionInterface;
 /**
  * The supplied connection does not exist in this replication tree.
  */
-class UnknownConnectionException extends Exception
+final class UnknownConnectionException extends Exception
 {
     /**
      * Construct a new unknown connection exception.
