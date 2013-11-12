@@ -35,7 +35,6 @@ required:
 properties:
     connections:
         type: object
-        default: {}
         minProperties: 1
         additionalProperties:
             type: string
@@ -63,4 +62,3 @@ properties:
 
     replication:
         $ref: '#/definitions/replicationNode'
-

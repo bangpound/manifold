@@ -5,6 +5,10 @@ use Icecave\Collections\Map;
 use Phake;
 use PHPUnit_Framework_TestCase;
 
+/**
+ * @covers \Icecave\Manifold\Authentication\CredentialsProvider
+ * @covers \Icecave\Manifold\Authentication\AbstractCredentialsProvider
+ */
 class CredentialsProviderTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
