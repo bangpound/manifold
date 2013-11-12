@@ -24,10 +24,14 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
 
         $this->connectionSelector = Phake::mock('Icecave\Manifold\Replication\ConnectionSelectorInterface');
 
-        $this->defaultStrategy = Phake::mock(
+        $this->defaultWriteStrategy = Phake::mock(
             'Icecave\Manifold\Replication\SelectionStrategy\SelectionStrategyInterface'
         );
-        Phake::when($this->defaultStrategy)->string()->thenReturn('defaultStrategy');
+        Phake::when($this->defaultWriteStrategy)->string()->thenReturn('defaultWriteStrategy');
+        $this->defaultReadStrategy = Phake::mock(
+            'Icecave\Manifold\Replication\SelectionStrategy\SelectionStrategyInterface'
+        );
+        Phake::when($this->defaultReadStrategy)->string()->thenReturn('defaultReadStrategy');
         $this->strategy = Phake::mock('Icecave\Manifold\Replication\SelectionStrategy\SelectionStrategyInterface');
         Phake::when($this->strategy)->string()->thenReturn('strategy');
 
@@ -43,7 +47,8 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
         $this->statement = Phake::mock('PDOStatement');
 
         Phake::when($this->queryConnectionSelector)->selector()->thenReturn($this->connectionSelector);
-        Phake::when($this->connectionSelector)->defaultStrategy()->thenReturn($this->defaultStrategy);
+        Phake::when($this->connectionSelector)->defaultWriteStrategy()->thenReturn($this->defaultWriteStrategy);
+        Phake::when($this->connectionSelector)->defaultReadStrategy()->thenReturn($this->defaultReadStrategy);
 
         Phake::when($this->connectionA)->setAttribute(Phake::anyParameters())->thenReturn(true);
         Phake::when($this->connectionB)->setAttribute(Phake::anyParameters())->thenReturn(true);
@@ -104,22 +109,40 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
 
     // Implementation of ConnectionFacadeInterface =============================
 
-    public function testSetDefaultStrategy()
+    public function testSetDefaultWriteStrategy()
     {
-        $this->facade->setDefaultStrategy($this->strategy);
+        $this->facade->setDefaultWriteStrategy($this->strategy);
 
         Phake::inOrder(
             Phake::verify($this->logger)->debug(
-                'Setting default strategy to {strategy}.',
+                'Setting default write strategy to {strategy}.',
                 array('strategy' => 'strategy')
             ),
-            Phake::verify($this->connectionSelector)->setDefaultStrategy($this->strategy)
+            Phake::verify($this->connectionSelector)->setDefaultWriteStrategy($this->strategy)
         );
     }
 
-    public function testDefaultStrategy()
+    public function testDefaultWriteStrategy()
     {
-        $this->assertSame($this->defaultStrategy, $this->facade->defaultStrategy());
+        $this->assertSame($this->defaultWriteStrategy, $this->facade->defaultWriteStrategy());
+    }
+
+    public function testSetDefaultReadStrategy()
+    {
+        $this->facade->setDefaultReadStrategy($this->strategy);
+
+        Phake::inOrder(
+            Phake::verify($this->logger)->debug(
+                'Setting default read strategy to {strategy}.',
+                array('strategy' => 'strategy')
+            ),
+            Phake::verify($this->connectionSelector)->setDefaultReadStrategy($this->strategy)
+        );
+    }
+
+    public function testDefaultReadStrategy()
+    {
+        $this->assertSame($this->defaultReadStrategy, $this->facade->defaultReadStrategy());
     }
 
     public function testPrepareWithStrategy()
@@ -210,8 +233,8 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->statement, $this->facade->prepare($query, $attributes));
         Phake::inOrder(
             Phake::verify($this->logger)->debug(
-                'Preparing statement {statement} with strategy {strategy}.',
-                array('statement' => $query, 'strategy' => 'defaultStrategy')
+                'Preparing statement {statement} with default strategy.',
+                array('statement' => $query)
             ),
             Phake::verify($this->queryConnectionSelector)->select($query, null),
             Phake::verify($this->logger)->debug(
@@ -239,8 +262,8 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->statement, $this->facade->query($query, 'one', 'two', 'three'));
         Phake::inOrder(
             Phake::verify($this->logger)->debug(
-                'Executing statement {statement} with strategy {strategy}.',
-                array('statement' => $query, 'strategy' => 'defaultStrategy')
+                'Executing statement {statement} with default strategy.',
+                array('statement' => $query)
             ),
             Phake::verify($this->queryConnectionSelector)->select($query, null),
             Phake::verify($this->logger)->debug(
@@ -265,8 +288,8 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
         $this->assertSame(111, $this->facade->exec($query));
         Phake::inOrder(
             Phake::verify($this->logger)->debug(
-                'Executing statement {statement} with strategy {strategy}.',
-                array('statement' => $query, 'strategy' => 'defaultStrategy')
+                'Executing statement {statement} with default strategy.',
+                array('statement' => $query)
             ),
             Phake::verify($this->queryConnectionSelector)->select($query, null),
             Phake::verify($this->logger)->debug(

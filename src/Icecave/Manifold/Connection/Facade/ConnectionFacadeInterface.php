@@ -23,20 +23,36 @@ interface ConnectionFacadeInterface extends
     public function attributes();
 
     /**
-     * Set the default selection strategy.
+     * Set the default selection strategy for write statements.
      *
-     * @param SelectionStrategyInterface $defaultStrategy The default selection strategy to use.
+     * @param SelectionStrategyInterface $defaultWriteStrategy The default selection strategy to use for write statements.
      */
-    public function setDefaultStrategy(
-        SelectionStrategyInterface $defaultStrategy
+    public function setDefaultWriteStrategy(
+        SelectionStrategyInterface $defaultWriteStrategy
     );
 
     /**
-     * Get the default selection strategy.
+     * Get the default selection strategy for write statements.
      *
-     * @return SelectionStrategyInterface The default selection strategy.
+     * @return SelectionStrategyInterface The default selection strategy for write statements.
      */
-    public function defaultStrategy();
+    public function defaultWriteStrategy();
+
+    /**
+     * Set the default selection strategy for read statements.
+     *
+     * @param SelectionStrategyInterface $defaultReadStrategy The default selection strategy to use for read statements.
+     */
+    public function setDefaultReadStrategy(
+        SelectionStrategyInterface $defaultReadStrategy
+    );
+
+    /**
+     * Get the default selection strategy for read statements.
+     *
+     * @return SelectionStrategyInterface The default selection strategy for read statements.
+     */
+    public function defaultReadStrategy();
 
     /**
      * Get the logger.

@@ -100,31 +100,61 @@ class ConnectionFacade extends PDO implements ConnectionFacadeInterface
     }
 
     /**
-     * Set the default selection strategy.
+     * Set the default selection strategy for write statements.
      *
-     * @param SelectionStrategyInterface $defaultStrategy The default selection strategy to use.
+     * @param SelectionStrategyInterface $defaultWriteStrategy The default selection strategy to use for write statements.
      */
-    public function setDefaultStrategy(
-        SelectionStrategyInterface $defaultStrategy
+    public function setDefaultWriteStrategy(
+        SelectionStrategyInterface $defaultWriteStrategy
     ) {
         if (null !== $this->logger()) {
             $this->logger()->debug(
-                'Setting default strategy to {strategy}.',
-                array('strategy' => $defaultStrategy->string())
+                'Setting default write strategy to {strategy}.',
+                array('strategy' => $defaultWriteStrategy->string())
             );
         }
 
-        $this->connectionSelector()->setDefaultStrategy($defaultStrategy);
+        $this->connectionSelector()
+            ->setDefaultWriteStrategy($defaultWriteStrategy);
     }
 
     /**
-     * Get the default selection strategy.
+     * Get the default selection strategy for write statements.
      *
-     * @return SelectionStrategyInterface The default selection strategy.
+     * @return SelectionStrategyInterface The default selection strategy for write statements.
      */
-    public function defaultStrategy()
+    public function defaultWriteStrategy()
     {
-        return $this->connectionSelector()->defaultStrategy();
+        return $this->connectionSelector()->defaultWriteStrategy();
+    }
+
+    /**
+     * Set the default selection strategy for read statements.
+     *
+     * @param SelectionStrategyInterface $defaultReadStrategy The default selection strategy to use for read statements.
+     */
+    public function setDefaultReadStrategy(
+        SelectionStrategyInterface $defaultReadStrategy
+    ) {
+        if (null !== $this->logger()) {
+            $this->logger()->debug(
+                'Setting default read strategy to {strategy}.',
+                array('strategy' => $defaultReadStrategy->string())
+            );
+        }
+
+        $this->connectionSelector()
+            ->setDefaultReadStrategy($defaultReadStrategy);
+    }
+
+    /**
+     * Get the default selection strategy for read statements.
+     *
+     * @return SelectionStrategyInterface The default selection strategy for read statements.
+     */
+    public function defaultReadStrategy()
+    {
+        return $this->connectionSelector()->defaultReadStrategy();
     }
 
     /**
@@ -261,11 +291,8 @@ class ConnectionFacade extends PDO implements ConnectionFacadeInterface
     {
         if (null !== $this->logger()) {
             $this->logger()->debug(
-                'Preparing statement {statement} with strategy {strategy}.',
-                array(
-                    'statement' => $statement,
-                    'strategy' => $this->defaultStrategy()->string(),
-                )
+                'Preparing statement {statement} with default strategy.',
+                array('statement' => $statement)
             );
         }
 
@@ -297,11 +324,8 @@ class ConnectionFacade extends PDO implements ConnectionFacadeInterface
 
         if (null !== $this->logger()) {
             $this->logger()->debug(
-                'Executing statement {statement} with strategy {strategy}.',
-                array(
-                    'statement' => $arguments[0],
-                    'strategy' => $this->defaultStrategy()->string(),
-                )
+                'Executing statement {statement} with default strategy.',
+                array('statement' => $arguments[0])
             );
         }
 
@@ -325,11 +349,8 @@ class ConnectionFacade extends PDO implements ConnectionFacadeInterface
     {
         if (null !== $this->logger()) {
             $this->logger()->debug(
-                'Executing statement {statement} with strategy {strategy}.',
-                array(
-                    'statement' => $statement,
-                    'strategy' => $this->defaultStrategy()->string(),
-                )
+                'Executing statement {statement} with default strategy.',
+                array('statement' => $statement)
             );
         }
 

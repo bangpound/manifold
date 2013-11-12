@@ -12,20 +12,36 @@ use Psr\Log\LoggerInterface;
 interface ConnectionSelectorInterface extends LoggerAwareInterface
 {
     /**
-     * Set the default selection strategy.
+     * Set the default selection strategy for write statements.
      *
-     * @param SelectionStrategy\SelectionStrategyInterface $defaultStrategy The default selection strategy to use.
+     * @param SelectionStrategy\SelectionStrategyInterface $defaultWriteStrategy The default selection strategy to use for write statements.
      */
-    public function setDefaultStrategy(
-        SelectionStrategy\SelectionStrategyInterface $defaultStrategy
+    public function setDefaultWriteStrategy(
+        SelectionStrategy\SelectionStrategyInterface $defaultWriteStrategy
     );
 
     /**
-     * Get the default selection strategy.
+     * Get the default selection strategy for write statements.
      *
-     * @return SelectionStrategy\SelectionStrategyInterface The default selection strategy.
+     * @return SelectionStrategy\SelectionStrategyInterface The default selection strategy for write statements.
      */
-    public function defaultStrategy();
+    public function defaultWriteStrategy();
+
+    /**
+     * Set the default selection strategy for read statements.
+     *
+     * @param SelectionStrategy\SelectionStrategyInterface $defaultReadStrategy The default selection strategy to use for read statements.
+     */
+    public function setDefaultReadStrategy(
+        SelectionStrategy\SelectionStrategyInterface $defaultReadStrategy
+    );
+
+    /**
+     * Get the default selection strategy for read statements.
+     *
+     * @return SelectionStrategy\SelectionStrategyInterface The default selection strategy for read statements.
+     */
+    public function defaultReadStrategy();
 
     /**
      * Get the logger.

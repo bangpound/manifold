@@ -17,27 +17,36 @@ class ConnectionSelector implements ConnectionSelectorInterface
     /**
      * Construct a new connection selector.
      *
-     * @param ConnectionPoolSelectorInterface                   $poolSelector       The connection pool selector to use.
-     * @param ReplicationManagerInterface                       $replicationManager The replication manager to use.
-     * @param SelectionStrategy\SelectionStrategyInterface|null $defaultStrategy    The default selection strategy to use.
-     * @param LoggerInterface|null                              $logger             The logger to use.
+     * @param ConnectionPoolSelectorInterface                   $poolSelector         The connection pool selector to use.
+     * @param ReplicationManagerInterface                       $replicationManager   The replication manager to use.
+     * @param SelectionStrategy\SelectionStrategyInterface|null $defaultWriteStrategy The default selection strategy to use for write statements.
+     * @param SelectionStrategy\SelectionStrategyInterface|null $defaultReadStrategy  The default selection strategy to use for read statements.
+     * @param LoggerInterface|null                              $logger               The logger to use.
      */
     // @codeCoverageIgnoreStart
     public function __construct(
         ConnectionPoolSelectorInterface $poolSelector,
         ReplicationManagerInterface $replicationManager,
-        SelectionStrategy\SelectionStrategyInterface $defaultStrategy = null,
+        SelectionStrategy\SelectionStrategyInterface $defaultWriteStrategy =
+            null,
+        SelectionStrategy\SelectionStrategyInterface $defaultReadStrategy =
+            null,
         LoggerInterface $logger = null
     ) {
         // @codeCoverageIgnoreEnd
-        if (null === $defaultStrategy) {
-            $defaultStrategy = new SelectionStrategy\AcceptableDelayStrategy;
+        if (null === $defaultWriteStrategy) {
+            $defaultWriteStrategy = new SelectionStrategy\AnyStrategy;
+        }
+        if (null === $defaultReadStrategy) {
+            $defaultReadStrategy =
+                new SelectionStrategy\AcceptableDelayStrategy;
         }
 
         $this->poolSelector = $poolSelector;
         $this->replicationManager = $replicationManager;
+        $this->defaultWriteStrategy = $defaultWriteStrategy;
+        $this->defaultReadStrategy = $defaultReadStrategy;
         $this->logger = $logger;
-        $this->setDefaultStrategy($defaultStrategy);
     }
 
     /**
@@ -61,24 +70,45 @@ class ConnectionSelector implements ConnectionSelectorInterface
     }
 
     /**
-     * Set the default selection strategy.
+     * Set the default selection strategy for write statements.
      *
-     * @param SelectionStrategy\SelectionStrategyInterface $defaultStrategy The default selection strategy to use.
+     * @param SelectionStrategy\SelectionStrategyInterface $defaultWriteStrategy The default selection strategy to use for write statements.
      */
-    public function setDefaultStrategy(
-        SelectionStrategy\SelectionStrategyInterface $defaultStrategy
+    public function setDefaultWriteStrategy(
+        SelectionStrategy\SelectionStrategyInterface $defaultWriteStrategy
     ) {
-        $this->defaultStrategy = $defaultStrategy;
+        $this->defaultWriteStrategy = $defaultWriteStrategy;
     }
 
     /**
-     * Get the default selection strategy.
+     * Get the default selection strategy for write statements.
      *
-     * @return SelectionStrategy\SelectionStrategyInterface The default selection strategy.
+     * @return SelectionStrategy\SelectionStrategyInterface The default selection strategy for write statements.
      */
-    public function defaultStrategy()
+    public function defaultWriteStrategy()
     {
-        return $this->defaultStrategy;
+        return $this->defaultWriteStrategy;
+    }
+
+    /**
+     * Set the default selection strategy for read statements.
+     *
+     * @param SelectionStrategy\SelectionStrategyInterface $defaultReadStrategy The default selection strategy to use for read statements.
+     */
+    public function setDefaultReadStrategy(
+        SelectionStrategy\SelectionStrategyInterface $defaultReadStrategy
+    ) {
+        $this->defaultReadStrategy = $defaultReadStrategy;
+    }
+
+    /**
+     * Get the default selection strategy for read statements.
+     *
+     * @return SelectionStrategy\SelectionStrategyInterface The default selection strategy for read statements.
+     */
+    public function defaultReadStrategy()
+    {
+        return $this->defaultReadStrategy;
     }
 
     /**
@@ -115,7 +145,7 @@ class ConnectionSelector implements ConnectionSelectorInterface
         SelectionStrategy\SelectionStrategyInterface $strategy = null
     ) {
         if (null === $strategy) {
-            $strategy = $this->defaultStrategy();
+            $strategy = $this->defaultWriteStrategy();
         }
 
         return $strategy->select(
@@ -139,7 +169,7 @@ class ConnectionSelector implements ConnectionSelectorInterface
         SelectionStrategy\SelectionStrategyInterface $strategy = null
     ) {
         if (null === $strategy) {
-            $strategy = $this->defaultStrategy();
+            $strategy = $this->defaultReadStrategy();
         }
 
         return $strategy->select(
@@ -170,6 +200,7 @@ class ConnectionSelector implements ConnectionSelectorInterface
 
     private $poolSelector;
     private $replicationManager;
-    private $defaultStrategy;
+    private $defaultWriteStrategy;
+    private $defaultReadStrategy;
     private $logger;
 }
