@@ -1,6 +1,8 @@
 <?php
 namespace Icecave\Manifold\Connection;
 
+use Icecave\Manifold\Authentication\CredentialsProvider;
+use Icecave\Manifold\Authentication\CredentialsProviderInterface;
 use PDO;
 use Psr\Log\LoggerInterface;
 
@@ -12,21 +14,39 @@ class ConnectionFactory implements ConnectionFactoryInterface
     /**
      * Construct a new connection factory.
      *
-     * @param array<integer,mixed>|null $attributes The connection attributes to use.
-     * @param LoggerInterface|null      $logger     The logger to use.
+     * @param CredentialsProviderInterface|null $credentialsProvider The credentials provider to use.
+     * @param array<integer,mixed>|null         $attributes          The connection attributes to use.
+     * @param LoggerInterface|null              $logger              The logger to use.
      */
+    // @codeCoverageIgnoreStart
     public function __construct(
+        CredentialsProviderInterface $credentialsProvider = null,
         array $attributes = null,
         LoggerInterface $logger = null
     ) {
+        // @codeCoverageIgnoreEnd
+        if (null === $credentialsProvider) {
+            $credentialsProvider = new CredentialsProvider;
+        }
         if (null === $attributes) {
             $attributes = array(
                 PDO::ATTR_PERSISTENT => false,
             );
         }
 
+        $this->credentialsProvider = $credentialsProvider;
         $this->attributes = $attributes;
         $this->logger = $logger;
+    }
+
+    /**
+     * Get the credentials provider.
+     *
+     * @return CredentialsProviderInterface The credentials provider.
+     */
+    public function credentialsProvider()
+    {
+        return $this->credentialsProvider;
     }
 
     /**
@@ -62,25 +82,23 @@ class ConnectionFactory implements ConnectionFactoryInterface
     /**
      * Create a connection.
      *
-     * @param string          $name     The connection name.
-     * @param stringable      $dsn      The data source name.
-     * @param stringable|null $username The username.
-     * @param stringable|null $password The password.
+     * @param string $name The connection name.
+     * @param string $dsn  The data source name.
      *
      * @return ConnectionInterface The newly created connection.
      */
-    public function create($name, $dsn, $username = null, $password = null)
+    public function create($name, $dsn)
     {
         return new LazyConnection(
             $name,
             $dsn,
-            $username,
-            $password,
+            $this->credentialsProvider(),
             $this->attributes(),
             $this->logger()
         );
     }
 
+    private $credentialsProvider;
     private $attributes;
     private $logger;
 }

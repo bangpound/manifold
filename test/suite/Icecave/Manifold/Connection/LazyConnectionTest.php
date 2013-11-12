@@ -1,6 +1,9 @@
 <?php
 namespace Icecave\Manifold\Connection;
 
+use Icecave\Collections\Map;
+use Icecave\Manifold\Authentication\Credentials;
+use Icecave\Manifold\Authentication\CredentialsProvider;
 use PDO;
 use PHPUnit_Framework_TestCase;
 use Phake;
@@ -9,13 +12,20 @@ class LazyConnectionTest extends PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
+        $this->credentialsProvider = new CredentialsProvider(
+            new Credentials('username', 'password'),
+            new Map(
+                array(
+                    'foo' => new Credentials('fooUsername', 'fooPassword'),
+                )
+            )
+        );
         $this->logger = Phake::mock('Psr\Log\LoggerInterface');
         $this->connection = Phake::partialMock(
             __NAMESPACE__ . '\LazyConnection',
             'name',
             'dsn',
-            'username',
-            'password',
+            $this->credentialsProvider,
             array(PDO::ATTR_TIMEOUT => 'foo'),
             $this->logger
         );
@@ -31,8 +41,7 @@ class LazyConnectionTest extends PHPUnit_Framework_TestCase
     {
         $this->assertSame('name', $this->connection->name());
         $this->assertSame('dsn', $this->connection->dsn());
-        $this->assertSame('username', $this->connection->username());
-        $this->assertSame('password', $this->connection->password());
+        $this->assertSame($this->credentialsProvider, $this->connection->credentialsProvider());
         $this->assertSame(array(PDO::ATTR_TIMEOUT => 'foo'), $this->connection->attributes());
         $this->assertSame($this->logger, $this->connection->logger());
     }
@@ -41,8 +50,7 @@ class LazyConnectionTest extends PHPUnit_Framework_TestCase
     {
         $this->connection = new LazyConnection('name', 'dsn');
 
-        $this->assertNull($this->connection->username());
-        $this->assertNull($this->connection->password());
+        $this->assertEquals(new CredentialsProvider, $this->connection->credentialsProvider());
         $this->assertSame(array(), $this->connection->attributes());
         $this->assertNull($this->connection->logger());
     }
@@ -87,6 +95,26 @@ class LazyConnectionTest extends PHPUnit_Framework_TestCase
                 ->createConnection('dsn', 'username', 'password', array(PDO::ATTR_TIMEOUT => 'foo')),
             Phake::verify($this->connection)->afterConnect()
         );
+    }
+
+    public function testConnectCredentialsOverride()
+    {
+        $this->connection = Phake::partialMock(
+            __NAMESPACE__ . '\LazyConnection',
+            'foo',
+            'dsn',
+            $this->credentialsProvider
+        );
+        Phake::when($this->connection)->createConnection(Phake::anyParameters())->thenReturn($this->innerConnection);
+        $this->connection->connect();
+
+        $this->assertSame($this->innerConnection, $this->connection->connection());
+
+        $this->connection->connect();
+
+        $this->assertSame($this->innerConnection, $this->connection->connection());
+        Phake::verify($this->connection)
+                ->createConnection('dsn', 'fooUsername', 'fooPassword', array());
     }
 
     public function testConnectDefaults()

@@ -1,8 +1,6 @@
 connections:
-    foo:
-        dsn: mysql:host=foo
-    bar:
-        dsn: mysql:host=bar
+    foo: mysql:host=foo
+    bar: mysql:host=bar
 
 pools:
     pool1:

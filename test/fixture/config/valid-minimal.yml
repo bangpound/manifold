@@ -1,3 +1,2 @@
 connections:
-    foo:
-        dsn: mysql:host=foo
+    foo: mysql:host=foo

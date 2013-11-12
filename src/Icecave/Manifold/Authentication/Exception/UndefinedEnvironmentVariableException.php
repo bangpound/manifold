@@ -1,5 +1,5 @@
 <?php
-namespace Icecave\Manifold\Configuration\Exception;
+namespace Icecave\Manifold\Authentication\Exception;
 
 use Exception;
 

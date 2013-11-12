@@ -7,7 +7,7 @@ use PDOException as NativePdoException;
 /**
  * Used to throw PDOException-compatible exceptions.
  */
-class PdoException extends NativePdoException
+final class PdoException extends NativePdoException
 {
     /**
      * Construct a new PDO exception.
