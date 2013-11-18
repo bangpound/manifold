@@ -17,7 +17,7 @@ class QueryDiscriminator implements QueryDiscriminatorInterface
      */
     public function discriminate($query)
     {
-        $trim = trim($query);
+        $query = preg_replace('{^(?:/\*.*?\*/)?\s*}s', '', $query);
         $isWrite = true;
 
         if (preg_match('{^SELECT\s}i', $query)) {

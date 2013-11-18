@@ -149,7 +149,8 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
     {
         $query = 'SELECT * FROM foo.bar';
         $attributes = array('baz' => 'qux');
-        Phake::when($this->queryConnectionSelector)->select($query, $this->strategy)->thenReturn(array($this->connectionA, false));
+        Phake::when($this->queryConnectionSelector)->select($query, $this->strategy)
+            ->thenReturn(array($this->connectionA, false));
         Phake::when($this->connectionA)->prepare($query, $attributes)->thenReturn($this->statement);
 
         $this->assertSame(
@@ -169,10 +170,38 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
         );
     }
 
+    public function testPrepareWithStrategyCommentStack()
+    {
+        $this->facade->pushComment('comment');
+        $query = 'SELECT * FROM foo.bar';
+        $encapsulatedQuery = '/* comment */ SELECT * FROM foo.bar';
+        $attributes = array('baz' => 'qux');
+        Phake::when($this->queryConnectionSelector)->select($encapsulatedQuery, $this->strategy)
+            ->thenReturn(array($this->connectionA, false));
+        Phake::when($this->connectionA)->prepare($encapsulatedQuery, $attributes)->thenReturn($this->statement);
+
+        $this->assertSame(
+            $this->statement,
+            $this->facade->prepareWithStrategy($this->strategy, $query, $attributes)
+        );
+        Phake::inOrder(
+            Phake::verify($this->logger)->debug(
+                'Preparing statement {statement} with strategy {strategy}.',
+                array('statement' => $encapsulatedQuery, 'strategy' => 'strategy')
+            ),
+            Phake::verify($this->queryConnectionSelector)->select($encapsulatedQuery, $this->strategy),
+            Phake::verify($this->logger)->debug(
+                'Setting current connection to {connection}.',
+                array('connection' => 'A')
+            )
+        );
+    }
+
     public function testPrepareWithStrategyDefaultOptions()
     {
         $query = 'SELECT * FROM foo.bar';
-        Phake::when($this->queryConnectionSelector)->select($query, $this->strategy)->thenReturn(array($this->connectionA, false));
+        Phake::when($this->queryConnectionSelector)->select($query, $this->strategy)
+            ->thenReturn(array($this->connectionA, false));
         Phake::when($this->connectionA)->prepare($query, array())->thenReturn($this->statement);
 
         $this->assertSame($this->statement, $this->facade->prepareWithStrategy($this->strategy, $query));
@@ -181,7 +210,8 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
     public function testQueryWithStrategy()
     {
         $query = 'SELECT * FROM foo.bar';
-        Phake::when($this->queryConnectionSelector)->select($query, $this->strategy)->thenReturn(array($this->connectionA, false));
+        Phake::when($this->queryConnectionSelector)->select($query, $this->strategy)
+            ->thenReturn(array($this->connectionA, false));
         Phake::when($this->connectionA)->query($query, 'one', 'two', 'three')->thenReturn($this->statement);
 
         $this->assertSame(
@@ -201,10 +231,37 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
         );
     }
 
+    public function testQueryWithStrategyCommentStack()
+    {
+        $this->facade->pushComment('comment');
+        $query = 'SELECT * FROM foo.bar';
+        $encapsulatedQuery = '/* comment */ SELECT * FROM foo.bar';
+        Phake::when($this->queryConnectionSelector)->select($encapsulatedQuery, $this->strategy)
+            ->thenReturn(array($this->connectionA, false));
+        Phake::when($this->connectionA)->query($encapsulatedQuery, 'one', 'two', 'three')->thenReturn($this->statement);
+
+        $this->assertSame(
+            $this->statement,
+            $this->facade->queryWithStrategy($this->strategy, $query, 'one', 'two', 'three')
+        );
+        Phake::inOrder(
+            Phake::verify($this->logger)->debug(
+                'Executing statement {statement} with strategy {strategy}.',
+                array('statement' => $encapsulatedQuery, 'strategy' => 'strategy')
+            ),
+            Phake::verify($this->queryConnectionSelector)->select($encapsulatedQuery, $this->strategy),
+            Phake::verify($this->logger)->debug(
+                'Setting current connection to {connection}.',
+                array('connection' => 'A')
+            )
+        );
+    }
+
     public function testExecWithStrategy()
     {
         $query = 'SELECT * FROM foo.bar';
-        Phake::when($this->queryConnectionSelector)->select($query, $this->strategy)->thenReturn(array($this->connectionA, false));
+        Phake::when($this->queryConnectionSelector)->select($query, $this->strategy)
+            ->thenReturn(array($this->connectionA, false));
         Phake::when($this->connectionA)->exec($query)->thenReturn(111);
 
         $this->assertSame(111, $this->facade->execWithStrategy($this->strategy, $query));
@@ -219,6 +276,41 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
                 array('connection' => 'A')
             )
         );
+    }
+
+    public function testExecWithStrategyCommentStack()
+    {
+        $this->facade->pushComment('comment');
+        $query = 'SELECT * FROM foo.bar';
+        $encapsulatedQuery = '/* comment */ SELECT * FROM foo.bar';
+        Phake::when($this->queryConnectionSelector)->select($encapsulatedQuery, $this->strategy)
+            ->thenReturn(array($this->connectionA, false));
+        Phake::when($this->connectionA)->exec($encapsulatedQuery)->thenReturn(111);
+
+        $this->assertSame(111, $this->facade->execWithStrategy($this->strategy, $query));
+        Phake::inOrder(
+            Phake::verify($this->logger)->debug(
+                'Executing statement {statement} with strategy {strategy}.',
+                array('statement' => $encapsulatedQuery, 'strategy' => 'strategy')
+            ),
+            Phake::verify($this->queryConnectionSelector)->select($encapsulatedQuery, $this->strategy),
+            Phake::verify($this->logger)->debug(
+                'Setting current connection to {connection}.',
+                array('connection' => 'A')
+            )
+        );
+    }
+
+    public function testPushPopComment()
+    {
+        $this->assertNull($this->facade->popComment());
+
+        $this->facade->pushComment('foo');
+        $this->facade->pushComment('bar %s', 'baz');
+
+        $this->assertSame('bar baz', $this->facade->popComment());
+        $this->assertSame('foo', $this->facade->popComment());
+        $this->assertNull($this->facade->popComment());
     }
 
     // Implementation of PdoConnectionInterface ================================
@@ -237,6 +329,29 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
                 array('statement' => $query)
             ),
             Phake::verify($this->queryConnectionSelector)->select($query, null),
+            Phake::verify($this->logger)->debug(
+                'Setting current connection to {connection}.',
+                array('connection' => 'A')
+            )
+        );
+    }
+
+    public function testPrepareCommentStack()
+    {
+        $this->facade->pushComment('comment');
+        $query = 'SELECT * FROM foo.bar';
+        $encapsulatedQuery = '/* comment */ SELECT * FROM foo.bar';
+        $attributes = array('baz' => 'qux');
+        Phake::when($this->queryConnectionSelector)->select($encapsulatedQuery, null)->thenReturn(array($this->connectionA, false));
+        Phake::when($this->connectionA)->prepare($encapsulatedQuery, $attributes)->thenReturn($this->statement);
+
+        $this->assertSame($this->statement, $this->facade->prepare($query, $attributes));
+        Phake::inOrder(
+            Phake::verify($this->logger)->debug(
+                'Preparing statement {statement} with default strategy.',
+                array('statement' => $encapsulatedQuery)
+            ),
+            Phake::verify($this->queryConnectionSelector)->select($encapsulatedQuery, null),
             Phake::verify($this->logger)->debug(
                 'Setting current connection to {connection}.',
                 array('connection' => 'A')
@@ -273,6 +388,28 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
         );
     }
 
+    public function testQueryCommentStack()
+    {
+        $this->facade->pushComment('comment');
+        $query = 'SELECT * FROM foo.bar';
+        $encapsulatedQuery = '/* comment */ SELECT * FROM foo.bar';
+        Phake::when($this->queryConnectionSelector)->select($encapsulatedQuery, null)->thenReturn(array($this->connectionA, false));
+        Phake::when($this->connectionA)->query($encapsulatedQuery, 'one', 'two', 'three')->thenReturn($this->statement);
+
+        $this->assertSame($this->statement, $this->facade->query($query, 'one', 'two', 'three'));
+        Phake::inOrder(
+            Phake::verify($this->logger)->debug(
+                'Executing statement {statement} with default strategy.',
+                array('statement' => $encapsulatedQuery)
+            ),
+            Phake::verify($this->queryConnectionSelector)->select($encapsulatedQuery, null),
+            Phake::verify($this->logger)->debug(
+                'Setting current connection to {connection}.',
+                array('connection' => 'A')
+            )
+        );
+    }
+
     public function testQueryFailureNoStatement()
     {
         $this->setExpectedException('InvalidArgumentException', 'PDO::query() expects at least 1 parameter, 0 given');
@@ -292,6 +429,28 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
                 array('statement' => $query)
             ),
             Phake::verify($this->queryConnectionSelector)->select($query, null),
+            Phake::verify($this->logger)->debug(
+                'Setting current connection to {connection}.',
+                array('connection' => 'A')
+            )
+        );
+    }
+
+    public function testExecCommentStack()
+    {
+        $this->facade->pushComment('comment');
+        $query = 'SELECT * FROM foo.bar';
+        $encapsulatedQuery = '/* comment */ SELECT * FROM foo.bar';
+        Phake::when($this->queryConnectionSelector)->select($encapsulatedQuery, null)->thenReturn(array($this->connectionA, false));
+        Phake::when($this->connectionA)->exec($encapsulatedQuery)->thenReturn(111);
+
+        $this->assertSame(111, $this->facade->exec($query));
+        Phake::inOrder(
+            Phake::verify($this->logger)->debug(
+                'Executing statement {statement} with default strategy.',
+                array('statement' => $encapsulatedQuery)
+            ),
+            Phake::verify($this->queryConnectionSelector)->select($encapsulatedQuery, null),
             Phake::verify($this->logger)->debug(
                 'Setting current connection to {connection}.',
                 array('connection' => 'A')

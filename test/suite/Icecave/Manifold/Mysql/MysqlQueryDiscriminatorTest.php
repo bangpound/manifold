@@ -46,6 +46,9 @@ class MysqlQueryDiscriminatorTest extends PHPUnit_Framework_TestCase
             'Delete'                                             => array("DELETE FROM foo.bar",                           null,               true,   'foo'),
             'Multi-line delete'                                  => array("DELETE\nFROM\nfoo.bar",                         null,               true,   'foo'),
 
+            'Prefixed with whitespace'                           => array(" \r \n SELECT * FROM foo.bar",                  null,               false,  'foo'),
+            'Prefixed with comment'                              => array("/* baz*qux/doom */ \n SELECT * FROM foo.bar",   null,               false,  'foo'),
+
             'Backtick escaped name'                              => array("SELECT * FROM `fo``o`.`bar`",                   null,               false,  'fo`o'),
             'Double quote escaped name'                          => array("SELECT * FROM \"fo\"\"o\".\"bar\"",             null,               false,  '"fo""o"'),
             'Double quote escaped name with ANSI quotes enabled' => array("SELECT * FROM \"fo\"\"o\".\"bar\"",             true,               false,  'fo"o'),

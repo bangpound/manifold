@@ -2,6 +2,7 @@
 namespace Icecave\Manifold\Connection\Facade;
 
 use Icecave\Collections\Set;
+use Icecave\Collections\Stack;
 use Icecave\Collections\Vector;
 use Icecave\Manifold\Connection\ConnectionInterface;
 use Icecave\Manifold\Connection\PdoConnectionAttribute;
@@ -49,6 +50,7 @@ class ConnectionFacade extends PDO implements ConnectionFacadeInterface
         $this->initializedConnections = new Set;
         $this->isInTransaction = false;
         $this->transactionConnections = new Vector;
+        $this->commentStack = new Stack;
     }
 
     /**
@@ -189,6 +191,8 @@ class ConnectionFacade extends PDO implements ConnectionFacadeInterface
             $attributes = array();
         }
 
+        $statement = $this->encapsulateStatement($statement);
+
         if (null !== $this->logger()) {
             $this->logger()->debug(
                 'Preparing statement {statement} with strategy {strategy}.',
@@ -223,6 +227,8 @@ class ConnectionFacade extends PDO implements ConnectionFacadeInterface
         SelectionStrategyInterface $strategy,
         $statement
     ) {
+        $statement = $this->encapsulateStatement($statement);
+
         if (null !== $this->logger()) {
             $this->logger()->debug(
                 'Executing statement {statement} with strategy {strategy}.',
@@ -240,6 +246,7 @@ class ConnectionFacade extends PDO implements ConnectionFacadeInterface
 
         $arguments = func_get_args();
         array_shift($arguments);
+        $arguments[0] = $statement;
 
         return call_user_func_array(array($connection, 'query'), $arguments);
     }
@@ -260,6 +267,8 @@ class ConnectionFacade extends PDO implements ConnectionFacadeInterface
         SelectionStrategyInterface $strategy,
         $statement
     ) {
+        $statement = $this->encapsulateStatement($statement);
+
         if (null !== $this->logger()) {
             $this->logger()->debug(
                 'Executing statement {statement} with strategy {strategy}.',
@@ -272,6 +281,39 @@ class ConnectionFacade extends PDO implements ConnectionFacadeInterface
 
         return $this->selectConnectionForStatement($statement, $strategy)
             ->exec($statement);
+    }
+
+    /**
+     * Push a string onto an internal stack, to be prefixed to subsequent
+     * queries as a comment.
+     *
+     * This feature can be useful for tracking the source of queries in SQL
+     * logs.
+     *
+     * @param string $comment      The comment to prefix. Accepts printf-style placeholders.
+     * @param mixed  $argument,... Additional arguments for printf-style substitution into $comment.
+     */
+    public function pushComment($comment)
+    {
+        if (func_num_args() > 1) {
+            $comment = call_user_func_array('sprintf', func_get_args());
+        }
+
+        $this->commentStack->push($comment);
+    }
+
+    /**
+     * Pop a string off the internal stack of query comment prefixes.
+     *
+     * @return string|null The removed comment, or null if the stack is empty.
+     */
+    public function popComment()
+    {
+        if ($this->commentStack->tryPop($comment)) {
+            return $comment;
+        }
+
+        return null;
     }
 
     // Implementation of PdoConnectionInterface ================================
@@ -289,6 +331,8 @@ class ConnectionFacade extends PDO implements ConnectionFacadeInterface
      */
     public function prepare($statement, $attributes = array())
     {
+        $statement = $this->encapsulateStatement($statement);
+
         if (null !== $this->logger()) {
             $this->logger()->debug(
                 'Preparing statement {statement} with default strategy.',
@@ -322,6 +366,8 @@ class ConnectionFacade extends PDO implements ConnectionFacadeInterface
             );
         }
 
+        $arguments[0] = $this->encapsulateStatement($arguments[0]);
+
         if (null !== $this->logger()) {
             $this->logger()->debug(
                 'Executing statement {statement} with default strategy.',
@@ -347,6 +393,8 @@ class ConnectionFacade extends PDO implements ConnectionFacadeInterface
      */
     public function exec($statement)
     {
+        $statement = $this->encapsulateStatement($statement);
+
         if (null !== $this->logger()) {
             $this->logger()->debug(
                 'Executing statement {statement} with default strategy.',
@@ -860,6 +908,27 @@ class ConnectionFacade extends PDO implements ConnectionFacadeInterface
         $this->setCurrentConnection($connection);
     }
 
+    /**
+     * Encapsulate the supplied statement in any pre- or post- operations or
+     * meta-data required by this facade.
+     *
+     * @param string $statement The statement to encapsulate.
+     *
+     * @return string The encapsulated statement.
+     */
+    protected function encapsulateStatement($statement)
+    {
+        if ($this->commentStack->tryNext($comment)) {
+            $statement = sprintf(
+                '/* %s */ %s',
+                str_replace('*/', '*\/', $comment),
+                $statement
+            );
+        }
+
+        return $statement;
+    }
+
     private $selector;
     private $attributes;
     private $logger;
@@ -869,4 +938,5 @@ class ConnectionFacade extends PDO implements ConnectionFacadeInterface
     private $isInTransaction;
     private $transactionConnections;
     private $transactionWriteConnection;
+    private $commentStack;
 }

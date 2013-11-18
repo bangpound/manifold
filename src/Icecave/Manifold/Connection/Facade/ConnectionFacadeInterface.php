@@ -117,4 +117,23 @@ interface ConnectionFacadeInterface extends
         SelectionStrategyInterface $strategy,
         $statement
     );
+
+    /**
+     * Push a string onto an internal stack, to be prefixed to subsequent
+     * queries as a comment.
+     *
+     * This feature can be useful for tracking the source of queries in SQL
+     * logs.
+     *
+     * @param string $comment      The comment to prefix. Accepts printf-style placeholders.
+     * @param mixed  $argument,... Additional arguments for printf-style substitution into $comment.
+     */
+    public function pushComment($comment);
+
+    /**
+     * Pop a string off the internal stack of query comment prefixes.
+     *
+     * @return string|null The removed comment, or null if the stack is empty.
+     */
+    public function popComment();
 }

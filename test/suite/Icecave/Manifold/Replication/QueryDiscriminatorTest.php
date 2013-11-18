@@ -34,6 +34,9 @@ class QueryDiscriminatorTest extends PHPUnit_Framework_TestCase
             'Delete'                    => array("DELETE FROM foo.bar",                           true,   'foo'),
             'Multi-line delete'         => array("DELETE\nFROM\nfoo.bar",                         true,   'foo'),
 
+            'Prefixed with whitespace'  => array(" \r \n SELECT * FROM foo.bar",                  false,  'foo'),
+            'Prefixed with comment'     => array("/* baz*qux/doom */ \n SELECT * FROM foo.bar",   false,  'foo'),
+
             'Double quote escaped name' => array("SELECT * FROM \"fo\"\"o\".\"bar\"",             false,  'fo"o'),
         );
     }
