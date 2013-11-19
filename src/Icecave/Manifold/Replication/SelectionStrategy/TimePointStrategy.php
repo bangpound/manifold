@@ -4,7 +4,7 @@ namespace Icecave\Manifold\Replication\SelectionStrategy;
 use Icecave\Chrono\Clock\ClockInterface;
 use Icecave\Chrono\TimePointInterface;
 use Icecave\Manifold\Connection\ConnectionInterface;
-use Icecave\Manifold\Connection\Pool\ConnectionPoolInterface;
+use Icecave\Manifold\Connection\Container\ConnectionContainerInterface;
 use Icecave\Manifold\Replication\Exception\NoConnectionAvailableException;
 use Icecave\Manifold\Replication\ReplicationManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -42,26 +42,26 @@ class TimePointStrategy extends AbstractSelectionStrategy
     }
 
     /**
-     * Get a single connection from a pool.
+     * Get a single connection from a container.
      *
-     * @param ReplicationManagerInterface $replicationManager The replication manager to use.
-     * @param ConnectionPoolInterface     $pool               The pool to select from.
-     * @param LoggerInterface|null        $logger             The logger to use.
+     * @param ReplicationManagerInterface  $replicationManager The replication manager to use.
+     * @param ConnectionContainerInterface $container          The container to select from.
+     * @param LoggerInterface|null         $logger             The logger to use.
      *
      * @return ConnectionInterface            The selected connection.
      * @throws NoConnectionAvailableException If no connection is available for selection.
      */
     public function select(
         ReplicationManagerInterface $replicationManager,
-        ConnectionPoolInterface $pool,
+        ConnectionContainerInterface $container,
         LoggerInterface $logger = null
     ) {
         if (null !== $logger) {
             $logger->debug(
-                'Selecting connection from pool {pool} with ' .
+                'Selecting connection from container {container} with ' .
                     'connection time of at least {timePoint}.',
                 array(
-                    'pool' => $pool->name(),
+                    'container' => $container->name(),
                     'timePoint' => $this->timePoint()->isoString(),
                 )
             );
@@ -73,10 +73,11 @@ class TimePointStrategy extends AbstractSelectionStrategy
         if ($delayThreshold->totalSeconds() < 0) {
             if (null !== $logger) {
                 $logger->warning(
-                    'No acceptable connection found in pool {pool}. ' .
-                        'Desired time point {timePoint} is in the future.',
+                    'No acceptable connection found in container ' .
+                        '{container}. Desired time point {timePoint} is in ' .
+                        'the future.',
                     array(
-                        'pool' => $pool->name(),
+                        'container' => $container->name(),
                         'timePoint' => $this->timePoint()->isoString(),
                     )
                 );
@@ -85,18 +86,18 @@ class TimePointStrategy extends AbstractSelectionStrategy
             throw new NoConnectionAvailableException;
         }
 
-        foreach ($pool->connections() as $connection) {
+        foreach ($container->connections() as $connection) {
             $delay = $replicationManager->delay($connection, $delayThreshold);
 
             if (null === $delay) {
                 if (null !== $logger) {
                     $logger->debug(
                         'Connection {connection} ' .
-                            'not selected from pool {pool}. ' .
+                            'not selected from container {container}. ' .
                             'The connection is not replicating.',
                         array(
                             'connection' => $connection->name(),
-                            'pool' => $pool->name(),
+                            'container' => $container->name(),
                         )
                     );
                 }
@@ -110,12 +111,12 @@ class TimePointStrategy extends AbstractSelectionStrategy
                 if (null !== $logger) {
                     $logger->debug(
                         'Connection {connection} ' .
-                            'selected from pool {pool}. ' .
+                            'selected from container {container}. ' .
                             'Connection time of {connectionTime} ' .
                             'is at least {timePoint}.',
                         array(
                             'connection' => $connection->name(),
-                            'pool' => $pool->name(),
+                            'container' => $container->name(),
                             'connectionTime' => $connectionTime->isoString(),
                             'timePoint' => $this->timePoint()->isoString(),
                         )
@@ -128,12 +129,12 @@ class TimePointStrategy extends AbstractSelectionStrategy
             if (null !== $logger) {
                 $logger->debug(
                     'Connection {connection} ' .
-                        'not selected from pool {pool}. ' .
+                        'not selected from container {container}. ' .
                         'Connection time is no more than {connectionTime}, ' .
                         'and is less than {timePoint}.',
                     array(
                         'connection' => $connection->name(),
-                        'pool' => $pool->name(),
+                        'container' => $container->name(),
                         'connectionTime' => $connectionTime->isoString(),
                         'timePoint' => $this->timePoint()->isoString(),
                     )
@@ -143,11 +144,11 @@ class TimePointStrategy extends AbstractSelectionStrategy
 
         if (null !== $logger) {
             $logger->warning(
-                'No acceptable connection found in pool {pool}. ' .
+                'No acceptable connection found in container {container}. ' .
                     'No connection found with connection time of ' .
                     'at least {timePoint}.',
                 array(
-                    'pool' => $pool->name(),
+                    'container' => $container->name(),
                     'timePoint' => $this->timePoint()->isoString(),
                 )
             );

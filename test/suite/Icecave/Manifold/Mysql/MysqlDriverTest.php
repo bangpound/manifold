@@ -23,13 +23,15 @@ class MysqlDriverTest extends PHPUnit_Framework_TestCase
 
         $this->driver = new MysqlDriver;
 
-        $this->connectionPoolSelector = Phake::mock('Icecave\Manifold\Connection\Pool\ConnectionPoolSelectorInterface');
+        $this->connectionContainerSelector = Phake::mock(
+            'Icecave\Manifold\Connection\Container\ConnectionContainerSelectorInterface'
+        );
         $this->replicationTreeA = Phake::mock('Icecave\Manifold\Replication\ReplicationTreeInterface');
         $this->replicationTreeB = Phake::mock('Icecave\Manifold\Replication\ReplicationTreeInterface');
         $this->configuration = new Configuration(
             new Map,
             new Map,
-            $this->connectionPoolSelector,
+            $this->connectionContainerSelector,
             new Vector(array($this->replicationTreeA, $this->replicationTreeB))
         );
 
@@ -62,7 +64,7 @@ class MysqlDriverTest extends PHPUnit_Framework_TestCase
                 new ConnectionFacade(
                     new QueryConnectionSelector(
                         new ConnectionSelector(
-                            $this->connectionPoolSelector,
+                            $this->connectionContainerSelector,
                             new MysqlReplicationManager($this->replicationTreeA)
                         ),
                         new MysqlQueryDiscriminator
@@ -72,7 +74,7 @@ class MysqlDriverTest extends PHPUnit_Framework_TestCase
                 new ConnectionFacade(
                     new QueryConnectionSelector(
                         new ConnectionSelector(
-                            $this->connectionPoolSelector,
+                            $this->connectionContainerSelector,
                             new MysqlReplicationManager($this->replicationTreeB)
                         ),
                         new MysqlQueryDiscriminator
@@ -84,9 +86,9 @@ class MysqlDriverTest extends PHPUnit_Framework_TestCase
         $actual = $this->driver->createConnections($this->configuration, $this->attributes);
 
         $this->assertEquals($expected, $actual);
-        $this->assertSame($this->connectionPoolSelector, $actual[0]->connectionSelector()->poolSelector());
+        $this->assertSame($this->connectionContainerSelector, $actual[0]->connectionSelector()->containerSelector());
         $this->assertSame($this->replicationTreeA, $actual[0]->connectionSelector()->replicationManager()->tree());
-        $this->assertSame($this->connectionPoolSelector, $actual[1]->connectionSelector()->poolSelector());
+        $this->assertSame($this->connectionContainerSelector, $actual[1]->connectionSelector()->containerSelector());
         $this->assertSame($this->replicationTreeB, $actual[1]->connectionSelector()->replicationManager()->tree());
     }
 
@@ -97,7 +99,7 @@ class MysqlDriverTest extends PHPUnit_Framework_TestCase
                 new ConnectionFacade(
                     new QueryConnectionSelector(
                         new ConnectionSelector(
-                            $this->connectionPoolSelector,
+                            $this->connectionContainerSelector,
                             new MysqlReplicationManager($this->replicationTreeA)
                         ),
                         new MysqlQueryDiscriminator
@@ -107,7 +109,7 @@ class MysqlDriverTest extends PHPUnit_Framework_TestCase
                 new ConnectionFacade(
                     new QueryConnectionSelector(
                         new ConnectionSelector(
-                            $this->connectionPoolSelector,
+                            $this->connectionContainerSelector,
                             new MysqlReplicationManager($this->replicationTreeB)
                         ),
                         new MysqlQueryDiscriminator
@@ -126,7 +128,7 @@ class MysqlDriverTest extends PHPUnit_Framework_TestCase
         $expected = new ConnectionFacade(
             new QueryConnectionSelector(
                 new ConnectionSelector(
-                    $this->connectionPoolSelector,
+                    $this->connectionContainerSelector,
                     new MysqlReplicationManager($this->replicationTreeA)
                 ),
                 new MysqlQueryDiscriminator
@@ -136,7 +138,7 @@ class MysqlDriverTest extends PHPUnit_Framework_TestCase
         $actual = $this->driver->createConnectionByName($this->configuration, 'A', $this->attributes);
 
         $this->assertEquals($expected, $actual);
-        $this->assertSame($this->connectionPoolSelector, $actual->connectionSelector()->poolSelector());
+        $this->assertSame($this->connectionContainerSelector, $actual->connectionSelector()->containerSelector());
         $this->assertSame($this->replicationTreeA, $actual->connectionSelector()->replicationManager()->tree());
     }
 
@@ -151,7 +153,7 @@ class MysqlDriverTest extends PHPUnit_Framework_TestCase
         $expected = new ConnectionFacade(
             new QueryConnectionSelector(
                 new ConnectionSelector(
-                    $this->connectionPoolSelector,
+                    $this->connectionContainerSelector,
                     new MysqlReplicationManager($this->replicationTreeA)
                 ),
                 new MysqlQueryDiscriminator
@@ -161,7 +163,7 @@ class MysqlDriverTest extends PHPUnit_Framework_TestCase
         $actual = $this->driver->createConnection($this->configuration, $this->replicationTreeA, $this->attributes);
 
         $this->assertEquals($expected, $actual);
-        $this->assertSame($this->connectionPoolSelector, $actual->connectionSelector()->poolSelector());
+        $this->assertSame($this->connectionContainerSelector, $actual->connectionSelector()->containerSelector());
         $this->assertSame($this->replicationTreeA, $actual->connectionSelector()->replicationManager()->tree());
     }
 
@@ -170,7 +172,7 @@ class MysqlDriverTest extends PHPUnit_Framework_TestCase
         $expected = new ConnectionFacade(
             new QueryConnectionSelector(
                 new ConnectionSelector(
-                    $this->connectionPoolSelector,
+                    $this->connectionContainerSelector,
                     new MysqlReplicationManager($this->replicationTreeA)
                 ),
                 new MysqlQueryDiscriminator

@@ -1,5 +1,5 @@
 <?php
-namespace Icecave\Manifold\Connection\Pool;
+namespace Icecave\Manifold\Connection\Container;
 
 use Icecave\Collections\Vector;
 use Phake;
@@ -26,7 +26,7 @@ class ConnectionPoolTest extends PHPUnit_Framework_TestCase
 
     public function testConstructorFailureEmpty()
     {
-        $this->setExpectedException(__NAMESPACE__ . '\Exception\EmptyConnectionPoolException');
+        $this->setExpectedException(__NAMESPACE__ . '\Exception\EmptyConnectionContainerException');
 
         new ConnectionPool('name', new Vector);
     }

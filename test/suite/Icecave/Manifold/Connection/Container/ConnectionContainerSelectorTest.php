@@ -1,32 +1,32 @@
 <?php
-namespace Icecave\Manifold\Connection\Pool;
+namespace Icecave\Manifold\Connection\Container;
 
 use Icecave\Collections\Map;
 use Phake;
 use PHPUnit_Framework_TestCase;
 
-class ConnectionPoolSelectorTest extends PHPUnit_Framework_TestCase
+class ConnectionContainerSelectorTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
         parent::setUp();
 
-        $this->defaultWrite = Phake::mock(__NAMESPACE__ . '\ConnectionPoolInterface');
-        $this->defaultRead = Phake::mock(__NAMESPACE__ . '\ConnectionPoolInterface');
-        $this->writeA = Phake::mock(__NAMESPACE__ . '\ConnectionPoolInterface');
-        $this->readA = Phake::mock(__NAMESPACE__ . '\ConnectionPoolInterface');
-        $this->writeB = Phake::mock(__NAMESPACE__ . '\ConnectionPoolInterface');
-        $this->readC = Phake::mock(__NAMESPACE__ . '\ConnectionPoolInterface');
-        $this->defaults = new ConnectionPoolPair($this->defaultWrite, $this->defaultRead);
+        $this->defaultWrite = Phake::mock(__NAMESPACE__ . '\ConnectionContainerInterface');
+        $this->defaultRead = Phake::mock(__NAMESPACE__ . '\ConnectionContainerInterface');
+        $this->writeA = Phake::mock(__NAMESPACE__ . '\ConnectionContainerInterface');
+        $this->readA = Phake::mock(__NAMESPACE__ . '\ConnectionContainerInterface');
+        $this->writeB = Phake::mock(__NAMESPACE__ . '\ConnectionContainerInterface');
+        $this->readC = Phake::mock(__NAMESPACE__ . '\ConnectionContainerInterface');
+        $this->defaults = new ConnectionContainerPair($this->defaultWrite, $this->defaultRead);
         $this->databases = new Map(
             array(
-                'databaseA' => new ConnectionPoolPair($this->writeA, $this->readA),
-                'databaseB' => new ConnectionPoolPair($this->writeB),
-                'databaseC' => new ConnectionPoolPair(null, $this->readC),
-                'databaseD' => new ConnectionPoolPair,
+                'databaseA' => new ConnectionContainerPair($this->writeA, $this->readA),
+                'databaseB' => new ConnectionContainerPair($this->writeB),
+                'databaseC' => new ConnectionContainerPair(null, $this->readC),
+                'databaseD' => new ConnectionContainerPair,
             )
         );
-        $this->selector = new ConnectionPoolSelector($this->defaults, $this->databases);
+        $this->selector = new ConnectionContainerSelector($this->defaults, $this->databases);
     }
 
     public function testConstructor()
@@ -37,17 +37,17 @@ class ConnectionPoolSelectorTest extends PHPUnit_Framework_TestCase
 
     public function testConstructorDefaults()
     {
-        $this->selector = new ConnectionPoolSelector($this->defaults);
+        $this->selector = new ConnectionContainerSelector($this->defaults);
 
         $this->assertEquals(new Map, $this->selector->databases());
     }
 
     public function testConstructorFailureInvalidDefaults()
     {
-        $this->defaults = new ConnectionPoolPair;
+        $this->defaults = new ConnectionContainerPair;
 
-        $this->setExpectedException(__NAMESPACE__ . '\Exception\InvalidDefaultConnectionPoolPairException');
-        new ConnectionPoolSelector($this->defaults);
+        $this->setExpectedException(__NAMESPACE__ . '\Exception\InvalidDefaultConnectionContainerPairException');
+        new ConnectionContainerSelector($this->defaults);
     }
 
     public function selectionData()
@@ -82,7 +82,7 @@ class ConnectionPoolSelectorTest extends PHPUnit_Framework_TestCase
     /**
      * @dataProvider selectionData
      */
-    public function testConnectionPoolPair($databaseName, $write, $read)
+    public function testConnectionContainerPair($databaseName, $write, $read)
     {
         $readWritePair = $this->selector->readWritePair($databaseName);
 

@@ -1,5 +1,5 @@
 <?php
-namespace Icecave\Manifold\Connection\Pool;
+namespace Icecave\Manifold\Connection\Container;
 
 use Icecave\Collections\Vector;
 use Icecave\Manifold\Connection\ConnectionInterface;
@@ -15,12 +15,12 @@ class ConnectionPool implements ConnectionPoolInterface
      * @param string                      $name        The connection pool name.
      * @param Vector<ConnectionInterface> $connections The connections.
      *
-     * @throws Exception\EmptyConnectionPoolException If no connections are supplied.
+     * @throws Exception\EmptyConnectionContainerException If no connections are supplied.
      */
     public function __construct($name, Vector $connections)
     {
         if ($connections->count() < 1) {
-            throw new Exception\EmptyConnectionPoolException;
+            throw new Exception\EmptyConnectionContainerException;
         }
 
         $this->name = $name;
@@ -28,9 +28,9 @@ class ConnectionPool implements ConnectionPoolInterface
     }
 
     /**
-     * Get the connection pool name.
+     * Get the connection container name.
      *
-     * @return string The connection pool name.
+     * @return string The connection container name.
      */
     public function name()
     {

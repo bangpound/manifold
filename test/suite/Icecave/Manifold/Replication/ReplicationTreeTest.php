@@ -109,7 +109,9 @@ class ReplicationTreeTest extends PHPUnit_Framework_TestCase
     public function testSlavesOf()
     {
         $this->assertTrue(Set::create($this->connection2)->isEqualSet($this->tree->slavesOf($this->connection1)));
-        $this->assertTrue(Set::create($this->connection3, $this->connection4)->isEqualSet($this->tree->slavesOf($this->connection2)));
+        $this->assertTrue(
+            Set::create($this->connection3, $this->connection4)->isEqualSet($this->tree->slavesOf($this->connection2))
+        );
         $this->assertTrue($this->tree->slavesOf($this->connection3)->isEmpty());
         $this->assertTrue($this->tree->slavesOf($this->connection4)->isEmpty());
     }

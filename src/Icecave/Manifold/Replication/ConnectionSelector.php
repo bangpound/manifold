@@ -4,7 +4,7 @@ namespace Icecave\Manifold\Replication;
 use Icecave\Manifold\Connection\ConnectionInterface;
 use Icecave\Manifold\Connection\ConnectionPair;
 use Icecave\Manifold\Connection\ConnectionPairInterface;
-use Icecave\Manifold\Connection\Pool\ConnectionPoolSelectorInterface;
+use Icecave\Manifold\Connection\Container\ConnectionContainerSelectorInterface;
 use Icecave\Manifold\Replication\ReplicationManagerInterface;
 use Psr\Log\LoggerInterface;
 
@@ -17,7 +17,7 @@ class ConnectionSelector implements ConnectionSelectorInterface
     /**
      * Construct a new connection selector.
      *
-     * @param ConnectionPoolSelectorInterface                   $poolSelector         The connection pool selector to use.
+     * @param ConnectionContainerSelectorInterface              $containerSelector    The connection container selector to use.
      * @param ReplicationManagerInterface                       $replicationManager   The replication manager to use.
      * @param SelectionStrategy\SelectionStrategyInterface|null $defaultWriteStrategy The default selection strategy to use for write statements.
      * @param SelectionStrategy\SelectionStrategyInterface|null $defaultReadStrategy  The default selection strategy to use for read statements.
@@ -25,7 +25,7 @@ class ConnectionSelector implements ConnectionSelectorInterface
      */
     // @codeCoverageIgnoreStart
     public function __construct(
-        ConnectionPoolSelectorInterface $poolSelector,
+        ConnectionContainerSelectorInterface $containerSelector,
         ReplicationManagerInterface $replicationManager,
         SelectionStrategy\SelectionStrategyInterface $defaultWriteStrategy =
             null,
@@ -42,7 +42,7 @@ class ConnectionSelector implements ConnectionSelectorInterface
                 new SelectionStrategy\AcceptableDelayStrategy;
         }
 
-        $this->poolSelector = $poolSelector;
+        $this->containerSelector = $containerSelector;
         $this->replicationManager = $replicationManager;
         $this->defaultWriteStrategy = $defaultWriteStrategy;
         $this->defaultReadStrategy = $defaultReadStrategy;
@@ -50,13 +50,13 @@ class ConnectionSelector implements ConnectionSelectorInterface
     }
 
     /**
-     * Get the connection pool selector.
+     * Get the connection container selector.
      *
-     * @return ConnectionPoolSelectorInterface The connection pool selector.
+     * @return ConnectionContainerSelectorInterface The connection container selector.
      */
-    public function poolSelector()
+    public function containerSelector()
     {
-        return $this->poolSelector;
+        return $this->containerSelector;
     }
 
     /**
@@ -150,7 +150,7 @@ class ConnectionSelector implements ConnectionSelectorInterface
 
         return $strategy->select(
             $this->replicationManager(),
-            $this->poolSelector()->forWrite($databaseName),
+            $this->containerSelector()->forWrite($databaseName),
             $this->logger()
         );
     }
@@ -174,7 +174,7 @@ class ConnectionSelector implements ConnectionSelectorInterface
 
         return $strategy->select(
             $this->replicationManager(),
-            $this->poolSelector()->forRead($databaseName),
+            $this->containerSelector()->forRead($databaseName),
             $this->logger()
         );
     }
@@ -198,7 +198,7 @@ class ConnectionSelector implements ConnectionSelectorInterface
         );
     }
 
-    private $poolSelector;
+    private $containerSelector;
     private $replicationManager;
     private $defaultWriteStrategy;
     private $defaultReadStrategy;

@@ -4,8 +4,8 @@ namespace Icecave\Manifold\Configuration;
 use Icecave\Collections\Map;
 use Icecave\Collections\Vector;
 use Icecave\Manifold\Connection\ConnectionInterface;
-use Icecave\Manifold\Connection\Pool\ConnectionPoolInterface;
-use Icecave\Manifold\Connection\Pool\ConnectionPoolSelectorInterface;
+use Icecave\Manifold\Connection\Container\ConnectionPoolInterface;
+use Icecave\Manifold\Connection\Container\ConnectionContainerSelectorInterface;
 use Icecave\Manifold\Replication\ReplicationTreeInterface;
 
 /**
@@ -16,20 +16,20 @@ class Configuration implements ConfigurationInterface
     /**
      * Construct a new configuration.
      *
-     * @param Map<string,ConnectionInterface>     $connections            The defined connections.
-     * @param Map<string,ConnectionPoolInterface> $connectionPools        The defined connection pools.
-     * @param ConnectionPoolSelectorInterface     $connectionPoolSelector The connection pool selector.
-     * @param Vector<ReplicationTreeInterface>    $replicationTrees       The replication trees.
+     * @param Map<string,ConnectionInterface>      $connections                 The defined connections.
+     * @param Map<string,ConnectionPoolInterface>  $connectionPools             The defined connection pools.
+     * @param ConnectionContainerSelectorInterface $connectionContainerSelector The connection container selector.
+     * @param Vector<ReplicationTreeInterface>     $replicationTrees            The replication trees.
      */
     public function __construct(
         Map $connections,
         Map $connectionPools,
-        ConnectionPoolSelectorInterface $connectionPoolSelector,
+        ConnectionContainerSelectorInterface $connectionContainerSelector,
         Vector $replicationTrees
     ) {
         $this->connections = $connections;
         $this->connectionPools = $connectionPools;
-        $this->connectionPoolSelector = $connectionPoolSelector;
+        $this->connectionContainerSelector = $connectionContainerSelector;
         $this->replicationTrees = $replicationTrees;
     }
 
@@ -54,13 +54,13 @@ class Configuration implements ConfigurationInterface
     }
 
     /**
-     * Get the connection pool selector.
+     * Get the connection container selector.
      *
-     * @return ConnectionPoolSelectorInterface The connection pool selector.
+     * @return ConnectionContainerSelectorInterface The connection container selector.
      */
-    public function connectionPoolSelector()
+    public function connectionContainerSelector()
     {
-        return $this->connectionPoolSelector;
+        return $this->connectionContainerSelector;
     }
 
     /**
@@ -75,6 +75,6 @@ class Configuration implements ConfigurationInterface
 
     private $connections;
     private $connectionPools;
-    private $connectionPoolSelector;
+    private $connectionContainerSelector;
     private $replicationTrees;
 }

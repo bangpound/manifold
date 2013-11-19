@@ -4,7 +4,7 @@ namespace Icecave\Manifold\Configuration;
 use Icecave\Collections\Map;
 use Icecave\Manifold\Connection\ConnectionInterface;
 use Icecave\Manifold\Connection\ConnectionPoolInterface;
-use Icecave\Manifold\Connection\Pool\ConnectionPoolSelectorInterface;
+use Icecave\Manifold\Connection\Container\ConnectionContainerSelectorInterface;
 use Icecave\Manifold\Replication\ReplicationTreeInterface;
 
 /**
@@ -27,11 +27,11 @@ interface ConfigurationInterface
     public function connectionPools();
 
     /**
-     * Get the connection pool selector.
+     * Get the connection container selector.
      *
-     * @return ConnectionPoolSelectorInterface The connection pool selector.
+     * @return ConnectionContainerSelectorInterface The connection container selector.
      */
-    public function connectionPoolSelector();
+    public function connectionContainerSelector();
 
     /**
      * Get the replication trees.

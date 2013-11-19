@@ -5,7 +5,7 @@ use Icecave\Chrono\Clock\ClockInterface;
 use Icecave\Chrono\TimeSpan\Duration;
 use Icecave\Chrono\TimeSpan\TimeSpanInterface;
 use Icecave\Manifold\Connection\ConnectionInterface;
-use Icecave\Manifold\Connection\Pool\ConnectionPoolInterface;
+use Icecave\Manifold\Connection\Container\ConnectionContainerInterface;
 use Icecave\Manifold\Replication\Exception\NoConnectionAvailableException;
 use Icecave\Manifold\Replication\ReplicationManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -44,32 +44,32 @@ class AcceptableDelayStrategy extends AbstractSelectionStrategy
     }
 
     /**
-     * Get a single connection from a pool.
+     * Get a single connection from a container.
      *
-     * @param ReplicationManagerInterface $replicationManager The replication manager to use.
-     * @param ConnectionPoolInterface     $pool               The pool to select from.
-     * @param LoggerInterface|null        $logger             The logger to use.
+     * @param ReplicationManagerInterface  $replicationManager The replication manager to use.
+     * @param ConnectionContainerInterface $container          The container to select from.
+     * @param LoggerInterface|null         $logger             The logger to use.
      *
      * @return ConnectionInterface            The selected connection.
      * @throws NoConnectionAvailableException If no connection is available for selection.
      */
     public function select(
         ReplicationManagerInterface $replicationManager,
-        ConnectionPoolInterface $pool,
+        ConnectionContainerInterface $container,
         LoggerInterface $logger = null
     ) {
         if (null !== $logger) {
             $logger->debug(
-                'Selecting connection from pool {pool} with replication ' .
-                    'delay less than the threshold {threshold}.',
+                'Selecting connection from container {container} with ' .
+                    'replication delay less than the threshold {threshold}.',
                 array(
-                    'pool' => $pool->name(),
+                    'container' => $container->name(),
                     'threshold' => $this->threshold()->isoString(),
                 )
             );
         }
 
-        foreach ($pool->connections() as $connection) {
+        foreach ($container->connections() as $connection) {
             $delay = $replicationManager->delay(
                 $connection,
                 $this->threshold()
@@ -79,11 +79,11 @@ class AcceptableDelayStrategy extends AbstractSelectionStrategy
                 if (null !== $logger) {
                     $logger->debug(
                         'Connection {connection} ' .
-                            'not selected from pool {pool}. ' .
+                            'not selected from container {container}. ' .
                             'The connection is not replicating.',
                         array(
                             'connection' => $connection->name(),
-                            'pool' => $pool->name(),
+                            'container' => $container->name(),
                         )
                     );
                 }
@@ -95,12 +95,12 @@ class AcceptableDelayStrategy extends AbstractSelectionStrategy
                 if (null !== $logger) {
                     $logger->debug(
                         'Connection {connection} ' .
-                            'selected from pool {pool}. ' .
+                            'selected from container {container}. ' .
                             'Replication delay of {delay} ' .
                             'is within the threshold {threshold}.',
                         array(
                             'connection' => $connection->name(),
-                            'pool' => $pool->name(),
+                            'container' => $container->name(),
                             'delay' => $delay->isoString(),
                             'threshold' => $this->threshold()->isoString(),
                         )
@@ -113,12 +113,12 @@ class AcceptableDelayStrategy extends AbstractSelectionStrategy
             if (null !== $logger) {
                 $logger->debug(
                     'Connection {connection} ' .
-                        'not selected from pool {pool}. ' .
+                        'not selected from container {container}. ' .
                         'Replication delay is at least {delay}, ' .
                         'and is greater than the threshold {threshold}.',
                     array(
                         'connection' => $connection->name(),
-                        'pool' => $pool->name(),
+                        'container' => $container->name(),
                         'delay' => $delay->isoString(),
                         'threshold' => $this->threshold()->isoString(),
                     )
@@ -128,11 +128,11 @@ class AcceptableDelayStrategy extends AbstractSelectionStrategy
 
         if (null !== $logger) {
             $logger->warning(
-                'No acceptable connection found in pool {pool}. ' .
+                'No acceptable connection found in container {container}. ' .
                     'No connection found with replication delay within ' .
                     'the threshold {threshold}.',
                 array(
-                    'pool' => $pool->name(),
+                    'container' => $container->name(),
                     'threshold' => $this->threshold()->isoString(),
                 )
             );

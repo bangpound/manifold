@@ -8,9 +8,9 @@ use Icecave\Manifold\Authentication\Credentials;
 use Icecave\Manifold\Authentication\CredentialsProvider;
 use Icecave\Manifold\Connection\ConnectionFactory;
 use Icecave\Manifold\Connection\LazyConnection;
-use Icecave\Manifold\Connection\Pool\ConnectionPool;
-use Icecave\Manifold\Connection\Pool\ConnectionPoolPair;
-use Icecave\Manifold\Connection\Pool\ConnectionPoolSelector;
+use Icecave\Manifold\Connection\Container\ConnectionPool;
+use Icecave\Manifold\Connection\Container\ConnectionContainerPair;
+use Icecave\Manifold\Connection\Container\ConnectionContainerSelector;
 use Icecave\Manifold\Replication\ReplicationTree;
 use Icecave\Parity\Parity;
 use PDO;
@@ -72,16 +72,16 @@ EOD;
             )
         );
         $expectedPools = new Map;
-        $expectedPool = new ConnectionPool('foo', new Vector(array($expectedConnections->get('foo'))));
-        $expectedSelector = new ConnectionPoolSelector(
-            new ConnectionPoolPair($expectedPool, $expectedPool)
+        $expectedContainer = new ConnectionPool('foo', new Vector(array($expectedConnections->get('foo'))));
+        $expectedSelector = new ConnectionContainerSelector(
+            new ConnectionContainerPair($expectedContainer, $expectedContainer)
         );
         $expectedReplicationTree = new ReplicationTree($expectedConnections->get('foo'));
         $expectedReplicationTrees = new Vector(array($expectedReplicationTree));
 
         $this->assertEquals($expectedConnections->elements(), $configuration->connections()->elements());
         $this->assertEquals($expectedPools->elements(), $configuration->connectionPools()->elements());
-        $this->assertEquals($expectedSelector, $configuration->connectionPoolSelector());
+        $this->assertEquals($expectedSelector, $configuration->connectionContainerSelector());
         $this->assertSame(0, Parity::compare($expectedReplicationTrees, $configuration->replicationTrees()));
     }
 
@@ -103,16 +103,16 @@ EOD;
             )
         );
         $expectedPools = new Map;
-        $expectedPool = new ConnectionPool('foo', new Vector(array($expectedConnections->get('foo'))));
-        $expectedSelector = new ConnectionPoolSelector(
-            new ConnectionPoolPair($expectedPool, $expectedPool)
+        $expectedContainer = new ConnectionPool('foo', new Vector(array($expectedConnections->get('foo'))));
+        $expectedSelector = new ConnectionContainerSelector(
+            new ConnectionContainerPair($expectedContainer, $expectedContainer)
         );
         $expectedReplicationTree = new ReplicationTree($expectedConnections->get('foo'));
         $expectedReplicationTrees = new Vector(array($expectedReplicationTree));
 
         $this->assertEquals($expectedConnections->elements(), $configuration->connections()->elements());
         $this->assertEquals($expectedPools->elements(), $configuration->connectionPools()->elements());
-        $this->assertEquals($expectedSelector, $configuration->connectionPoolSelector());
+        $this->assertEquals($expectedSelector, $configuration->connectionContainerSelector());
         $this->assertSame(0, Parity::compare($expectedReplicationTrees, $configuration->replicationTrees()));
     }
 
@@ -130,16 +130,16 @@ EOD;
             )
         );
         $expectedPools = new Map;
-        $expectedPool = new ConnectionPool('foo', new Vector(array($expectedConnections->get('foo'))));
-        $expectedSelector = new ConnectionPoolSelector(
-            new ConnectionPoolPair($expectedPool, $expectedPool)
+        $expectedContainer = new ConnectionPool('foo', new Vector(array($expectedConnections->get('foo'))));
+        $expectedSelector = new ConnectionContainerSelector(
+            new ConnectionContainerPair($expectedContainer, $expectedContainer)
         );
         $expectedReplicationTree = new ReplicationTree($expectedConnections->get('foo'));
         $expectedReplicationTrees = new Vector(array($expectedReplicationTree));
 
         $this->assertEquals($expectedConnections->elements(), $configuration->connections()->elements());
         $this->assertEquals($expectedPools->elements(), $configuration->connectionPools()->elements());
-        $this->assertEquals($expectedSelector, $configuration->connectionPoolSelector());
+        $this->assertEquals($expectedSelector, $configuration->connectionContainerSelector());
         $this->assertSame(0, Parity::compare($expectedReplicationTrees, $configuration->replicationTrees()));
     }
 
@@ -161,16 +161,16 @@ EOD;
             )
         );
         $expectedPools = new Map;
-        $expectedPool = new ConnectionPool('foo', new Vector(array($expectedConnections->get('foo'))));
-        $expectedSelector = new ConnectionPoolSelector(
-            new ConnectionPoolPair($expectedPool, $expectedPool)
+        $expectedContainer = new ConnectionPool('foo', new Vector(array($expectedConnections->get('foo'))));
+        $expectedSelector = new ConnectionContainerSelector(
+            new ConnectionContainerPair($expectedContainer, $expectedContainer)
         );
         $expectedReplicationTree = new ReplicationTree($expectedConnections->get('foo'));
         $expectedReplicationTrees = new Vector(array($expectedReplicationTree));
 
         $this->assertEquals($expectedConnections->elements(), $configuration->connections()->elements());
         $this->assertEquals($expectedPools->elements(), $configuration->connectionPools()->elements());
-        $this->assertEquals($expectedSelector, $configuration->connectionPoolSelector());
+        $this->assertEquals($expectedSelector, $configuration->connectionContainerSelector());
         $this->assertSame(0, Parity::compare($expectedReplicationTrees, $configuration->replicationTrees()));
     }
 
@@ -276,30 +276,30 @@ EOD;
                 ),
             )
         );
-        $expectedSelector = new ConnectionPoolSelector(
-            new ConnectionPoolPair(
+        $expectedSelector = new ConnectionContainerSelector(
+            new ConnectionContainerPair(
                 new ConnectionPool('reporting1', new Vector(array($expectedConnections->get('reporting1')))),
                 $expectedPools->get('pool1')
             ),
             new Map(
                 array(
-                    'app_data' => new ConnectionPoolPair(
+                    'app_data' => new ConnectionContainerPair(
                         new ConnectionPool('master1', new Vector(array($expectedConnections->get('master1')))),
                         $expectedPools->get('pool1')
                     ),
-                    'app_reporting' => new ConnectionPoolPair(
+                    'app_reporting' => new ConnectionContainerPair(
                         new ConnectionPool('reporting2', new Vector(array($expectedConnections->get('reporting2')))),
                         $expectedPools->get('pool2')
                     ),
-                    'app_temp' => new ConnectionPoolPair(
+                    'app_temp' => new ConnectionContainerPair(
                         $expectedPools->get('pool2'),
                         $expectedPools->get('pool2')
                     ),
-                    'app_read_only' => new ConnectionPoolPair(
+                    'app_read_only' => new ConnectionContainerPair(
                         null,
                         new ConnectionPool('master2', new Vector(array($expectedConnections->get('master2'))))
                     ),
-                    'app_write_only' => new ConnectionPoolPair(
+                    'app_write_only' => new ConnectionContainerPair(
                         new ConnectionPool('master2', new Vector(array($expectedConnections->get('master2'))))
                     ),
                 )
@@ -353,8 +353,8 @@ EOD;
         $this->assertEquals($expectedConnections->elements(), $configurationSplit->connections()->elements());
         $this->assertEquals($expectedPools->elements(), $configuration->connectionPools()->elements());
         $this->assertEquals($expectedPools->elements(), $configurationSplit->connectionPools()->elements());
-        $this->assertEquals($expectedSelector, $configuration->connectionPoolSelector());
-        $this->assertEquals($expectedSelector, $configurationSplit->connectionPoolSelector());
+        $this->assertEquals($expectedSelector, $configuration->connectionContainerSelector());
+        $this->assertEquals($expectedSelector, $configurationSplit->connectionContainerSelector());
         $this->assertSame(0, Parity::compare($expectedReplicationTrees, $configuration->replicationTrees()));
         $this->assertSame(0, Parity::compare($expectedReplicationTrees, $configurationSplit->replicationTrees()));
     }

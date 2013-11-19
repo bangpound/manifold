@@ -14,12 +14,14 @@ class ConfigurationTest extends PHPUnit_Framework_TestCase
 
         $this->connections = new Map;
         $this->connectionPools = new Map;
-        $this->connectionPoolSelector = Phake::mock('Icecave\Manifold\Connection\Pool\ConnectionPoolSelectorInterface');
+        $this->connectionContainerSelector = Phake::mock(
+            'Icecave\Manifold\Connection\Container\ConnectionContainerSelectorInterface'
+        );
         $this->replicationTrees = new Vector;
         $this->configuration = new Configuration(
             $this->connections,
             $this->connectionPools,
-            $this->connectionPoolSelector,
+            $this->connectionContainerSelector,
             $this->replicationTrees
         );
     }
@@ -28,7 +30,7 @@ class ConfigurationTest extends PHPUnit_Framework_TestCase
     {
         $this->assertSame($this->connections, $this->configuration->connections());
         $this->assertSame($this->connectionPools, $this->configuration->connectionPools());
-        $this->assertSame($this->connectionPoolSelector, $this->configuration->connectionPoolSelector());
+        $this->assertSame($this->connectionContainerSelector, $this->configuration->connectionContainerSelector());
         $this->assertSame($this->replicationTrees, $this->configuration->replicationTrees());
     }
 }

@@ -9,13 +9,13 @@ use Icecave\Chrono\TimeSpan\Duration;
 use Icecave\Chrono\TimeSpan\TimeSpanInterface;
 
 /**
- * An abstract base class for implementing connection pool member selection
+ * An abstract base class for implementing connection container member selection
  * strategies.
  */
 abstract class AbstractSelectionStrategy implements SelectionStrategyInterface
 {
     /**
-     * Construct a new connection pool member selection strategy.
+     * Construct a new connection container member selection strategy.
      *
      * @param ClockInterface|null $clock The clock to use.
      */

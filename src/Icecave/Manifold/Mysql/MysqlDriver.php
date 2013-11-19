@@ -33,7 +33,7 @@ class MysqlDriver extends AbstractDriver
     ) {
         return $this->createConnectionFromSelector(
             new ConnectionSelector(
-                $configuration->connectionPoolSelector(),
+                $configuration->connectionContainerSelector(),
                 new MysqlReplicationManager($replicationTree)
             ),
             $attributes

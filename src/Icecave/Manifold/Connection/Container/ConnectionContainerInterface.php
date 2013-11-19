@@ -1,18 +1,18 @@
 <?php
-namespace Icecave\Manifold\Connection\Pool;
+namespace Icecave\Manifold\Connection\Container;
 
 use Icecave\Collections\Vector;
 use Icecave\Manifold\Connection\ConnectionInterface;
 
 /**
- * The interface implemented by connection pools.
+ * The interface implemented by connection containers.
  */
-interface ConnectionPoolInterface
+interface ConnectionContainerInterface
 {
     /**
-     * Get the connection pool name.
+     * Get the connection container name.
      *
-     * @return string The connection pool name.
+     * @return string The connection container name.
      */
     public function name();
 

@@ -15,12 +15,13 @@ use Icecave\Collections\Vector;
 use Icecave\Manifold\Connection\ConnectionFactory;
 use Icecave\Manifold\Connection\ConnectionFactoryInterface;
 use Icecave\Manifold\Connection\ConnectionInterface;
-use Icecave\Manifold\Connection\Pool\ConnectionPool;
-use Icecave\Manifold\Connection\Pool\ConnectionPoolInterface;
-use Icecave\Manifold\Connection\Pool\ConnectionPoolPair;
-use Icecave\Manifold\Connection\Pool\ConnectionPoolPairInterface;
-use Icecave\Manifold\Connection\Pool\ConnectionPoolSelector;
-use Icecave\Manifold\Connection\Pool\ConnectionPoolSelectorInterface;
+use Icecave\Manifold\Connection\Container\ConnectionContainerInterface;
+use Icecave\Manifold\Connection\Container\ConnectionContainerPair;
+use Icecave\Manifold\Connection\Container\ConnectionContainerPairInterface;
+use Icecave\Manifold\Connection\Container\ConnectionContainerSelector;
+use Icecave\Manifold\Connection\Container\ConnectionContainerSelectorInterface;
+use Icecave\Manifold\Connection\Container\ConnectionPool;
+use Icecave\Manifold\Connection\Container\ConnectionPoolInterface;
 use Icecave\Manifold\Replication\ReplicationTree;
 use Icecave\Manifold\Replication\ReplicationTreeInterface;
 
@@ -223,14 +224,14 @@ class ConfigurationReader implements ConfigurationReaderInterface
     }
 
     /**
-     * Creates a new connection pool selector from raw configuration data.
+     * Creates a new connection container selector from raw configuration data.
      *
      * @param ObjectValue                         $value             The raw configuration data.
      * @param Map<string,ConnectionInterface>     $connections       The connection map.
      * @param Map<string,ConnectionPoolInterface> $pools             The connection pool map.
      * @param ConnectionInterface                 $defaultConnection The default connection.
      *
-     * @return ConnectionPoolSelectorInterface The new connection pool selector.
+     * @return ConnectionContainerSelectorInterface The new connection container selector.
      */
     protected function createSelector(
         ObjectValue $value,
@@ -239,30 +240,39 @@ class ConfigurationReader implements ConfigurationReaderInterface
         ConnectionInterface $defaultConnection
     ) {
         $databases = new Map;
-        $defaultPool = $this->createSingleConnectionPool($defaultConnection);
+        $defaultContainer = $this->createSingleConnectionContainer(
+            $defaultConnection
+        );
         $defaultPair = null;
 
         $selection = $value->get('selection');
         if ($selection->has('default')) {
-            $defaultPair = $this->createConnectionPoolPair(
+            $defaultPair = $this->createConnectionContainerPair(
                 $selection->get('default'),
                 $connections,
                 $pools,
-                $defaultPool
+                $defaultContainer
             );
         }
         if (null === $defaultPair) {
-            $defaultPair = new ConnectionPoolPair($defaultPool, $defaultPool);
+            $defaultPair = new ConnectionContainerPair(
+                $defaultContainer,
+                $defaultContainer
+            );
         }
 
         foreach ($selection->get('databases') as $name => $pair) {
             $databases->add(
                 $name,
-                $this->createConnectionPoolPair($pair, $connections, $pools)
+                $this->createConnectionContainerPair(
+                    $pair,
+                    $connections,
+                    $pools
+                )
             );
         }
 
-        return new ConnectionPoolSelector($defaultPair, $databases);
+        return new ConnectionContainerSelector($defaultPair, $databases);
     }
 
     /**
@@ -332,43 +342,43 @@ class ConfigurationReader implements ConfigurationReaderInterface
     }
 
     /**
-     * Creates a new read/write connection pool pair from raw configuration
+     * Creates a new read/write connection container pair from raw configuration
      * data.
      *
-     * @param ObjectValue                         $value       The raw configuration data.
-     * @param Map<string,ConnectionInterface>     $connections The connection map.
-     * @param Map<string,ConnectionPoolInterface> $pools       The connection pool map.
-     * @param ConnectionPoolInterface|null        $defaultPool The default connection pool.
+     * @param ObjectValue                         $value            The raw configuration data.
+     * @param Map<string,ConnectionInterface>     $connections      The connection map.
+     * @param Map<string,ConnectionPoolInterface> $pools            The connection pool map.
+     * @param ConnectionContainerInterface|null   $defaultContainer The default connection container.
      *
-     * @return ConnectionPoolPairInterface The new read/write pair.
+     * @return ConnectionContainerPairInterface The new read/write pair.
      */
-    protected function createConnectionPoolPair(
+    protected function createConnectionContainerPair(
         ObjectValue $value,
         Map $connections,
         Map $pools,
-        ConnectionPoolInterface $defaultPool = null
+        ConnectionContainerInterface $defaultContainer = null
     ) {
         if ($value->has('write')) {
-            $write = $this->findPool(
+            $write = $this->findContainer(
                 $value->getRaw('write'),
                 $connections,
                 $pools
             );
         } else {
-            $write = $defaultPool;
+            $write = $defaultContainer;
         }
 
         if ($value->has('read')) {
-            $read = $this->findPool(
+            $read = $this->findContainer(
                 $value->getRaw('read'),
                 $connections,
                 $pools
             );
         } else {
-            $read = $defaultPool;
+            $read = $defaultContainer;
         }
 
-        return new ConnectionPoolPair($write, $read);
+        return new ConnectionContainerPair($write, $read);
     }
 
     /**
@@ -392,8 +402,8 @@ class ConfigurationReader implements ConfigurationReaderInterface
         }
 
         foreach ($treeNodes as $name => $subNodes) {
-            $slavePool = $this->findPool($name, $connections, $pools);
-            foreach ($slavePool->connections() as $slaveConnection) {
+            $slaveContainer = $this->findContainer($name, $connections, $pools);
+            foreach ($slaveContainer->connections() as $slaveConnection) {
                 $replicationTree->addSlave($masterConnection, $slaveConnection);
             }
 
@@ -428,7 +438,7 @@ class ConfigurationReader implements ConfigurationReaderInterface
     }
 
     /**
-     * Finds a connection pool by name.
+     * Finds a connection container by name.
      *
      * If the name refers to a connection rather than a pool, the connection is
      * placed in a pool by itself and returned.
@@ -437,28 +447,28 @@ class ConfigurationReader implements ConfigurationReaderInterface
      * @param Map<string,ConnectionInterface>     $connections The connection map.
      * @param Map<string,ConnectionPoolInterface> $pools       The connection pool map.
      *
-     * @return ConnectionPoolInterface                The connection pool.
+     * @return ConnectionContainerInterface           The connection container.
      * @throws Exception\UndefinedConnectionException If no associated connection or pool is found.
      */
-    protected function findPool($name, Map $connections, Map $pools)
+    protected function findContainer($name, Map $connections, Map $pools)
     {
         if ($pools->hasKey($name)) {
             return $pools->get($name);
         }
 
-        return $this->createSingleConnectionPool(
+        return $this->createSingleConnectionContainer(
             $this->findConnection($name, $connections)
         );
     }
 
     /**
-     * Wraps a single connection in its own pool.
+     * Wraps a single connection in its own container.
      *
      * @param ConnectionInterface $connection The connection to wrap.
      *
-     * @return ConnectionPoolInterface The new connection pool.
+     * @return ConnectionContainerInterface The new connection container.
      */
-    protected function createSingleConnectionPool(ConnectionInterface $connection)
+    protected function createSingleConnectionContainer(ConnectionInterface $connection)
     {
         $connections = new Vector;
         $connections->pushBack($connection);

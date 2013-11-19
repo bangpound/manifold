@@ -3,7 +3,7 @@ namespace Icecave\Manifold\Replication;
 
 use Icecave\Collections\Vector;
 use Icecave\Manifold\Connection\ConnectionPair;
-use Icecave\Manifold\Connection\Pool\ConnectionPool;
+use Icecave\Manifold\Connection\Container\ConnectionPool;
 use PHPUnit_Framework_TestCase;
 use Phake;
 
@@ -13,13 +13,15 @@ class ConnectionSelectorTest extends PHPUnit_Framework_TestCase
     {
         parent::setUp();
 
-        $this->poolSelector = Phake::mock('Icecave\Manifold\Connection\Pool\ConnectionPoolSelectorInterface');
+        $this->containerSelector = Phake::mock(
+            'Icecave\Manifold\Connection\Container\ConnectionContainerSelectorInterface'
+        );
         $this->replicationManager = Phake::mock('Icecave\Manifold\Replication\ReplicationManagerInterface');
         $this->defaultWriteStrategy = Phake::mock(__NAMESPACE__ . '\SelectionStrategy\SelectionStrategyInterface');
         $this->defaultReadStrategy = Phake::mock(__NAMESPACE__ . '\SelectionStrategy\SelectionStrategyInterface');
         $this->logger = Phake::mock('Psr\Log\LoggerInterface');
         $this->selector = new ConnectionSelector(
-            $this->poolSelector,
+            $this->containerSelector,
             $this->replicationManager,
             $this->defaultWriteStrategy,
             $this->defaultReadStrategy,
@@ -41,7 +43,7 @@ class ConnectionSelectorTest extends PHPUnit_Framework_TestCase
         $this->connectionC2 = Phake::mock('Icecave\Manifold\Connection\ConnectionInterface');
         $this->connectionC2->id = 'C2';
 
-        $this->poolA = new ConnectionPool(
+        $this->containerA = new ConnectionPool(
             'A',
             new Vector(
                 array(
@@ -50,7 +52,7 @@ class ConnectionSelectorTest extends PHPUnit_Framework_TestCase
                 )
             )
         );
-        $this->poolB = new ConnectionPool(
+        $this->containerB = new ConnectionPool(
             'B',
             new Vector(
                 array(
@@ -59,7 +61,7 @@ class ConnectionSelectorTest extends PHPUnit_Framework_TestCase
                 )
             )
         );
-        $this->poolC = new ConnectionPool(
+        $this->containerC = new ConnectionPool(
             'C',
             new Vector(
                 array(
@@ -72,7 +74,7 @@ class ConnectionSelectorTest extends PHPUnit_Framework_TestCase
 
     public function testConstructor()
     {
-        $this->assertSame($this->poolSelector, $this->selector->poolSelector());
+        $this->assertSame($this->containerSelector, $this->selector->containerSelector());
         $this->assertSame($this->replicationManager, $this->selector->replicationManager());
         $this->assertSame($this->defaultWriteStrategy, $this->selector->defaultWriteStrategy());
         $this->assertSame($this->defaultReadStrategy, $this->selector->defaultReadStrategy());
@@ -81,7 +83,7 @@ class ConnectionSelectorTest extends PHPUnit_Framework_TestCase
 
     public function testConstructorDefaults()
     {
-        $this->selector = new ConnectionSelector($this->poolSelector, $this->replicationManager);
+        $this->selector = new ConnectionSelector($this->containerSelector, $this->replicationManager);
 
         $this->assertEquals(new SelectionStrategy\AnyStrategy, $this->selector->defaultWriteStrategy());
         $this->assertEquals(new SelectionStrategy\AcceptableDelayStrategy, $this->selector->defaultReadStrategy());
@@ -112,14 +114,14 @@ class ConnectionSelectorTest extends PHPUnit_Framework_TestCase
 
     public function testForWrite()
     {
-        Phake::when($this->poolSelector)->forWrite(null)->thenReturn($this->poolA);
-        Phake::when($this->poolSelector)->forWrite('foo')->thenReturn($this->poolB);
-        Phake::when($this->poolSelector)->forWrite('bar')->thenReturn($this->poolC);
-        Phake::when($this->defaultWriteStrategy)->select($this->replicationManager, $this->poolA, $this->logger)
+        Phake::when($this->containerSelector)->forWrite(null)->thenReturn($this->containerA);
+        Phake::when($this->containerSelector)->forWrite('foo')->thenReturn($this->containerB);
+        Phake::when($this->containerSelector)->forWrite('bar')->thenReturn($this->containerC);
+        Phake::when($this->defaultWriteStrategy)->select($this->replicationManager, $this->containerA, $this->logger)
             ->thenReturn($this->connectionA1);
-        Phake::when($this->defaultWriteStrategy)->select($this->replicationManager, $this->poolB, $this->logger)
+        Phake::when($this->defaultWriteStrategy)->select($this->replicationManager, $this->containerB, $this->logger)
             ->thenReturn($this->connectionB1);
-        Phake::when($this->strategy)->select($this->replicationManager, $this->poolC, $this->logger)
+        Phake::when($this->strategy)->select($this->replicationManager, $this->containerC, $this->logger)
             ->thenReturn($this->connectionC1);
 
         $this->assertSame($this->connectionA1, $this->selector->forWrite());
@@ -129,14 +131,14 @@ class ConnectionSelectorTest extends PHPUnit_Framework_TestCase
 
     public function testForRead()
     {
-        Phake::when($this->poolSelector)->forRead(null)->thenReturn($this->poolA);
-        Phake::when($this->poolSelector)->forRead('foo')->thenReturn($this->poolB);
-        Phake::when($this->poolSelector)->forRead('bar')->thenReturn($this->poolC);
-        Phake::when($this->defaultReadStrategy)->select($this->replicationManager, $this->poolA, $this->logger)
+        Phake::when($this->containerSelector)->forRead(null)->thenReturn($this->containerA);
+        Phake::when($this->containerSelector)->forRead('foo')->thenReturn($this->containerB);
+        Phake::when($this->containerSelector)->forRead('bar')->thenReturn($this->containerC);
+        Phake::when($this->defaultReadStrategy)->select($this->replicationManager, $this->containerA, $this->logger)
             ->thenReturn($this->connectionA1);
-        Phake::when($this->defaultReadStrategy)->select($this->replicationManager, $this->poolB, $this->logger)
+        Phake::when($this->defaultReadStrategy)->select($this->replicationManager, $this->containerB, $this->logger)
             ->thenReturn($this->connectionB1);
-        Phake::when($this->strategy)->select($this->replicationManager, $this->poolC, $this->logger)
+        Phake::when($this->strategy)->select($this->replicationManager, $this->containerC, $this->logger)
             ->thenReturn($this->connectionC1);
 
         $this->assertSame($this->connectionA1, $this->selector->forRead());
@@ -146,21 +148,21 @@ class ConnectionSelectorTest extends PHPUnit_Framework_TestCase
 
     public function testReadWritePair()
     {
-        Phake::when($this->poolSelector)->forWrite(null)->thenReturn($this->poolA);
-        Phake::when($this->poolSelector)->forWrite('foo')->thenReturn($this->poolB);
-        Phake::when($this->poolSelector)->forWrite('bar')->thenReturn($this->poolC);
-        Phake::when($this->poolSelector)->forRead(null)->thenReturn($this->poolA);
-        Phake::when($this->poolSelector)->forRead('foo')->thenReturn($this->poolB);
-        Phake::when($this->poolSelector)->forRead('bar')->thenReturn($this->poolC);
-        Phake::when($this->defaultWriteStrategy)->select($this->replicationManager, $this->poolA, $this->logger)
+        Phake::when($this->containerSelector)->forWrite(null)->thenReturn($this->containerA);
+        Phake::when($this->containerSelector)->forWrite('foo')->thenReturn($this->containerB);
+        Phake::when($this->containerSelector)->forWrite('bar')->thenReturn($this->containerC);
+        Phake::when($this->containerSelector)->forRead(null)->thenReturn($this->containerA);
+        Phake::when($this->containerSelector)->forRead('foo')->thenReturn($this->containerB);
+        Phake::when($this->containerSelector)->forRead('bar')->thenReturn($this->containerC);
+        Phake::when($this->defaultWriteStrategy)->select($this->replicationManager, $this->containerA, $this->logger)
             ->thenReturn($this->connectionA1);
-        Phake::when($this->defaultReadStrategy)->select($this->replicationManager, $this->poolA, $this->logger)
+        Phake::when($this->defaultReadStrategy)->select($this->replicationManager, $this->containerA, $this->logger)
             ->thenReturn($this->connectionA2);
-        Phake::when($this->defaultWriteStrategy)->select($this->replicationManager, $this->poolB, $this->logger)
+        Phake::when($this->defaultWriteStrategy)->select($this->replicationManager, $this->containerB, $this->logger)
             ->thenReturn($this->connectionB1);
-        Phake::when($this->defaultReadStrategy)->select($this->replicationManager, $this->poolB, $this->logger)
+        Phake::when($this->defaultReadStrategy)->select($this->replicationManager, $this->containerB, $this->logger)
             ->thenReturn($this->connectionB2);
-        Phake::when($this->strategy)->select($this->replicationManager, $this->poolC, $this->logger)
+        Phake::when($this->strategy)->select($this->replicationManager, $this->containerC, $this->logger)
             ->thenReturn($this->connectionC1)
             ->thenReturn($this->connectionC2);
 

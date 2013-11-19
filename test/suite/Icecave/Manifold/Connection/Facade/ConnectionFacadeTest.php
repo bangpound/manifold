@@ -342,7 +342,8 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
         $query = 'SELECT * FROM foo.bar';
         $encapsulatedQuery = '/* comment */ SELECT * FROM foo.bar';
         $attributes = array('baz' => 'qux');
-        Phake::when($this->queryConnectionSelector)->select($encapsulatedQuery, null)->thenReturn(array($this->connectionA, false));
+        Phake::when($this->queryConnectionSelector)->select($encapsulatedQuery, null)
+            ->thenReturn(array($this->connectionA, false));
         Phake::when($this->connectionA)->prepare($encapsulatedQuery, $attributes)->thenReturn($this->statement);
 
         $this->assertSame($this->statement, $this->facade->prepare($query, $attributes));
@@ -393,7 +394,8 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
         $this->facade->pushComment('comment');
         $query = 'SELECT * FROM foo.bar';
         $encapsulatedQuery = '/* comment */ SELECT * FROM foo.bar';
-        Phake::when($this->queryConnectionSelector)->select($encapsulatedQuery, null)->thenReturn(array($this->connectionA, false));
+        Phake::when($this->queryConnectionSelector)->select($encapsulatedQuery, null)
+            ->thenReturn(array($this->connectionA, false));
         Phake::when($this->connectionA)->query($encapsulatedQuery, 'one', 'two', 'three')->thenReturn($this->statement);
 
         $this->assertSame($this->statement, $this->facade->query($query, 'one', 'two', 'three'));
@@ -441,7 +443,8 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
         $this->facade->pushComment('comment');
         $query = 'SELECT * FROM foo.bar';
         $encapsulatedQuery = '/* comment */ SELECT * FROM foo.bar';
-        Phake::when($this->queryConnectionSelector)->select($encapsulatedQuery, null)->thenReturn(array($this->connectionA, false));
+        Phake::when($this->queryConnectionSelector)->select($encapsulatedQuery, null)
+            ->thenReturn(array($this->connectionA, false));
         Phake::when($this->connectionA)->exec($encapsulatedQuery)->thenReturn(111);
 
         $this->assertSame(111, $this->facade->exec($query));

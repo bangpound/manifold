@@ -15,8 +15,10 @@ final class NotReplicatingException extends Exception
      * @param ConnectionInterface $connection The connection.
      * @param Exception|null      $previous   The cause, if available.
      */
-    public function __construct(ConnectionInterface $connection, Exception $previous = null)
-    {
+    public function __construct(
+        ConnectionInterface $connection,
+        Exception $previous = null
+    ) {
         $this->connection = $connection;
 
         parent::__construct(

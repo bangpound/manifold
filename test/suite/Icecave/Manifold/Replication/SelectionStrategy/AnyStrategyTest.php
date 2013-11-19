@@ -2,7 +2,7 @@
 namespace Icecave\Manifold\Replication\SelectionStrategy;
 
 use Icecave\Collections\Vector;
-use Icecave\Manifold\Connection\Pool\ConnectionPool;
+use Icecave\Manifold\Connection\Container\ConnectionPool;
 use PHPUnit_Framework_TestCase;
 use Phake;
 
@@ -17,8 +17,8 @@ class AnyStrategyTest extends PHPUnit_Framework_TestCase
         Phake::when($this->connectionA)->name()->thenReturn('A');
         $this->connectionB = Phake::mock('Icecave\Manifold\Connection\ConnectionInterface');
         Phake::when($this->connectionB)->name()->thenReturn('B');
-        $this->pool = new ConnectionPool(
-            'pool',
+        $this->container = new ConnectionPool(
+            'container',
             new Vector(
                 array(
                     $this->connectionA,
@@ -32,21 +32,21 @@ class AnyStrategyTest extends PHPUnit_Framework_TestCase
 
     public function testSelect()
     {
-        $this->assertSame($this->connectionA, $this->strategy->select($this->manager, $this->pool));
+        $this->assertSame($this->connectionA, $this->strategy->select($this->manager, $this->container));
         Phake::verifyNoInteraction($this->manager);
     }
 
     public function testSelectLogging()
     {
-        $this->assertSame($this->connectionA, $this->strategy->select($this->manager, $this->pool, $this->logger));
+        $this->assertSame($this->connectionA, $this->strategy->select($this->manager, $this->container, $this->logger));
         Phake::inOrder(
             Phake::verify($this->logger)->debug(
-                'Selecting any connection from pool {pool}.',
-                array('pool' => 'pool')
+                'Selecting any connection from container {container}.',
+                array('container' => 'container')
             ),
             Phake::verify($this->logger)->debug(
-                'Connection {connection} selected from pool {pool}. Any connection is acceptable.',
-                array('connection' => 'A', 'pool' => 'pool')
+                'Connection {connection} selected from container {container}. Any connection is acceptable.',
+                array('connection' => 'A', 'container' => 'container')
             )
         );
         Phake::verifyNoInteraction($this->manager);
