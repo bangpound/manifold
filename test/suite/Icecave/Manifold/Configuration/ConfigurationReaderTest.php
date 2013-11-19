@@ -72,7 +72,7 @@ EOD;
             )
         );
         $expectedPools = new Map;
-        $expectedContainer = new ConnectionPool('foo', new Vector(array($expectedConnections->get('foo'))));
+        $expectedContainer = $expectedConnections->get('foo');
         $expectedSelector = new ConnectionContainerSelector(
             new ConnectionContainerPair($expectedContainer, $expectedContainer)
         );
@@ -103,7 +103,7 @@ EOD;
             )
         );
         $expectedPools = new Map;
-        $expectedContainer = new ConnectionPool('foo', new Vector(array($expectedConnections->get('foo'))));
+        $expectedContainer = $expectedConnections->get('foo');
         $expectedSelector = new ConnectionContainerSelector(
             new ConnectionContainerPair($expectedContainer, $expectedContainer)
         );
@@ -130,7 +130,7 @@ EOD;
             )
         );
         $expectedPools = new Map;
-        $expectedContainer = new ConnectionPool('foo', new Vector(array($expectedConnections->get('foo'))));
+        $expectedContainer = $expectedConnections->get('foo');
         $expectedSelector = new ConnectionContainerSelector(
             new ConnectionContainerPair($expectedContainer, $expectedContainer)
         );
@@ -161,7 +161,7 @@ EOD;
             )
         );
         $expectedPools = new Map;
-        $expectedContainer = new ConnectionPool('foo', new Vector(array($expectedConnections->get('foo'))));
+        $expectedContainer = $expectedConnections->get('foo');
         $expectedSelector = new ConnectionContainerSelector(
             new ConnectionContainerPair($expectedContainer, $expectedContainer)
         );
@@ -278,17 +278,17 @@ EOD;
         );
         $expectedSelector = new ConnectionContainerSelector(
             new ConnectionContainerPair(
-                new ConnectionPool('reporting1', new Vector(array($expectedConnections->get('reporting1')))),
+                $expectedConnections->get('reporting1'),
                 $expectedPools->get('pool1')
             ),
             new Map(
                 array(
                     'app_data' => new ConnectionContainerPair(
-                        new ConnectionPool('master1', new Vector(array($expectedConnections->get('master1')))),
+                        $expectedConnections->get('master1'),
                         $expectedPools->get('pool1')
                     ),
                     'app_reporting' => new ConnectionContainerPair(
-                        new ConnectionPool('reporting2', new Vector(array($expectedConnections->get('reporting2')))),
+                        $expectedConnections->get('reporting2'),
                         $expectedPools->get('pool2')
                     ),
                     'app_temp' => new ConnectionContainerPair(
@@ -297,10 +297,10 @@ EOD;
                     ),
                     'app_read_only' => new ConnectionContainerPair(
                         null,
-                        new ConnectionPool('master2', new Vector(array($expectedConnections->get('master2'))))
+                        $expectedConnections->get('master2')
                     ),
                     'app_write_only' => new ConnectionContainerPair(
-                        new ConnectionPool('master2', new Vector(array($expectedConnections->get('master2'))))
+                        $expectedConnections->get('master2')
                     ),
                 )
             )

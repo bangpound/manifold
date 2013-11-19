@@ -240,9 +240,6 @@ class ConfigurationReader implements ConfigurationReaderInterface
         ConnectionInterface $defaultConnection
     ) {
         $databases = new Map;
-        $defaultContainer = $this->createSingleConnectionContainer(
-            $defaultConnection
-        );
         $defaultPair = null;
 
         $selection = $value->get('selection');
@@ -251,13 +248,13 @@ class ConfigurationReader implements ConfigurationReaderInterface
                 $selection->get('default'),
                 $connections,
                 $pools,
-                $defaultContainer
+                $defaultConnection
             );
         }
         if (null === $defaultPair) {
             $defaultPair = new ConnectionContainerPair(
-                $defaultContainer,
-                $defaultContainer
+                $defaultConnection,
+                $defaultConnection
             );
         }
 
@@ -456,24 +453,7 @@ class ConfigurationReader implements ConfigurationReaderInterface
             return $pools->get($name);
         }
 
-        return $this->createSingleConnectionContainer(
-            $this->findConnection($name, $connections)
-        );
-    }
-
-    /**
-     * Wraps a single connection in its own container.
-     *
-     * @param ConnectionInterface $connection The connection to wrap.
-     *
-     * @return ConnectionContainerInterface The new connection container.
-     */
-    protected function createSingleConnectionContainer(ConnectionInterface $connection)
-    {
-        $connections = new Vector;
-        $connections->pushBack($connection);
-
-        return new ConnectionPool($connection->name(), $connections);
+        return $this->findConnection($name, $connections);
     }
 
     private $reader;

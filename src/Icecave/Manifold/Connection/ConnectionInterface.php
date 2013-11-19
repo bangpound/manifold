@@ -12,6 +12,7 @@ use Psr\Log\LoggerInterface;
  */
 interface ConnectionInterface extends
     PdoConnectionInterface,
+    Container\ConnectionContainerInterface,
     LoggerAwareInterface
 {
     /**

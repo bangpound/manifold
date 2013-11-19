@@ -2,6 +2,7 @@
 namespace Icecave\Manifold\Connection;
 
 use Icecave\Collections\Map;
+use Icecave\Collections\Vector;
 use Icecave\Manifold\Authentication\Credentials;
 use Icecave\Manifold\Authentication\CredentialsProvider;
 use PDO;
@@ -354,5 +355,10 @@ class LazyConnectionTest extends PHPUnit_Framework_TestCase
         $this->connection->connect();
 
         $this->assertSame('bar', $this->connection->getAttribute(PDO::ATTR_TIMEOUT));
+    }
+
+    public function testConnections()
+    {
+        $this->assertEquals(new Vector(array($this->connection)), $this->connection->connections());
     }
 }
