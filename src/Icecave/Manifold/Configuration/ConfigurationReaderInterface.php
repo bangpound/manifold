@@ -15,7 +15,8 @@ interface ConfigurationReaderInterface
      * @param string|null                     $mimeType          The mime type of the configuration data.
      * @param ConnectionFactoryInterface|null $connectionFactory The connection factory to use.
      *
-     * @return ConfigurationInterface The parsed configuration.
+     * @return ConfigurationInterface               The parsed configuration.
+     * @throws Exception\ConfigurationReadException If the file cannot be read.
      */
     public function readFile(
         $path,

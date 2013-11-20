@@ -1,6 +1,8 @@
 <?php
 namespace Icecave\Manifold\Authentication;
 
+use Eloquent\Schemer\Loader\Exception\LoadException;
+use Eloquent\Schemer\Uri\Uri;
 use Icecave\Collections\Map;
 use Icecave\Parity\Parity;
 use PHPUnit_Framework_TestCase;
@@ -95,5 +97,15 @@ EOD;
 
         $this->assertEquals($expected, $actual);
         $this->assertSame(0, Parity::compare($expected, $actual));
+    }
+
+    public function testCredentialFileReadFailure()
+    {
+        $this->reader = new CredentialsReader($this->innerReader);
+        Phake::when($this->innerReader)->readPath(Phake::anyParameters())
+            ->thenThrow(new LoadException(new Uri('file:///foo')));
+
+        $this->setExpectedException(__NAMESPACE__ . '\Exception\CredentialsReadException');
+        $this->reader->readFile('foo');
     }
 }

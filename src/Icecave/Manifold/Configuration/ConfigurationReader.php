@@ -3,6 +3,7 @@ namespace Icecave\Manifold\Configuration;
 
 use Eloquent\Schemer\Constraint\Reader\SchemaReader;
 use Eloquent\Schemer\Loader\ContentType;
+use Eloquent\Schemer\Loader\Exception\LoadException;
 use Eloquent\Schemer\Reader\ReaderInterface;
 use Eloquent\Schemer\Reader\ValidatingReader;
 use Eloquent\Schemer\Validation\BoundConstraintValidator;
@@ -87,7 +88,8 @@ class ConfigurationReader implements ConfigurationReaderInterface
      * @param string|null                     $mimeType          The mime type of the configuration data.
      * @param ConnectionFactoryInterface|null $connectionFactory The connection factory to use.
      *
-     * @return ConfigurationInterface The parsed configuration.
+     * @return ConfigurationInterface               The parsed configuration.
+     * @throws Exception\ConfigurationReadException If the file cannot be read.
      */
     public function readFile(
         $path,
@@ -98,10 +100,13 @@ class ConfigurationReader implements ConfigurationReaderInterface
             $mimeType = ContentType::YAML()->primaryMimeType();
         }
 
-        return $this->createConfiguration(
-            $this->reader()->readPath($path, $mimeType),
-            $connectionFactory
-        );
+        try {
+            $data = $this->reader()->readPath($path, $mimeType);
+        } catch (LoadException $e) {
+            throw new Exception\ConfigurationReadException($path, $e);
+        }
+
+        return $this->createConfiguration($data, $connectionFactory);
     }
 
     /**

@@ -3,6 +3,7 @@ namespace Icecave\Manifold\Authentication;
 
 use Eloquent\Schemer\Constraint\Reader\SchemaReader;
 use Eloquent\Schemer\Loader\ContentType;
+use Eloquent\Schemer\Loader\Exception\LoadException;
 use Eloquent\Schemer\Reader\ReaderInterface;
 use Eloquent\Schemer\Reader\ValidatingReader;
 use Eloquent\Schemer\Validation\BoundConstraintValidator;
@@ -53,7 +54,8 @@ class CredentialsReader implements CredentialsReaderInterface
      * @param string      $path     The path to the file.
      * @param string|null $mimeType The mime type of the credentials data.
      *
-     * @return CredentialsProviderInterface The parsed credentials as a credentials provider.
+     * @return CredentialsProviderInterface       The parsed credentials as a credentials provider.
+     * @throws Exception\CredentialsReadException If the file cannot be read.
      */
     public function readFile($path, $mimeType = null)
     {
@@ -61,9 +63,13 @@ class CredentialsReader implements CredentialsReaderInterface
             $mimeType = ContentType::YAML()->primaryMimeType();
         }
 
-        return $this->createProvider(
-            $this->reader()->readPath($path, $mimeType)
-        );
+        try {
+            $data = $this->reader()->readPath($path, $mimeType);
+        } catch (LoadException $e) {
+            throw new Exception\CredentialsReadException($path, $e);
+        }
+
+        return $this->createProvider($data);
     }
 
     /**

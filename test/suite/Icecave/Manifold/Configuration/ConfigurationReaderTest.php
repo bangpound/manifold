@@ -1,16 +1,18 @@
 <?php
 namespace Icecave\Manifold\Configuration;
 
+use Eloquent\Schemer\Loader\Exception\LoadException;
+use Eloquent\Schemer\Uri\Uri;
 use Icecave\Collections\Map;
 use Icecave\Collections\Vector;
 use Icecave\Isolator\Isolator;
 use Icecave\Manifold\Authentication\Credentials;
 use Icecave\Manifold\Authentication\CredentialsProvider;
 use Icecave\Manifold\Connection\ConnectionFactory;
-use Icecave\Manifold\Connection\LazyConnection;
-use Icecave\Manifold\Connection\Container\ConnectionPool;
 use Icecave\Manifold\Connection\Container\ConnectionContainerPair;
 use Icecave\Manifold\Connection\Container\ConnectionContainerSelector;
+use Icecave\Manifold\Connection\Container\ConnectionPool;
+use Icecave\Manifold\Connection\LazyConnection;
 use Icecave\Manifold\Replication\ReplicationTree;
 use Icecave\Parity\Parity;
 use PDO;
@@ -379,5 +381,15 @@ EOD;
 
         $this->setExpectedException($expected);
         $this->reader->readFile($fixturePath);
+    }
+
+    public function testConfigurationFileReadFailure()
+    {
+        $this->reader = new ConfigurationReader($this->innerReader);
+        Phake::when($this->innerReader)->readPath(Phake::anyParameters())
+            ->thenThrow(new LoadException(new Uri('file:///foo')));
+
+        $this->setExpectedException(__NAMESPACE__ . '\Exception\ConfigurationReadException');
+        $this->reader->readFile('foo');
     }
 }

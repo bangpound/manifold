@@ -12,7 +12,8 @@ interface CredentialsReaderInterface
      * @param string      $path     The path to the file.
      * @param string|null $mimeType The mime type of the credentials data.
      *
-     * @return CredentialsProviderInterface The parsed credentials as a credentials provider.
+     * @return CredentialsProviderInterface       The parsed credentials as a credentials provider.
+     * @throws Exception\CredentialsReadException If the file cannot be read.
      */
     public function readFile($path, $mimeType = null);
 
