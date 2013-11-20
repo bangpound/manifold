@@ -23,6 +23,7 @@ class ConfigurationCacheFileGeneratorTest extends PHPUnit_Framework_TestCase
         );
 
         $this->configuration = Phake::mock('Icecave\Manifold\Configuration\ConfigurationInterface');
+        $this->connectionFactory = Phake::mock('Icecave\Manifold\Connection\ConnectionFactoryInterface');
         $this->fixturePath = __DIR__ . '/../../../../../fixture/config';
     }
 
@@ -42,16 +43,23 @@ class ConfigurationCacheFileGeneratorTest extends PHPUnit_Framework_TestCase
 
     public function testGenerate()
     {
-        Phake::when($this->reader)->readFile('/path/to/configuration.yml')->thenReturn($this->configuration);
+        Phake::when($this->reader)->readFile('/path/to/configuration.yml', 'mimeType', $this->connectionFactory)
+            ->thenReturn($this->configuration);
         Phake::when($this->innerGenerator)->generate($this->configuration)->thenReturn('function () {}');
-        $this->generator->generate('/path/to/configuration.yml', '/path/to/cache.php');
+        $this->generator->generate(
+            '/path/to/configuration.yml',
+            '/path/to/cache.php',
+            'mimeType',
+            $this->connectionFactory
+        );
 
         Phake::verify($this->isolator)->file_put_contents('/path/to/cache.php', "<?php\n\nreturn function () {};\n");
     }
 
     public function testGenerateDefaults()
     {
-        Phake::when($this->reader)->readFile('/path/to/configuration.yml')->thenReturn($this->configuration);
+        Phake::when($this->reader)->readFile('/path/to/configuration.yml', null, null)
+            ->thenReturn($this->configuration);
         Phake::when($this->innerGenerator)->generate($this->configuration)->thenReturn('function () {}');
         $this->generator->generate('/path/to/configuration.yml');
 
@@ -74,5 +82,13 @@ class ConfigurationCacheFileGeneratorTest extends PHPUnit_Framework_TestCase
 
         $this->setExpectedException(__NAMESPACE__ . '\Exception\ConfigurationCacheWriteException');
         $this->generator->generateForConfiguration($this->configuration, '/path/to/cache.php');
+    }
+
+    public function testDefaultCachePath()
+    {
+        $this->assertSame(
+            '/path/to/configuration.yml.cache.php',
+            $this->generator->defaultCachePath('/path/to/configuration.yml')
+        );
     }
 }

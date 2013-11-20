@@ -7,6 +7,7 @@ use Icecave\Manifold\Configuration\ConfigurationInterface;
 use Icecave\Manifold\Configuration\ConfigurationReader;
 use Icecave\Manifold\Configuration\ConfigurationReaderInterface;
 use Icecave\Manifold\Configuration\Exception\ConfigurationReadException;
+use Icecave\Manifold\Connection\ConnectionFactoryInterface;
 
 /**
  * Generates configuration cache files.
@@ -62,21 +63,31 @@ class ConfigurationCacheFileGenerator implements
      * Generate a configuration cache file for the configuration found at the
      * supplied path.
      *
-     * @param string      $configurationPath The path to the configuration file to cache.
-     * @param string|null $cachePath         The path for the generated cache file.
+     * @param string                          $configurationPath The path to the configuration file to cache.
+     * @param string|null                     $cachePath         The path for the generated cache file.
+     * @param string|null                     $mimeType          The mime type of the configuration data.
+     * @param ConnectionFactoryInterface|null $connectionFactory The connection factory to use.
      *
      * @return string                                     The path for the generated cache file.
      * @throws ConfigurationReadException                 If the configuration file cannot be read.
      * @throws Exception\ConfigurationCacheWriteException If the cache file cannot be written.
      */
-    public function generate($configurationPath, $cachePath = null)
-    {
+    public function generate(
+        $configurationPath,
+        $cachePath = null,
+        $mimeType = null,
+        ConnectionFactoryInterface $connectionFactory = null
+    ) {
         if (null === $cachePath) {
-            $cachePath = $configurationPath . '.cache.php';
+            $cachePath = $this->defaultCachePath($configurationPath);
         }
 
         return $this->generateForConfiguration(
-            $this->reader()->readFile($configurationPath),
+            $this->reader()->readFile(
+                $configurationPath,
+                $mimeType,
+                $connectionFactory
+            ),
             $cachePath
         );
     }
@@ -108,6 +119,19 @@ class ConfigurationCacheFileGenerator implements
                 $e
             );
         }
+    }
+
+    /**
+     * Generate the default path for the cached version of the supplied
+     * configuration path.
+     *
+     * @param string $configurationPath The path to the configuration file.
+     *
+     * @return string The path to the default cache file.
+     */
+    public function defaultCachePath($configurationPath)
+    {
+        return $configurationPath . '.cache.php';
     }
 
     /**
