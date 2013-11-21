@@ -3,7 +3,6 @@ namespace Icecave\Manifold\Authentication;
 
 use Eloquent\Schemer\Loader\Exception\LoadException;
 use Eloquent\Schemer\Uri\Uri;
-use Icecave\Collections\Map;
 use Icecave\Parity\Parity;
 use PHPUnit_Framework_TestCase;
 use Phake;
@@ -66,11 +65,9 @@ EOD;
         $actual = $this->reader->readFile($this->fixturePath . '/valid-full.yml');
         $expected = new CredentialsProvider(
             new Credentials('defaultUsername', 'defaultPassword'),
-            new Map(
-                array(
-                    'foo' => new Credentials('fooUsername', 'fooPassword'),
-                    'bar' => new Credentials('barUsername', 'barPassword'),
-                )
+            array(
+                'foo' => new Credentials('fooUsername', 'fooPassword'),
+                'bar' => new Credentials('barUsername', 'barPassword'),
             )
         );
 
@@ -88,10 +85,8 @@ EOD;
         $actual = $this->reader->readString($string);
         $expected = new CredentialsProvider(
             new Credentials,
-            new Map(
-                array(
-                    'foo' => new Credentials(null, 'fooPassword'),
-                )
+            array(
+                'foo' => new Credentials(null, 'fooPassword'),
             )
         );
 

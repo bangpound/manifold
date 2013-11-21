@@ -1,8 +1,6 @@
 <?php
 namespace Icecave\Manifold\Authentication;
 
-use Icecave\Collections\Map;
-
 /**
  * An abstract base class for implementing credential providers.
  */
@@ -12,18 +10,18 @@ abstract class AbstractCredentialsProvider implements
     /**
      * Construct a new credentials provider.
      *
-     * @param CredentialsInterface             $defaultCredentials    The default credentials.
-     * @param Map<string,CredentialsInterface> $connectionCredentials A map of connection name to credentials.
+     * @param CredentialsInterface               $defaultCredentials    The default credentials.
+     * @param array<string,CredentialsInterface> $connectionCredentials A map of connection name to credentials.
      */
     public function __construct(
         CredentialsInterface $defaultCredentials = null,
-        Map $connectionCredentials = null
+        array $connectionCredentials = null
     ) {
         if (null === $defaultCredentials) {
             $defaultCredentials = new Credentials;
         }
         if (null === $connectionCredentials) {
-            $connectionCredentials = new Map;
+            $connectionCredentials = array();
         }
 
         $this->defaultCredentials = $defaultCredentials;
@@ -43,7 +41,7 @@ abstract class AbstractCredentialsProvider implements
     /**
      * Get the connection credential map.
      *
-     * @return Map<string,CredentialsInterface> The connection credential map.
+     * @return array<string,CredentialsInterface> The connection credential map.
      */
     public function connectionCredentials()
     {

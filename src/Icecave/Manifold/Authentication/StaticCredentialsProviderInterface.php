@@ -1,8 +1,6 @@
 <?php
 namespace Icecave\Manifold\Authentication;
 
-use Icecave\Collections\Map;
-
 /**
  * The interface implemented by static credentials providers.
  */
@@ -19,7 +17,7 @@ interface StaticCredentialsProviderInterface extends
     /**
      * Get the connection credential map.
      *
-     * @return Map<string,CredentialsInterface> The connection credential map.
+     * @return array<string,CredentialsInterface> The connection credential map.
      */
     public function connectionCredentials();
 }

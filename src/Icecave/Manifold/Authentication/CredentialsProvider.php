@@ -19,11 +19,10 @@ class CredentialsProvider extends AbstractCredentialsProvider implements
      */
     public function forConnection(ConnectionInterface $connection)
     {
-        if (
-            $this->connectionCredentials()
-                ->tryGet($connection->name(), $credentials)
-        ) {
-            return $credentials;
+        $connectionCredentials = $this->connectionCredentials();
+
+        if (array_key_exists($connection->name(), $connectionCredentials)) {
+            return $connectionCredentials[$connection->name()];
         }
 
         return $this->defaultCredentials();

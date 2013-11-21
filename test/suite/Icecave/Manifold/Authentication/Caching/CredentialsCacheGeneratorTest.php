@@ -20,14 +20,12 @@ class CredentialsCacheGeneratorTest extends PHPUnit_Framework_TestCase
         $provider = $this->reader->readFile($this->fixturePath . '/valid-minimal.yml');
         $expected = <<<'EOD'
 function () {
-    $connectionCredentials = new Icecave\Collections\Map;
-
     return new Icecave\Manifold\Authentication\CredentialsProvider(
         new Icecave\Manifold\Authentication\Credentials(
             'defaultUsername',
             null
         ),
-        $connectionCredentials
+        array()
     );
 }
 EOD;
@@ -45,28 +43,21 @@ EOD;
         $provider = $this->reader->readFile($this->fixturePath . '/valid-full.yml');
         $expected = <<<'EOD'
 function () {
-    $connectionCredentials = new Icecave\Collections\Map;
-    $connectionCredentials->set(
-        'bar',
-        new Icecave\Manifold\Authentication\Credentials(
-            'barUsername',
-            'barPassword'
-        )
-    );
-    $connectionCredentials->set(
-        'foo',
-        new Icecave\Manifold\Authentication\Credentials(
-            'fooUsername',
-            'fooPassword'
-        )
-    );
-
     return new Icecave\Manifold\Authentication\CredentialsProvider(
         new Icecave\Manifold\Authentication\Credentials(
             'defaultUsername',
             'defaultPassword'
         ),
-        $connectionCredentials
+        array(
+            'foo' => new Icecave\Manifold\Authentication\Credentials(
+                'fooUsername',
+                'fooPassword'
+            ),
+            'bar' => new Icecave\Manifold\Authentication\Credentials(
+                'barUsername',
+                'barPassword'
+            ),
+        )
     );
 }
 EOD;

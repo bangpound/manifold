@@ -1,7 +1,6 @@
 <?php
 namespace Icecave\Manifold\Authentication;
 
-use Icecave\Collections\Map;
 use Icecave\Isolator\Isolator;
 use PHPUnit_Framework_TestCase;
 use Phake;
@@ -20,12 +19,10 @@ class EnvironmentCredentialsProviderTest extends PHPUnit_Framework_TestCase
         $this->fooCredentials = new Credentials('USERNAME_FOO', 'PASSWORD_FOO');
         $this->barCredentials = new Credentials('USERNAME_BAR');
         $this->quxCredentials = new Credentials('USERNAME_QUX');
-        $this->connectionCredentials = new Map(
-            array(
-                'foo' => $this->fooCredentials,
-                'bar' => $this->barCredentials,
-                'qux' => $this->quxCredentials,
-            )
+        $this->connectionCredentials = array(
+            'foo' => $this->fooCredentials,
+            'bar' => $this->barCredentials,
+            'qux' => $this->quxCredentials,
         );
         $this->isolator = Phake::mock(Isolator::className());
         $this->provider = new EnvironmentCredentialsProvider(
@@ -66,7 +63,7 @@ class EnvironmentCredentialsProviderTest extends PHPUnit_Framework_TestCase
         $this->provider = new EnvironmentCredentialsProvider;
 
         $this->assertEquals(new Credentials, $this->provider->defaultCredentials());
-        $this->assertEquals(new Map, $this->provider->connectionCredentials());
+        $this->assertSame(array(), $this->provider->connectionCredentials());
     }
 
     public function testForConnection()

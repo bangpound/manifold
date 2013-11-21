@@ -8,7 +8,6 @@ use Eloquent\Schemer\Reader\ReaderInterface;
 use Eloquent\Schemer\Reader\ValidatingReader;
 use Eloquent\Schemer\Validation\BoundConstraintValidator;
 use Eloquent\Schemer\Value\ObjectValue;
-use Icecave\Collections\Map;
 use Icecave\Manifold\Authentication\Credentials;
 
 /**
@@ -110,13 +109,11 @@ class CredentialsReader implements CredentialsReaderInterface
             $defaultCredentials = new Credentials;
         }
 
-        $connectionCredentials = new Map;
+        $connectionCredentials = array();
         if ($value->has('connections')) {
             foreach ($value->get('connections') as $name => $subValue) {
-                $connectionCredentials->set(
-                    $name,
-                    $this->createCredentials($subValue)
-                );
+                $connectionCredentials[$name] =
+                    $this->createCredentials($subValue);
             }
         }
 

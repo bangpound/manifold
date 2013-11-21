@@ -1,7 +1,6 @@
 <?php
 namespace Icecave\Manifold\Authentication;
 
-use Icecave\Collections\Map;
 use Phake;
 use PHPUnit_Framework_TestCase;
 
@@ -18,7 +17,7 @@ class CredentialsProviderTest extends PHPUnit_Framework_TestCase
         $this->defaultCredentials = new Credentials('defaultUsername', 'defaultPassword');
         $this->fooCredentials = new Credentials('fooUsername', 'fooPassword');
         $this->barCredentials = new Credentials('barUsername', 'barPassword');
-        $this->connectionCredentials = new Map(array('foo' => $this->fooCredentials, 'bar' => $this->barCredentials));
+        $this->connectionCredentials = array('foo' => $this->fooCredentials, 'bar' => $this->barCredentials);
         $this->provider = new CredentialsProvider($this->defaultCredentials, $this->connectionCredentials);
 
         $this->fooConnection = Phake::mock('Icecave\Manifold\Connection\ConnectionInterface');
@@ -40,7 +39,7 @@ class CredentialsProviderTest extends PHPUnit_Framework_TestCase
         $this->provider = new CredentialsProvider;
 
         $this->assertEquals(new Credentials, $this->provider->defaultCredentials());
-        $this->assertEquals(new Map, $this->provider->connectionCredentials());
+        $this->assertSame(array(), $this->provider->connectionCredentials());
     }
 
     public function testForConnection()
