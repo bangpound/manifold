@@ -56,7 +56,7 @@ class ConfigurationCacheGenerator implements
     protected function generateBody(ConfigurationInterface $configuration)
     {
         return sprintf(
-            "%s\n%s\n%s\n%s\nreturn %s",
+            "%s\n%s\n%s\n%s\nreturn %s;\n",
             $this->generateConnections($configuration),
             $this->generatePools($configuration),
             $this->generateSelector($configuration),
@@ -247,8 +247,7 @@ new Icecave\Manifold\Configuration\Configuration(
     $connectionPools,
     $selector,
     $replicationTrees
-);
-
+)
 EOD;
     }
 

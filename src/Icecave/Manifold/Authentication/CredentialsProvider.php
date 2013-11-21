@@ -6,7 +6,8 @@ use Icecave\Manifold\Connection\ConnectionInterface;
 /**
  * A credential provider driven by a predefined set of string values.
  */
-class CredentialsProvider extends AbstractCredentialsProvider
+class CredentialsProvider extends AbstractCredentialsProvider implements
+    StaticCredentialsProviderInterface
 {
     /**
      * Get the credentials for the supplied connection.

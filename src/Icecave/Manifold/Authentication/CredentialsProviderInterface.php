@@ -4,7 +4,7 @@ namespace Icecave\Manifold\Authentication;
 use Icecave\Manifold\Connection\ConnectionInterface;
 
 /**
- * The interface implemented by credential providers.
+ * The interface implemented by credentials providers.
  */
 interface CredentialsProviderInterface
 {

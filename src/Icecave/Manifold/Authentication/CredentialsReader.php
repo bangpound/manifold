@@ -31,8 +31,10 @@ class CredentialsReader implements CredentialsReaderInterface
      *
      * @return ReaderInterface The internal reader.
      */
+    // @codeCoverageIgnoreStart
     public function reader()
     {
+        // @codeCoverageIgnoreEnd
         if (null === $this->reader) {
             $schemaReader = new SchemaReader;
             $schema = $schemaReader->readPath(
