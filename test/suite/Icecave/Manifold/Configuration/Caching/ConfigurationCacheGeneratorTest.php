@@ -47,11 +47,11 @@ function (
             $databasePairs
         );
 
-    $replicationTrees = new Icecave\Collections\Vector;
+    $replicationTrees = array();
     $replicationTree = new Icecave\Manifold\Replication\ReplicationTree(
         $connections->get('foo')
     );
-    $replicationTrees->pushBack($replicationTree);
+    $replicationTrees[] = $replicationTree;
 
     return new Icecave\Manifold\Configuration\Configuration(
         $connections,
@@ -238,7 +238,7 @@ function (
             $databasePairs
         );
 
-    $replicationTrees = new Icecave\Collections\Vector;
+    $replicationTrees = array();
     $replicationTree = new Icecave\Manifold\Replication\ReplicationTree(
         $connections->get('master1')
     );
@@ -282,11 +282,11 @@ function (
         $connections->get('reporting3'),
         $connections->get('slave302')
     );
-    $replicationTrees->pushBack($replicationTree);
+    $replicationTrees[] = $replicationTree;
     $replicationTree = new Icecave\Manifold\Replication\ReplicationTree(
         $connections->get('master3')
     );
-    $replicationTrees->pushBack($replicationTree);
+    $replicationTrees[] = $replicationTree;
 
     return new Icecave\Manifold\Configuration\Configuration(
         $connections,
@@ -312,6 +312,6 @@ EOD;
             $actualConfiguration->connectionPools()->get('pool1')
         );
         $this->assertSame(5, $actualConfiguration->connectionContainerSelector()->databases()->count());
-        $this->assertSame(2, $actualConfiguration->replicationTrees()->count());
+        $this->assertSame(2, count($actualConfiguration->replicationTrees()));
     }
 }

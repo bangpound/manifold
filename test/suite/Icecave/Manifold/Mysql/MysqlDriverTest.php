@@ -32,7 +32,7 @@ class MysqlDriverTest extends PHPUnit_Framework_TestCase
             new Map,
             new Map,
             $this->connectionContainerSelector,
-            new Vector(array($this->replicationTreeA, $this->replicationTreeB))
+            array($this->replicationTreeA, $this->replicationTreeB)
         );
 
         $this->connectionSelector = Phake::mock('Icecave\Manifold\Replication\ConnectionSelectorInterface');

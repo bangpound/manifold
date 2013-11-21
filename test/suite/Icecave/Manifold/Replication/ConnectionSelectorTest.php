@@ -31,17 +31,17 @@ class ConnectionSelectorTest extends PHPUnit_Framework_TestCase
         $this->strategy = Phake::mock(__NAMESPACE__ . '\SelectionStrategy\SelectionStrategyInterface');
 
         $this->connectionA1 = Phake::mock('Icecave\Manifold\Connection\ConnectionInterface');
-        $this->connectionA1->id = 'A1';
+        Phake::when($this->connectionA1)->name()->thenReturn('A1');
         $this->connectionA2 = Phake::mock('Icecave\Manifold\Connection\ConnectionInterface');
-        $this->connectionA2->id = 'A2';
+        Phake::when($this->connectionA2)->name()->thenReturn('A2');
         $this->connectionB1 = Phake::mock('Icecave\Manifold\Connection\ConnectionInterface');
-        $this->connectionB1->id = 'B1';
+        Phake::when($this->connectionB1)->name()->thenReturn('B1');
         $this->connectionB2 = Phake::mock('Icecave\Manifold\Connection\ConnectionInterface');
-        $this->connectionB2->id = 'B2';
+        Phake::when($this->connectionB2)->name()->thenReturn('B2');
         $this->connectionC1 = Phake::mock('Icecave\Manifold\Connection\ConnectionInterface');
-        $this->connectionC1->id = 'C1';
+        Phake::when($this->connectionC1)->name()->thenReturn('C1');
         $this->connectionC2 = Phake::mock('Icecave\Manifold\Connection\ConnectionInterface');
-        $this->connectionC2->id = 'C2';
+        Phake::when($this->connectionC2)->name()->thenReturn('C2');
 
         $this->containerA = new ConnectionPool(
             'A',

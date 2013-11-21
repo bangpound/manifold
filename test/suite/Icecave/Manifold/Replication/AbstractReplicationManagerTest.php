@@ -10,15 +10,15 @@ class AbstractReplicationManagerTest extends PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->connection1 = Phake::mock('Icecave\Manifold\Connection\ConnectionInterface');
-        $this->connection1->id = '1';
+        Phake::when($this->connection1)->name()->thenReturn('connection1');
         $this->connection2 = Phake::mock('Icecave\Manifold\Connection\ConnectionInterface');
-        $this->connection2->id = '2';
+        Phake::when($this->connection2)->name()->thenReturn('connection2');
         $this->connection3 = Phake::mock('Icecave\Manifold\Connection\ConnectionInterface');
-        $this->connection3->id = '3';
+        Phake::when($this->connection3)->name()->thenReturn('connection3');
         $this->connection4 = Phake::mock('Icecave\Manifold\Connection\ConnectionInterface');
-        $this->connection4->id = '4';
+        Phake::when($this->connection4)->name()->thenReturn('connection4');
         $this->connection5 = Phake::mock('Icecave\Manifold\Connection\ConnectionInterface');
-        $this->connection5->id = '5';
+        Phake::when($this->connection5)->name()->thenReturn('connection5');
         $this->tree = new ReplicationTree($this->connection1);
         $this->tree->addSlave($this->connection1, $this->connection2);
         $this->tree->addSlave($this->connection2, $this->connection3);

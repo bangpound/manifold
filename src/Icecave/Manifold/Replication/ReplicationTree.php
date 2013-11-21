@@ -1,9 +1,6 @@
 <?php
 namespace Icecave\Manifold\Replication;
 
-use Icecave\Collections\Exception\UnknownKeyException;
-use Icecave\Collections\Map;
-use Icecave\Collections\Set;
 use Icecave\Manifold\Connection\ConnectionInterface;
 use InvalidArgumentException;
 use stdClass;
@@ -19,8 +16,8 @@ class ReplicationTree implements ReplicationTreeInterface
     public function __construct(ConnectionInterface $replicationRoot)
     {
         $this->replicationRoot = $replicationRoot;
-        $this->connections = new Map;
-        $this->connections[$replicationRoot] = $this->createEntry();
+        $this->connections = array();
+        $this->connections[$replicationRoot->name()] = $this->createEntry();
     }
 
     /**
@@ -42,7 +39,7 @@ class ReplicationTree implements ReplicationTreeInterface
      */
     public function hasConnection(ConnectionInterface $connection)
     {
-        return $this->connections->hasKey($connection);
+        return array_key_exists($connection->name(), $this->connections);
     }
 
     /**
@@ -72,7 +69,7 @@ class ReplicationTree implements ReplicationTreeInterface
      */
     public function isLeaf(ConnectionInterface $connection)
     {
-        return $this->getEntry($connection)->slaves->isEmpty();
+        return count($this->getEntry($connection)->slaves) < 1;
     }
 
     /**
@@ -119,12 +116,12 @@ class ReplicationTree implements ReplicationTreeInterface
      *
      * @param ConnectionInterface $connection The master connection.
      *
-     * @return Set<ConnectionInterface>             The replication slaves for the given master.
+     * @return array<ConnectionInterface>           The replication slaves for the given master.
      * @throws Exception\UnknownConnectionException If the connection is not found in this tree.
      */
     public function slavesOf(ConnectionInterface $connection)
     {
-        return clone $this->getEntry($connection)->slaves;
+        return $this->getEntry($connection)->slaves;
     }
 
     /**
@@ -190,7 +187,8 @@ class ReplicationTree implements ReplicationTreeInterface
             if ($masterConnection === $slaveConnection) {
                 return $hops;
             }
-            $slaveConnection = $this->connections[$slaveConnection]->master;
+            $slaveConnection =
+                $this->connections[$slaveConnection->name()]->master;
             ++$hops;
         } while ($slaveConnection);
 
@@ -231,7 +229,7 @@ class ReplicationTree implements ReplicationTreeInterface
                 return array_reverse($path);
             }
 
-            $master = $this->connections[$slaveConnection]->master;
+            $master = $this->connections[$slaveConnection->name()]->master;
             $path[] = array($master, $slaveConnection);
             $slaveConnection = $master;
         } while ($slaveConnection);
@@ -254,11 +252,9 @@ class ReplicationTree implements ReplicationTreeInterface
         ConnectionInterface $slaveConnection
     ) {
         $masterEntry = $this->getEntry($masterConnection);
-        $this->connections->add(
-            $slaveConnection,
-            $this->createEntry($masterConnection)
-        );
-        $masterEntry->slaves->add($slaveConnection);
+        $this->connections[$slaveConnection->name()] =
+            $this->createEntry($masterConnection);
+        $masterEntry->slaves[] = $slaveConnection;
     }
 
     /**
@@ -281,8 +277,11 @@ class ReplicationTree implements ReplicationTreeInterface
         }
 
         $masterEntry = $this->getEntry($this->getEntry($connection)->master);
-        $masterEntry->slaves->remove($connection);
-        $this->connections->remove($connection);
+        $slaveIndex = array_search($connection, $masterEntry->slaves, true);
+        if (false !== $slaveIndex) {
+            unset($masterEntry->slaves[$slaveIndex]);
+        }
+        unset($this->connections[$connection->name()]);
     }
 
     /**
@@ -294,7 +293,7 @@ class ReplicationTree implements ReplicationTreeInterface
     {
         $entry = new stdClass;
         $entry->master = $masterConnection;
-        $entry->slaves = new Set;
+        $entry->slaves = array();
 
         return $entry;
     }
@@ -306,11 +305,11 @@ class ReplicationTree implements ReplicationTreeInterface
      */
     private function getEntry(ConnectionInterface $connection)
     {
-        try {
-            return $this->connections[$connection];
-        } catch (UnknownKeyException $e) {
-            throw new Exception\UnknownConnectionException($connection, $e);
+        if ($this->hasConnection($connection)) {
+            return $this->connections[$connection->name()];
         }
+
+        throw new Exception\UnknownConnectionException($connection);
     }
 
     private $replicationRoot;

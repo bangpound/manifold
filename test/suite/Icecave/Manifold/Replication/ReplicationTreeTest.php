@@ -1,7 +1,6 @@
 <?php
 namespace Icecave\Manifold\Replication;
 
-use Icecave\Collections\Set;
 use InvalidArgumentException;
 use Phake;
 use PHPUnit_Framework_TestCase;
@@ -11,10 +10,15 @@ class ReplicationTreeTest extends PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->connection1 = Phake::mock('Icecave\Manifold\Connection\ConnectionInterface');
+        Phake::when($this->connection1)->name()->thenReturn('connection1');
         $this->connection2 = Phake::mock('Icecave\Manifold\Connection\ConnectionInterface');
+        Phake::when($this->connection2)->name()->thenReturn('connection2');
         $this->connection3 = Phake::mock('Icecave\Manifold\Connection\ConnectionInterface');
+        Phake::when($this->connection3)->name()->thenReturn('connection3');
         $this->connection4 = Phake::mock('Icecave\Manifold\Connection\ConnectionInterface');
+        Phake::when($this->connection4)->name()->thenReturn('connection4');
         $this->connection5 = Phake::mock('Icecave\Manifold\Connection\ConnectionInterface');
+        Phake::when($this->connection5)->name()->thenReturn('connection5');
 
         $this->tree = new ReplicationTree($this->connection1);
         $this->tree->addSlave($this->connection1, $this->connection2);
@@ -108,12 +112,10 @@ class ReplicationTreeTest extends PHPUnit_Framework_TestCase
 
     public function testSlavesOf()
     {
-        $this->assertTrue(Set::create($this->connection2)->isEqualSet($this->tree->slavesOf($this->connection1)));
-        $this->assertTrue(
-            Set::create($this->connection3, $this->connection4)->isEqualSet($this->tree->slavesOf($this->connection2))
-        );
-        $this->assertTrue($this->tree->slavesOf($this->connection3)->isEmpty());
-        $this->assertTrue($this->tree->slavesOf($this->connection4)->isEmpty());
+        $this->assertSame(array($this->connection2), $this->tree->slavesOf($this->connection1));
+        $this->assertSame(array($this->connection3, $this->connection4), $this->tree->slavesOf($this->connection2));
+        $this->assertSame(array(), $this->tree->slavesOf($this->connection3));
+        $this->assertSame(array(), $this->tree->slavesOf($this->connection4));
     }
 
     public function testSlavesOfWithUnknownConncetion()

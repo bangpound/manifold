@@ -36,7 +36,7 @@ interface ConfigurationInterface
     /**
      * Get the replication trees.
      *
-     * @return Vector<ReplicationTreeInterface> The replication trees.
+     * @return array<ReplicationTreeInterface> The replication trees.
      */
     public function replicationTrees();
 }

@@ -192,7 +192,7 @@ class ConfigurationCacheGenerator implements
     protected function generateReplicationTrees(
         ConfigurationInterface $configuration
     ) {
-        $source = "\$replicationTrees = new Icecave\Collections\Vector;\n";
+        $source = "\$replicationTrees = array();\n";
 
         foreach ($configuration->replicationTrees() as $replicationTree) {
             $source .= $this->generateReplicationTree($replicationTree);
@@ -226,7 +226,7 @@ class ConfigurationCacheGenerator implements
             $replicationTree->replicationRoot()
         );
 
-        $source .= "\$replicationTrees->pushBack(\$replicationTree);\n";
+        $source .= "\$replicationTrees[] = \$replicationTree;\n";
 
         return $source;
     }
@@ -265,16 +265,9 @@ EOD;
     ) {
         $source = '';
 
-        $slaveConnections = $replicationTree
-            ->slavesOf($masterConnection)->elements();
-        usort(
-            $slaveConnections,
-            function (ConnectionInterface $left, ConnectionInterface $right) {
-                return strcmp($left->name(), $right->name());
-            }
-        );
-
-        foreach ($slaveConnections as $slaveConnection) {
+        foreach (
+            $replicationTree->slavesOf($masterConnection) as $slaveConnection
+        ) {
             $source .= sprintf(
                 "\$replicationTree->addSlave(\n%s,\n%s\n);\n",
                 $this->indent($this->generateConnectionGet($masterConnection)),

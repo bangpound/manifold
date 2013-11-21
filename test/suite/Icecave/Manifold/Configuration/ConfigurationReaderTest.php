@@ -79,7 +79,7 @@ EOD;
             new ConnectionContainerPair($expectedContainer, $expectedContainer)
         );
         $expectedReplicationTree = new ReplicationTree($expectedConnections->get('foo'));
-        $expectedReplicationTrees = new Vector(array($expectedReplicationTree));
+        $expectedReplicationTrees = array($expectedReplicationTree);
 
         $this->assertEquals($expectedConnections->elements(), $configuration->connections()->elements());
         $this->assertEquals($expectedPools->elements(), $configuration->connectionPools()->elements());
@@ -110,7 +110,7 @@ EOD;
             new ConnectionContainerPair($expectedContainer, $expectedContainer)
         );
         $expectedReplicationTree = new ReplicationTree($expectedConnections->get('foo'));
-        $expectedReplicationTrees = new Vector(array($expectedReplicationTree));
+        $expectedReplicationTrees = array($expectedReplicationTree);
 
         $this->assertEquals($expectedConnections->elements(), $configuration->connections()->elements());
         $this->assertEquals($expectedPools->elements(), $configuration->connectionPools()->elements());
@@ -137,7 +137,7 @@ EOD;
             new ConnectionContainerPair($expectedContainer, $expectedContainer)
         );
         $expectedReplicationTree = new ReplicationTree($expectedConnections->get('foo'));
-        $expectedReplicationTrees = new Vector(array($expectedReplicationTree));
+        $expectedReplicationTrees = array($expectedReplicationTree);
 
         $this->assertEquals($expectedConnections->elements(), $configuration->connections()->elements());
         $this->assertEquals($expectedPools->elements(), $configuration->connectionPools()->elements());
@@ -168,7 +168,7 @@ EOD;
             new ConnectionContainerPair($expectedContainer, $expectedContainer)
         );
         $expectedReplicationTree = new ReplicationTree($expectedConnections->get('foo'));
-        $expectedReplicationTrees = new Vector(array($expectedReplicationTree));
+        $expectedReplicationTrees = array($expectedReplicationTree);
 
         $this->assertEquals($expectedConnections->elements(), $configuration->connections()->elements());
         $this->assertEquals($expectedPools->elements(), $configuration->connectionPools()->elements());
@@ -349,7 +349,7 @@ EOD;
             $expectedConnections->get('slave302')
         );
         $expectedReplicationTreeB = new ReplicationTree($expectedConnections->get('master3'));
-        $expectedReplicationTrees = new Vector(array($expectedReplicationTreeA, $expectedReplicationTreeB));
+        $expectedReplicationTrees = array($expectedReplicationTreeA, $expectedReplicationTreeB);
 
         $this->assertEquals($expectedConnections->elements(), $configuration->connections()->elements());
         $this->assertEquals($expectedConnections->elements(), $configurationSplit->connections()->elements());
@@ -357,8 +357,8 @@ EOD;
         $this->assertEquals($expectedPools->elements(), $configurationSplit->connectionPools()->elements());
         $this->assertEquals($expectedSelector, $configuration->connectionContainerSelector());
         $this->assertEquals($expectedSelector, $configurationSplit->connectionContainerSelector());
-        $this->assertSame(0, Parity::compare($expectedReplicationTrees, $configuration->replicationTrees()));
-        $this->assertSame(0, Parity::compare($expectedReplicationTrees, $configurationSplit->replicationTrees()));
+        $this->assertEquals($expectedReplicationTrees, $configuration->replicationTrees());
+        $this->assertEquals($expectedReplicationTrees, $configurationSplit->replicationTrees());
     }
 
     public function invalidConfigurationData()

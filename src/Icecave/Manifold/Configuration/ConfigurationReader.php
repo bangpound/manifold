@@ -278,14 +278,14 @@ class ConfigurationReader implements ConfigurationReaderInterface
     }
 
     /**
-     * Creates a vector of replication trees from raw configuration data.
+     * Creates an array of replication trees from raw configuration data.
      *
      * @param ObjectValue                         $value             The raw configuration data.
      * @param Map<string,ConnectionInterface>     $connections       The connection map.
      * @param Map<string,ConnectionPoolInterface> $pools             The connection pool map.
      * @param ConnectionInterface                 $defaultConnection The default connection.
      *
-     * @return Vector<ReplicationTreeInterface> The new replication trees.
+     * @return array<ReplicationTreeInterface> The new replication trees.
      */
     protected function createReplicationTrees(
         ObjectValue $value,
@@ -293,7 +293,7 @@ class ConfigurationReader implements ConfigurationReaderInterface
         Map $pools,
         ConnectionInterface $defaultConnection
     ) {
-        $replicationTrees = new Vector;
+        $replicationTrees = array();
 
         foreach ($value->get('replication') as $name => $treeNodes) {
             $masterConnection = $this->findConnection($name, $connections);
@@ -307,13 +307,11 @@ class ConfigurationReader implements ConfigurationReaderInterface
                 $masterConnection
             );
 
-            $replicationTrees->pushBack($replicationTree);
+            $replicationTrees[] = $replicationTree;
         }
 
-        if ($replicationTrees->count() < 1) {
-            $replicationTrees->pushBack(
-                new ReplicationTree($defaultConnection)
-            );
+        if (count($replicationTrees) < 1) {
+            $replicationTrees[] = new ReplicationTree($defaultConnection);
         }
 
         return $replicationTrees;

@@ -17,13 +17,13 @@ class QueryConnectionSelectorTest extends PHPUnit_Framework_TestCase
         $this->strategy = Phake::mock(__NAMESPACE__ . '\SelectionStrategy\SelectionStrategyInterface');
 
         $this->connectionA = Phake::mock('Icecave\Manifold\Connection\ConnectionInterface');
-        $this->connectionA->id = 'A';
+        Phake::when($this->connectionA)->name()->thenReturn('connectionA');
         $this->connectionB = Phake::mock('Icecave\Manifold\Connection\ConnectionInterface');
-        $this->connectionB->id = 'B';
+        Phake::when($this->connectionB)->name()->thenReturn('connectionB');
         $this->connectionC = Phake::mock('Icecave\Manifold\Connection\ConnectionInterface');
-        $this->connectionC->id = 'C';
+        Phake::when($this->connectionC)->name()->thenReturn('connectionC');
         $this->connectionD = Phake::mock('Icecave\Manifold\Connection\ConnectionInterface');
-        $this->connectionD->id = 'D';
+        Phake::when($this->connectionD)->name()->thenReturn('connectionD');
     }
 
     public function testConstructor()

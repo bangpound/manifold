@@ -2,7 +2,6 @@
 namespace Icecave\Manifold\Configuration;
 
 use Icecave\Collections\Map;
-use Icecave\Collections\Vector;
 use Icecave\Manifold\Connection\ConnectionInterface;
 use Icecave\Manifold\Connection\Container\ConnectionPoolInterface;
 use Icecave\Manifold\Connection\Container\ConnectionContainerSelectorInterface;
@@ -19,13 +18,13 @@ class Configuration implements ConfigurationInterface
      * @param Map<string,ConnectionInterface>      $connections                 The defined connections.
      * @param Map<string,ConnectionPoolInterface>  $connectionPools             The defined connection pools.
      * @param ConnectionContainerSelectorInterface $connectionContainerSelector The connection container selector.
-     * @param Vector<ReplicationTreeInterface>     $replicationTrees            The replication trees.
+     * @param array<ReplicationTreeInterface>      $replicationTrees            The replication trees.
      */
     public function __construct(
         Map $connections,
         Map $connectionPools,
         ConnectionContainerSelectorInterface $connectionContainerSelector,
-        Vector $replicationTrees
+        array $replicationTrees
     ) {
         $this->connections = $connections;
         $this->connectionPools = $connectionPools;
@@ -66,7 +65,7 @@ class Configuration implements ConfigurationInterface
     /**
      * Get the replication trees.
      *
-     * @return Vector<ReplicationTreeInterface> The replication trees.
+     * @return array<ReplicationTreeInterface> The replication trees.
      */
     public function replicationTrees()
     {

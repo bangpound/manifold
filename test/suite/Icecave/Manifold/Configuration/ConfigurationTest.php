@@ -2,7 +2,6 @@
 namespace Icecave\Manifold\Configuration;
 
 use Icecave\Collections\Map;
-use Icecave\Collections\Vector;
 use PHPUnit_Framework_TestCase;
 use Phake;
 
@@ -17,7 +16,10 @@ class ConfigurationTest extends PHPUnit_Framework_TestCase
         $this->connectionContainerSelector = Phake::mock(
             'Icecave\Manifold\Connection\Container\ConnectionContainerSelectorInterface'
         );
-        $this->replicationTrees = new Vector;
+        $this->replicationTrees = array(
+            Phake::mock('Icecave\Manifold\Replication\ReplicationTree'),
+            Phake::mock('Icecave\Manifold\Replication\ReplicationTree'),
+        );
         $this->configuration = new Configuration(
             $this->connections,
             $this->connectionPools,
