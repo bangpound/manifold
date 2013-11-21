@@ -241,7 +241,7 @@ class ConfigurationReader implements ConfigurationReaderInterface
         array $pools,
         ConnectionInterface $defaultConnection
     ) {
-        $databases = new Map;
+        $databases = array();
         $defaultPair = null;
 
         $selection = $value->get('selection');
@@ -261,13 +261,10 @@ class ConfigurationReader implements ConfigurationReaderInterface
         }
 
         foreach ($selection->get('databases') as $name => $pair) {
-            $databases->add(
-                $name,
-                $this->createConnectionContainerPair(
-                    $pair,
-                    $connections,
-                    $pools
-                )
+            $databases[$name] = $this->createConnectionContainerPair(
+                $pair,
+                $connections,
+                $pools
             );
         }
 

@@ -276,28 +276,26 @@ EOD;
                 $expectedConnections->get('reporting1'),
                 $expectedPools['pool1']
             ),
-            new Map(
-                array(
-                    'app_data' => new ConnectionContainerPair(
-                        $expectedConnections->get('master1'),
-                        $expectedPools['pool1']
-                    ),
-                    'app_reporting' => new ConnectionContainerPair(
-                        $expectedConnections->get('reporting2'),
-                        $expectedPools['pool2']
-                    ),
-                    'app_temp' => new ConnectionContainerPair(
-                        $expectedPools['pool2'],
-                        $expectedPools['pool2']
-                    ),
-                    'app_read_only' => new ConnectionContainerPair(
-                        null,
-                        $expectedConnections->get('master2')
-                    ),
-                    'app_write_only' => new ConnectionContainerPair(
-                        $expectedConnections->get('master2')
-                    ),
-                )
+            array(
+                'app_data' => new ConnectionContainerPair(
+                    $expectedConnections->get('master1'),
+                    $expectedPools['pool1']
+                ),
+                'app_reporting' => new ConnectionContainerPair(
+                    $expectedConnections->get('reporting2'),
+                    $expectedPools['pool2']
+                ),
+                'app_temp' => new ConnectionContainerPair(
+                    $expectedPools['pool2'],
+                    $expectedPools['pool2']
+                ),
+                'app_read_only' => new ConnectionContainerPair(
+                    null,
+                    $expectedConnections->get('master2')
+                ),
+                'app_write_only' => new ConnectionContainerPair(
+                    $expectedConnections->get('master2')
+                ),
             )
         );
         $expectedReplicationTreeA = new ReplicationTree($expectedConnections->get('master1'));

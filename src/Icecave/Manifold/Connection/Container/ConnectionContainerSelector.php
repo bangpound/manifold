@@ -1,8 +1,6 @@
 <?php
 namespace Icecave\Manifold\Connection\Container;
 
-use Icecave\Collections\Map;
-
 /**
  * Selects appropriate connection containers for reading and writing based upon
  * configuration.
@@ -13,14 +11,14 @@ class ConnectionContainerSelector implements
     /**
      * Construct a new connection container selector.
      *
-     * @param ConnectionContainerPairInterface             $defaults  The default read/write pair.
-     * @param Map<string,ConnectionContainerPairInterface> $databases Read/write pairs for specific databases.
+     * @param ConnectionContainerPairInterface               $defaults  The default read/write pair.
+     * @param array<string,ConnectionContainerPairInterface> $databases Read/write pairs for specific databases.
      *
      * @throws Exception\InvalidDefaultConnectionContainerPairException If the default read/write pair is missing concrete values.
      */
     public function __construct(
         ConnectionContainerPairInterface $defaults,
-        Map $databases = null
+        array $databases = null
     ) {
         if (null === $defaults->read() || null === $defaults->write()) {
             throw new Exception\InvalidDefaultConnectionContainerPairException(
@@ -28,7 +26,7 @@ class ConnectionContainerSelector implements
             );
         }
         if (null === $databases) {
-            $databases = new Map;
+            $databases = array();
         }
 
         $this->defaults = $defaults;
@@ -48,7 +46,7 @@ class ConnectionContainerSelector implements
     /**
      * Get the read/write pairs for specific databases.
      *
-     * @return Map<string,ConnectionContainerPairInterface> The read/write pairs.
+     * @return array<string,ConnectionContainerPairInterface> The read/write pairs.
      */
     public function databases()
     {
@@ -122,8 +120,9 @@ class ConnectionContainerSelector implements
             return $this->defaults();
         }
 
-        if ($this->databases()->tryGet($databaseName, $readWritePair)) {
-            return $readWritePair;
+        $databases = $this->databases();
+        if (array_key_exists($databaseName, $databases)) {
+            return $databases[$databaseName];
         }
 
         return $this->defaults();

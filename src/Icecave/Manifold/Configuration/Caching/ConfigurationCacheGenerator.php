@@ -156,39 +156,44 @@ class ConfigurationCacheGenerator implements
     protected function generateSelector(
         ConfigurationInterface $configuration
     ) {
-        $source = "\$databasePairs = new Icecave\Collections\Map;\n";
-
-        foreach (
-            $configuration->connectionContainerSelector()->databases() as
-                $databaseName =>
-                $databasePair
+        if (
+            count($configuration->connectionContainerSelector()->databases())
+            < 1
         ) {
-            $source .= sprintf(
-                "\$databasePairs->set(\n%s,\n%s\n);\n",
-                $this->indent(var_export($databaseName, true)),
-                $this->indent($this->generateContainerPair($databasePair))
+            $databasePairs = 'array()';
+        } else {
+            $databasePairs = '';
+
+            foreach (
+                $configuration->connectionContainerSelector()->databases() as
+                    $databaseName =>
+                    $databasePair
+            ) {
+                $databasePairs .= sprintf(
+                    "%s => %s,\n",
+                    var_export($databaseName, true),
+                    $this->generateContainerPair($databasePair)
+                );
+            }
+
+            $databasePairs = sprintf(
+                "array(\n%s)",
+                $this->indent($databasePairs)
             );
         }
 
-        $source .= sprintf(
-            "\$selector =\n%s\n",
+        return sprintf(
+            "\$selector = new %s(\n%s,\n%s\n);\n",
+            'Icecave\Manifold\Connection\Container' .
+                '\ConnectionContainerSelector',
             $this->indent(
-                sprintf(
-                    "new %s(\n%s,\n%s\n);",
-                    'Icecave\Manifold\Connection\Container' .
-                        '\ConnectionContainerSelector',
-                    $this->indent(
-                        $this->generateContainerPair(
-                            $configuration->connectionContainerSelector()
-                                ->defaults()
-                        )
-                    ),
-                    $this->indent('$databasePairs')
+                $this->generateContainerPair(
+                    $configuration->connectionContainerSelector()
+                        ->defaults()
                 )
-            )
+            ),
+            $this->indent($databasePairs)
         );
-
-        return $source;
     }
 
     /**

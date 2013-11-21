@@ -1,7 +1,6 @@
 <?php
 namespace Icecave\Manifold\Connection\Container;
 
-use Icecave\Collections\Map;
 use Phake;
 use PHPUnit_Framework_TestCase;
 
@@ -18,13 +17,11 @@ class ConnectionContainerSelectorTest extends PHPUnit_Framework_TestCase
         $this->writeB = Phake::mock(__NAMESPACE__ . '\ConnectionContainerInterface');
         $this->readC = Phake::mock(__NAMESPACE__ . '\ConnectionContainerInterface');
         $this->defaults = new ConnectionContainerPair($this->defaultWrite, $this->defaultRead);
-        $this->databases = new Map(
-            array(
-                'databaseA' => new ConnectionContainerPair($this->writeA, $this->readA),
-                'databaseB' => new ConnectionContainerPair($this->writeB),
-                'databaseC' => new ConnectionContainerPair(null, $this->readC),
-                'databaseD' => new ConnectionContainerPair,
-            )
+        $this->databases = array(
+            'databaseA' => new ConnectionContainerPair($this->writeA, $this->readA),
+            'databaseB' => new ConnectionContainerPair($this->writeB),
+            'databaseC' => new ConnectionContainerPair(null, $this->readC),
+            'databaseD' => new ConnectionContainerPair,
         );
         $this->selector = new ConnectionContainerSelector($this->defaults, $this->databases);
     }
@@ -39,7 +36,7 @@ class ConnectionContainerSelectorTest extends PHPUnit_Framework_TestCase
     {
         $this->selector = new ConnectionContainerSelector($this->defaults);
 
-        $this->assertEquals(new Map, $this->selector->databases());
+        $this->assertSame(array(), $this->selector->databases());
     }
 
     public function testConstructorFailureInvalidDefaults()
