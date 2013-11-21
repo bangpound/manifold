@@ -12,7 +12,7 @@ class ConfigurationCacheFileGeneratorTest extends PHPUnit_Framework_TestCase
     {
         parent::setUp();
 
-        $this->reader = Phake::mock('Icecave\Manifold\Configuration\ConfigurationReader');
+        $this->reader = Phake::mock('Icecave\Manifold\Configuration\ConfigurationReaderInterface');
         $this->innerGenerator = Phake::mock(__NAMESPACE__ . '\ConfigurationCacheGenerator');
         $this->isolator = Phake::mock(Isolator::className());
         $this->generator = Phake::partialMock(

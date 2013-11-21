@@ -144,6 +144,7 @@ class ConfigurationCacheFileGenerator implements
         return $this->isolator;
     }
 
+    private $reader;
     private $generator;
     private $isolator;
 }
