@@ -1,7 +1,6 @@
 <?php
 namespace Icecave\Manifold\Driver;
 
-use Icecave\Collections\Vector;
 use Icecave\Manifold\Configuration\ConfigurationInterface;
 use Icecave\Manifold\Configuration\Exception\UndefinedConnectionException;
 use Icecave\Manifold\Connection\Facade\ConnectionFacadeInterface;
@@ -19,7 +18,7 @@ interface DriverInterface
      * @param ConfigurationInterface    $configuration The configuration to use.
      * @param array<integer,mixed>|null $attributes    The connection attributes to use.
      *
-     * @return Vector<ConnectionFacadeInterface> The newly created connection facades.
+     * @return array<ConnectionFacadeInterface> The newly created connection facades.
      */
     public function createConnections(
         ConfigurationInterface $configuration,

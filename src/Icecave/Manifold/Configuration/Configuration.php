@@ -1,7 +1,6 @@
 <?php
 namespace Icecave\Manifold\Configuration;
 
-use Icecave\Collections\Map;
 use Icecave\Manifold\Connection\ConnectionInterface;
 use Icecave\Manifold\Connection\Container\ConnectionPoolInterface;
 use Icecave\Manifold\Connection\Container\ConnectionContainerSelectorInterface;
@@ -15,13 +14,13 @@ class Configuration implements ConfigurationInterface
     /**
      * Construct a new configuration.
      *
-     * @param Map<string,ConnectionInterface>       $connections                 The defined connections.
+     * @param array<string,ConnectionInterface>     $connections                 The defined connections.
      * @param array<string,ConnectionPoolInterface> $connectionPools             The defined connection pools.
      * @param ConnectionContainerSelectorInterface  $connectionContainerSelector The connection container selector.
      * @param array<ReplicationTreeInterface>       $replicationTrees            The replication trees.
      */
     public function __construct(
-        Map $connections,
+        array $connections,
         array $connectionPools,
         ConnectionContainerSelectorInterface $connectionContainerSelector,
         array $replicationTrees
@@ -35,7 +34,7 @@ class Configuration implements ConfigurationInterface
     /**
      * Get the defined connections.
      *
-     * @return Map<string,ConnectionInterface> The defined connections.
+     * @return array<string,ConnectionInterface> The defined connections.
      */
     public function connections()
     {

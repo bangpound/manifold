@@ -3,7 +3,6 @@ namespace Icecave\Manifold\Authentication;
 
 use Eloquent\Schemer\Loader\Exception\LoadException;
 use Eloquent\Schemer\Uri\Uri;
-use Icecave\Parity\Parity;
 use PHPUnit_Framework_TestCase;
 use Phake;
 
@@ -46,7 +45,6 @@ EOD;
         );
 
         $this->assertEquals($expected, $actual);
-        $this->assertSame(0, Parity::compare($expected, $actual));
     }
 
     public function testCredentialsMinimal()
@@ -57,7 +55,6 @@ EOD;
         );
 
         $this->assertEquals($expected, $actual);
-        $this->assertSame(0, Parity::compare($expected, $actual));
     }
 
     public function testCredentialsFull()
@@ -72,7 +69,6 @@ EOD;
         );
 
         $this->assertEquals($expected, $actual);
-        $this->assertSame(0, Parity::compare($expected, $actual));
     }
 
     public function testCredentialsNoDefault()
@@ -91,7 +87,6 @@ EOD;
         );
 
         $this->assertEquals($expected, $actual);
-        $this->assertSame(0, Parity::compare($expected, $actual));
     }
 
     public function testCredentialFileReadFailure()

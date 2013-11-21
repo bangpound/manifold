@@ -1,7 +1,6 @@
 <?php
 namespace Icecave\Manifold\Configuration;
 
-use Icecave\Collections\Map;
 use PHPUnit_Framework_TestCase;
 use Phake;
 
@@ -11,7 +10,10 @@ class ConfigurationTest extends PHPUnit_Framework_TestCase
     {
         parent::setUp();
 
-        $this->connections = new Map;
+        $this->connections = array(
+            Phake::mock('Icecave\Manifold\Connection\ConnectionInterface'),
+            Phake::mock('Icecave\Manifold\Connection\ConnectionInterface'),
+        );
         $this->connectionPools = array(
             Phake::mock('Icecave\Manifold\Connection\Container\ConnectionPoolInterface'),
             Phake::mock('Icecave\Manifold\Connection\Container\ConnectionPoolInterface'),

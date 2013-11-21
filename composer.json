@@ -23,14 +23,12 @@
         "eloquent/constance": "dev-develop@dev",
         "eloquent/schemer": "dev-develop@dev",
         "icecave/chrono": "dev-develop@dev",
-        "icecave/collections": "~1@dev",
         "psr/log": "~1",
         "symfony/yaml": "~2"
     },
     "require-dev": {
         "eloquent/liberator": "~1",
-        "icecave/archer": "~1",
-        "icecave/parity": "~1@dev"
+        "icecave/archer": "~1"
     },
     "autoload": {
         "psr-0": {
