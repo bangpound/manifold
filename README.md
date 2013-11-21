@@ -21,6 +21,24 @@ used, and reads are performed on pools of multiple identical replication slaves.
 mapper], but should be suitable in most situations where a single `PDO` instance
 is used.
 
+## Table of contents
+
+- [Configuring *Manifold*](#configuring-manifold)
+    - [The *Manifold* configuration file](#the-manifold-configuration-file)
+        - [The 'connections' section](#the-connections-section)
+        - [The 'pools' section](#the-pools-section)
+        - [The 'selection' section](#the-selection-section)
+        - [The 'replication' section](#the-replication-section)
+        - [Reading a configuration file](#reading-a-configuration-file)
+        - [Complete example configuration](#complete-example-configuration)
+        - [Multi-file example configuration](#multi-file-example-configuration)
+    - [Configuring Manifold credentials](#configuring-manifold-credentials)
+        - [Environment variable credentials](#environment-variable-credentials)
+        - [File-based credentials](#file-based-credentials)
+            - [Reading a credentials file](#reading-a-credentials-file)
+        - [Connecting without credentials](#connecting-without-credentials)
+        - [Injecting the credentials provider](#injecting-the-credentials-provider)
+
 ## Configuring *Manifold*
 
 *Manifold* features a simple configuration system for defining the structure of
@@ -32,6 +50,9 @@ database, and connection credentials.
 The default configuration file format is [YAML], but any format supported by
 [Schemer][] (i.e. [JSON] or [TOML]) will work fine. The following examples all
 use [YAML].
+
+For a detailed description of the configuration file, see the *Manifold*
+[configuration schema].
 
 #### The 'connections' section
 
@@ -133,6 +154,23 @@ replication:
     pool-a:
         connection-a: null
 ```
+
+#### Reading a configuration file
+
+To read a configuration file, use an instance of [CachingConfigurationReader]:
+
+```php
+use Icecave\Manifold\Configuration\Caching\CachingConfigurationReader;
+
+$reader = new CachingConfigurationReader;
+$configuration = $reader->readFile('/path/to/manifold.yml');
+```
+
+The caching configuration reader will look for a PHP file at
+`<configuration-filename>.cache.php` containing an opcode-cacheable version of
+the configuration file, and create one if it does not exist. This file allows
+*Manifold* to avoid any disk I/O and validation overhead to vastly reduce load
+times.
 
 #### Complete example configuration
 
@@ -276,9 +314,144 @@ master1:
 master3: null
 ```
 
+### Configuring *Manifold* credentials
+
+*Manifold* uses a credentials *provider* system to manage the usernames and
+passwords used to connect to each server specified in the main configuration
+file. Any object implementing [CredentialsProviderInterface] can be used, but
+*Manifold* comes with a couple of providers by default:
+
+#### Environment variable credentials
+
+To read credentials from environment variables, create an instance of
+[EnvironmentCredentialsProvider]:
+
+```php
+use Icecave\Manifold\Authentication\Credentials;
+use Icecave\Manifold\Authentication\EnvironmentCredentialsProvider;
+
+$provider = new EnvironmentCredentialsProvider(
+    new Credentials('DB_USERNAME', 'DB_PASSWORD')
+);
+```
+
+In the above example, `DB_USERNAME` and `DB_PASSWORD` are environment variable
+names containing the actual credentials. *Manifold* will retrieve the actual
+credentials at run-time in order to establish a connection.
+
+In order to use different credentials for specific connections, simply provide
+an associative array of connection name to credentials as the second argument:
+
+```php
+$provider = new EnvironmentCredentialsProvider(
+    new Credentials('DB_USERNAME', 'DB_PASSWORD'),
+    array(
+        'reporting' => new Credentials(
+            'DB_USERNAME_REPORTING',
+            'DB_PASSWORD_REPORTING'
+        ),
+        'mail-queue' => new Credentials(
+            'DB_USERNAME_MAIL',
+            'DB_PASSWORD_MAIL'
+        ),
+    )
+);
+```
+
+Usernames and/or passwords can also be omitted if desired:
+
+```php
+$provider = new EnvironmentCredentialsProvider(new Credentials('DB_USERNAME'));
+```
+
+#### File-based credentials
+
+*Manifold* supports a simple configuration file for defining credentials.
+Similar to the main configuration file, the credentials file is capable of
+supporting multiple formats, and even being split across multiple files. The
+following is a simple example using [YAML] format:
+
+```yaml
+default:
+    username: default-username
+    password: default-password
+
+connections:
+    reporting:
+        username: reporting-username
+        password: reporting-password
+
+    mail-queue:
+        username: mail-username
+        password: mail-password
+```
+
+The `connections` defines a hash, where the key is the name of the connection
+defined in the main configuration file, and the value is a hash containing the
+username and password to use when connecting.
+
+The `default` key defines the username and password to use when an entry is not
+defined for a specific connection.
+
+In all cases, the username or password can be omitted, which tells *Manifold* to
+connect without explicitly using that credential.
+
+##### Reading a credentials file
+
+To read credentials from a file, use an instance of [CachingCredentialsReader]:
+
+```php
+use Icecave\Manifold\Authentication\Caching\CachingCredentialsReader;
+
+$reader = new CachingCredentialsReader;
+$provider = $reader->readFile('/path/to/manifold-credentials.yml');
+```
+
+Using the caching credentials reader will look for a PHP file at
+`<credentials-filename>.cache.php` containing an opcode-cacheable version of the
+credentials file, and create one if it does not exist. This file allows
+*Manifold* to avoid any disk I/O and validation overhead to vastly reduce load
+times.
+
+#### Connecting without credentials
+
+To make *Manifold* connect without using explicit credentials, simply create an
+instance of [CredentialsProvider] with no arguments:
+
+```php
+use Icecave\Manifold\Authentication\CredentialsProvider;
+
+$provider = new CredentialsProvider;
+```
+
+#### Injecting the credentials provider
+
+*Manifold*'s configuration reader requires that the credentials provider be
+present before the configuration is loaded. This example demonstrates the
+process of creating a configuration reader with a custom credentials provider:
+
+```php
+use Icecave\Manifold\Authentication\Credentials;
+use Icecave\Manifold\Authentication\EnvironmentCredentialsProvider;
+use Icecave\Manifold\Configuration\Caching\CachingConfigurationReader;
+use Icecave\Manifold\Connection\ConnectionFactory;
+
+$provider = new EnvironmentCredentialsProvider(
+    new Credentials('DB_USERNAME', 'DB_PASSWORD')
+);
+$reader = new CachingConfigurationReader(new ConnectionFactory($provider));
+```
+
 <!-- References -->
 
+[CachingConfigurationReader]: http://icecave.com.au/manifold/artifacts/documentation/api/Icecave/Manifold/Configuration/Caching/CachingConfigurationReader.html
+[CachingCredentialsReader]: http://icecave.com.au/manifold/artifacts/documentation/api/Icecave/Manifold/Authentication/Caching/CachingCredentialsReader.html
+[configuration schema]: res/schema/manifold-configuration-schema.yml
+[credentials schema]: res/schema/manifold-credentials-schema.yml
+[CredentialsProvider]: http://icecave.com.au/manifold/artifacts/documentation/api/Icecave/Manifold/Authentication/CredentialsProvider.html
+[CredentialsProviderInterface]: http://icecave.com.au/manifold/artifacts/documentation/api/Icecave/Manifold/Authentication/CredentialsProviderInterface.html
 [Doctrine's object relational mapper]: http://www.doctrine-project.org/projects/orm.html
+[EnvironmentCredentialsProvider]: http://icecave.com.au/manifold/artifacts/documentation/api/Icecave/Manifold/Authentication/EnvironmentCredentialsProvider.html
 [JSON Reference]: http://tools.ietf.org/html/draft-pbryan-zyp-json-ref-03
 [JSON]: http://en.wikipedia.org/wiki/JSON
 [MySQL]: http://www.mysql.com/
