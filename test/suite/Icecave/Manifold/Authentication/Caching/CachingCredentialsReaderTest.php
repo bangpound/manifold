@@ -1,6 +1,7 @@
 <?php
 namespace Icecave\Manifold\Authentication\Caching;
 
+use ErrorException;
 use Icecave\Isolator\Isolator;
 use PHPUnit_Framework_TestCase;
 use Phake;
@@ -37,7 +38,7 @@ class CachingCredentialsReaderTest extends PHPUnit_Framework_TestCase
 
     public function testReadFileNotCached()
     {
-        Phake::when($this->isolator)->is_file('/path/to/credentials.yml.cache.php')->thenReturn(false);
+        Phake::when($this->isolator)->include('/path/to/credentials.yml.cache.php')->thenThrow(new ErrorException);
         Phake::when($this->innerReader)->readFile('/path/to/credentials.yml', 'mimeType')
             ->thenReturn($this->provider);
 
@@ -46,15 +47,13 @@ class CachingCredentialsReaderTest extends PHPUnit_Framework_TestCase
             Phake::verify($this->innerReader)->readFile('/path/to/credentials.yml', 'mimeType'),
             Phake::verify($this->generator)->generateForProvider($this->provider, '/path/to/credentials.yml.cache.php')
         );
-        Phake::verify($this->isolator, Phake::never())->require(Phake::anyParameters());
     }
 
     public function testReadFileCached()
     {
         $provider = $this->provider;
         $factoryCalled = false;
-        Phake::when($this->isolator)->is_file('/path/to/credentials.yml.cache.php')->thenReturn(true);
-        Phake::when($this->isolator)->require('/path/to/credentials.yml.cache.php')->thenReturn(
+        Phake::when($this->isolator)->include('/path/to/credentials.yml.cache.php')->thenReturn(
             function () use ($provider, &$factoryCalled) {
                 $factoryCalled = true;
 

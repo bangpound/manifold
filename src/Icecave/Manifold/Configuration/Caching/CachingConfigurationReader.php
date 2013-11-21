@@ -1,6 +1,7 @@
 <?php
 namespace Icecave\Manifold\Configuration\Caching;
 
+use ErrorException;
 use Icecave\Isolator\Isolator;
 use Icecave\Manifold\Configuration\Caching\ConfigurationCacheFileGeneratorInterface;
 use Icecave\Manifold\Configuration\ConfigurationInterface;
@@ -75,10 +76,10 @@ class CachingConfigurationReader implements ConfigurationReaderInterface
     ) {
         $cachePath = $this->generator()->defaultCachePath($path);
 
-        if ($this->isolator()->is_file($cachePath)) {
-            $configurationFactory = $this->isolator()->require($cachePath);
+        try {
+            $configurationFactory = $this->isolator()->include($cachePath);
             $configuration = $configurationFactory($connectionFactory);
-        } else {
+        } catch (ErrorException $e) {
             $configuration = $this->reader()
                 ->readFile($path, $mimeType, $connectionFactory);
             $this->generator()->generateForConfiguration(

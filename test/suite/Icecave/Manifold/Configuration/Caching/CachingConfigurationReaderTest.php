@@ -1,6 +1,7 @@
 <?php
 namespace Icecave\Manifold\Configuration\Caching;
 
+use ErrorException;
 use Icecave\Isolator\Isolator;
 use Icecave\Manifold\Connection\ConnectionFactoryInterface;
 use PHPUnit_Framework_TestCase;
@@ -39,7 +40,7 @@ class CachingConfigurationReaderTest extends PHPUnit_Framework_TestCase
 
     public function testReadFileNotCached()
     {
-        Phake::when($this->isolator)->is_file('/path/to/configuration.yml.cache.php')->thenReturn(false);
+        Phake::when($this->isolator)->include('/path/to/configuration.yml.cache.php')->thenThrow(new ErrorException);
         Phake::when($this->innerReader)->readFile('/path/to/configuration.yml', 'mimeType', $this->connectionFactory)
             ->thenReturn($this->configuration);
 
@@ -53,15 +54,13 @@ class CachingConfigurationReaderTest extends PHPUnit_Framework_TestCase
             Phake::verify($this->generator)
                 ->generateForConfiguration($this->configuration, '/path/to/configuration.yml.cache.php')
         );
-        Phake::verify($this->isolator, Phake::never())->require(Phake::anyParameters());
     }
 
     public function testReadFileCached()
     {
         $configuration = $this->configuration;
         $factoryCalled = false;
-        Phake::when($this->isolator)->is_file('/path/to/configuration.yml.cache.php')->thenReturn(true);
-        Phake::when($this->isolator)->require('/path/to/configuration.yml.cache.php')->thenReturn(
+        Phake::when($this->isolator)->include('/path/to/configuration.yml.cache.php')->thenReturn(
             function (ConnectionFactoryInterface $connectionFactory) use ($configuration, &$factoryCalled) {
                 $factoryCalled = true;
 

@@ -1,10 +1,12 @@
 <?php
 namespace Icecave\Manifold\Authentication\Caching;
 
+use ErrorException;
 use Icecave\Isolator\Isolator;
 use Icecave\Manifold\Authentication\CredentialsProviderInterface;
 use Icecave\Manifold\Authentication\CredentialsReader;
 use Icecave\Manifold\Authentication\CredentialsReaderInterface;
+use Icecave\Manifold\Authentication\Exception\CredentialsReadException;
 
 /**
  * A credentials reader that utilizes credentials provider caches.
@@ -61,17 +63,17 @@ class CachingCredentialsReader implements CredentialsReaderInterface
      * @param string      $path     The path to the file.
      * @param string|null $mimeType The mime type of the credentials data.
      *
-     * @return CredentialsProviderInterface       The parsed credentials as a credentials provider.
-     * @throws Exception\CredentialsReadException If the file cannot be read.
+     * @return CredentialsProviderInterface The parsed credentials as a credentials provider.
+     * @throws CredentialsReadException     If the file cannot be read.
      */
     public function readFile($path, $mimeType = null)
     {
         $cachePath = $this->generator()->defaultCachePath($path);
 
-        if ($this->isolator()->is_file($cachePath)) {
-            $providerFactory = $this->isolator()->require($cachePath);
+        try {
+            $providerFactory = $this->isolator()->include($cachePath);
             $provider = $providerFactory();
-        } else {
+        } catch (ErrorException $e) {
             $provider = $this->reader()->readFile($path, $mimeType);
             $this->generator()->generateForProvider($provider, $cachePath);
         }
