@@ -1,9 +1,6 @@
 <?php
 namespace Icecave\Manifold\Connection\Facade;
 
-use Icecave\Collections\Set;
-use Icecave\Collections\Stack;
-use Icecave\Collections\Vector;
 use Icecave\Manifold\Connection\ConnectionInterface;
 use Icecave\Manifold\Connection\PdoConnectionAttribute;
 use Icecave\Manifold\Connection\PdoConnectionInterface;
@@ -47,10 +44,10 @@ class ConnectionFacade extends PDO implements ConnectionFacadeInterface
         $this->attributes = $attributes;
         $this->logger = $logger;
 
-        $this->initializedConnections = new Set;
+        $this->initializedConnections = array();
         $this->isInTransaction = false;
-        $this->transactionConnections = new Vector;
-        $this->commentStack = new Stack;
+        $this->transactionConnections = array();
+        $this->commentStack = array();
     }
 
     /**
@@ -299,7 +296,7 @@ class ConnectionFacade extends PDO implements ConnectionFacadeInterface
             $comment = call_user_func_array('sprintf', func_get_args());
         }
 
-        $this->commentStack->push($comment);
+        array_push($this->commentStack, $comment);
     }
 
     /**
@@ -309,11 +306,7 @@ class ConnectionFacade extends PDO implements ConnectionFacadeInterface
      */
     public function popComment()
     {
-        if ($this->commentStack->tryPop($comment)) {
-            return $comment;
-        }
-
-        return null;
+        return array_pop($this->commentStack);
     }
 
     // Implementation of PdoConnectionInterface ================================
@@ -438,7 +431,7 @@ class ConnectionFacade extends PDO implements ConnectionFacadeInterface
             $this->logger()->debug('Beginning transaction on facade.');
         }
 
-        $this->transactionConnections()->clear();
+        $this->clearTransactionConnections();
         $this->setTransactionWriteConnection(null);
         $this->isInTransaction = true;
 
@@ -676,9 +669,20 @@ class ConnectionFacade extends PDO implements ConnectionFacadeInterface
     // Implementation details ==================================================
 
     /**
+     * Add the supplied connection to the internal set of initialized
+     * connections.
+     *
+     * @param ConnectionInterface $connection The connection to add.
+     */
+    protected function addInitializedConnection(ConnectionInterface $connection)
+    {
+        $this->initializedConnections[] = $connection;
+    }
+
+    /**
      * Get the initialized connections.
      *
-     * @return Set<ConnectionInterface> The initialized connections.
+     * @return array<ConnectionInterface> The initialized connections.
      */
     protected function initializedConnections()
     {
@@ -722,9 +726,28 @@ class ConnectionFacade extends PDO implements ConnectionFacadeInterface
     }
 
     /**
+     * Add the supplied connection to the internal set of transaction
+     * connections.
+     *
+     * @param ConnectionInterface $connection The connection to add.
+     */
+    protected function addTransactionConnection(ConnectionInterface $connection)
+    {
+        $this->transactionConnections[] = $connection;
+    }
+
+    /**
+     * Reset the internal set of transaction connections.
+     */
+    protected function clearTransactionConnections()
+    {
+        $this->transactionConnections = array();
+    }
+
+    /**
      * Get the connections involved in the current transaction.
      *
-     * @return Vector<ConnectionInterface> The transaction connections.
+     * @return array<ConnectionInterface> The transaction connections.
      */
     protected function transactionConnections()
     {
@@ -879,7 +902,7 @@ class ConnectionFacade extends PDO implements ConnectionFacadeInterface
      */
     protected function activateConnection(ConnectionInterface $connection)
     {
-        if (!$this->initializedConnections()->contains($connection)) {
+        if (!in_array($connection, $this->initializedConnections(), true)) {
             foreach ($this->attributes() as $attribute => $value) {
                 if (!$connection->setAttribute($attribute, $value)) {
                     throw new Exception\PdoException(
@@ -890,19 +913,19 @@ class ConnectionFacade extends PDO implements ConnectionFacadeInterface
 
             $connection->setLogger($this->logger());
 
-            $this->initializedConnections()->add($connection);
+            $this->addInitializedConnection($connection);
         }
 
         if (
             $this->inTransaction() &&
-            !$this->transactionConnections()->contains($connection)
+            !in_array($connection, $this->transactionConnections(), true)
         ) {
             if (!$connection->beginTransaction()) {
                 throw new Exception\PdoException(
                     'Unable to begin transaction on child connection.'
                 );
             }
-            $this->transactionConnections()->pushBack($connection);
+            $this->addTransactionConnection($connection);
         }
 
         $this->setCurrentConnection($connection);
@@ -918,7 +941,7 @@ class ConnectionFacade extends PDO implements ConnectionFacadeInterface
      */
     protected function encapsulateStatement($statement)
     {
-        if ($this->commentStack->tryNext($comment)) {
+        if ($this->topComment($comment)) {
             $statement = sprintf(
                 '/* %s */ %s',
                 str_replace('*/', '*\/', $comment),
@@ -927,6 +950,29 @@ class ConnectionFacade extends PDO implements ConnectionFacadeInterface
         }
 
         return $statement;
+    }
+
+    /**
+     * Attempt to populate the supplied variable reference with the comment on
+     * top of the comment stack.
+     *
+     * @param null &$comment The reference to populate.
+     *
+     * @return boolean True if there is a top comment.
+     */
+    protected function topComment(&$comment)
+    {
+        $stackSize = count($this->commentStack);
+
+        if ($stackSize > 0) {
+            $comment = $this->commentStack[$stackSize - 1];
+
+            return true;
+        }
+
+        $comment = null;
+
+        return false;
     }
 
     private $selector;
