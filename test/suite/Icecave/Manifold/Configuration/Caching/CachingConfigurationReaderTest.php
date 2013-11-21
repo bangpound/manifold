@@ -15,11 +15,7 @@ class CachingConfigurationReaderTest extends PHPUnit_Framework_TestCase
         $this->innerReader = Phake::mock('Icecave\Manifold\Configuration\ConfigurationReader');
         $this->generator = Phake::partialMock(__NAMESPACE__ . '\ConfigurationCacheFileGenerator');
         $this->isolator = Phake::mock(Isolator::className());
-        $this->reader = new CachingConfigurationReader(
-            $this->innerReader,
-            $this->generator,
-            $this->isolator
-        );
+        $this->reader = new CachingConfigurationReader($this->innerReader, $this->generator, $this->isolator);
 
         $this->configuration = Phake::mock('Icecave\Manifold\Configuration\ConfigurationInterface');
         $this->connectionFactory = Phake::mock('Icecave\Manifold\Connection\ConnectionFactoryInterface');

@@ -39,16 +39,6 @@ class CachingConfigurationReader implements ConfigurationReaderInterface
     }
 
     /**
-     * Get the generator.
-     *
-     * @return ConfigurationCacheFileGeneratorInterface The generator.
-     */
-    public function generator()
-    {
-        return $this->generator;
-    }
-
-    /**
      * Get the reader.
      *
      * @return ConfigurationReaderInterface The reader.
@@ -56,6 +46,16 @@ class CachingConfigurationReader implements ConfigurationReaderInterface
     public function reader()
     {
         return $this->reader;
+    }
+
+    /**
+     * Get the generator.
+     *
+     * @return ConfigurationCacheFileGeneratorInterface The generator.
+     */
+    public function generator()
+    {
+        return $this->generator;
     }
 
     /**
@@ -118,7 +118,7 @@ class CachingConfigurationReader implements ConfigurationReaderInterface
         return $this->isolator;
     }
 
-    private $generator;
     private $reader;
+    private $generator;
     private $isolator;
 }
