@@ -30,7 +30,7 @@ class MysqlDriverTest extends PHPUnit_Framework_TestCase
         $this->replicationTreeB = Phake::mock('Icecave\Manifold\Replication\ReplicationTreeInterface');
         $this->configuration = new Configuration(
             new Map,
-            new Map,
+            array(),
             $this->connectionContainerSelector,
             array($this->replicationTreeA, $this->replicationTreeB)
         );

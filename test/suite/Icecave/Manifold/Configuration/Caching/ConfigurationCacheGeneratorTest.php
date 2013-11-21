@@ -35,7 +35,7 @@ function (
         )
     );
 
-    $connectionPools = new Icecave\Collections\Map;
+    $connectionPools = array();
 
     $databasePairs = new Icecave\Collections\Map;
     $selector =
@@ -171,26 +171,21 @@ function (
         )
     );
 
-    $connectionPools = new Icecave\Collections\Map;
-    $poolConnections = new Icecave\Collections\Vector;
-    $poolConnections->pushBack($connections->get('slave101'));
-    $poolConnections->pushBack($connections->get('slave102'));
-    $connectionPools->set(
-        'pool1',
-        new Icecave\Manifold\Connection\Container\ConnectionPool(
+    $connectionPools = array(
+        'pool1' => new Icecave\Manifold\Connection\Container\ConnectionPool(
             'pool1',
-            $poolConnections
-        )
-    );
-    $poolConnections = new Icecave\Collections\Vector;
-    $poolConnections->pushBack($connections->get('slave201'));
-    $poolConnections->pushBack($connections->get('slave202'));
-    $connectionPools->set(
-        'pool2',
-        new Icecave\Manifold\Connection\Container\ConnectionPool(
+            array(
+                $connections->get('slave101'),
+                $connections->get('slave102'),
+            )
+        ),
+        'pool2' => new Icecave\Manifold\Connection\Container\ConnectionPool(
             'pool2',
-            $poolConnections
-        )
+            array(
+                $connections->get('slave201'),
+                $connections->get('slave202'),
+            )
+        ),
     );
 
     $databasePairs = new Icecave\Collections\Map;
@@ -198,7 +193,7 @@ function (
         'app_data',
         new Icecave\Manifold\Connection\Container\ConnectionContainerPair(
             $connections->get('master1'),
-            $connectionPools->get('pool1')
+            $connectionPools['pool1']
         )
     );
     $databasePairs->set(
@@ -212,14 +207,14 @@ function (
         'app_reporting',
         new Icecave\Manifold\Connection\Container\ConnectionContainerPair(
             $connections->get('reporting2'),
-            $connectionPools->get('pool2')
+            $connectionPools['pool2']
         )
     );
     $databasePairs->set(
         'app_temp',
         new Icecave\Manifold\Connection\Container\ConnectionContainerPair(
-            $connectionPools->get('pool2'),
-            $connectionPools->get('pool2')
+            $connectionPools['pool2'],
+            $connectionPools['pool2']
         )
     );
     $databasePairs->set(
@@ -233,7 +228,7 @@ function (
         new Icecave\Manifold\Connection\Container\ConnectionContainerSelector(
             new Icecave\Manifold\Connection\Container\ConnectionContainerPair(
                 $connections->get('reporting1'),
-                $connectionPools->get('pool1')
+                $connectionPools['pool1']
             ),
             $databasePairs
         );
@@ -307,9 +302,10 @@ EOD;
             'Icecave\Manifold\Connection\LazyConnection',
             $actualConfiguration->connections()->get('master1')
         );
+        $actualConnectionPools = $actualConfiguration->connectionPools();
         $this->assertInstanceOf(
             'Icecave\Manifold\Connection\Container\ConnectionPool',
-            $actualConfiguration->connectionPools()->get('pool1')
+            $actualConnectionPools['pool1']
         );
         $this->assertSame(5, $actualConfiguration->connectionContainerSelector()->databases()->count());
         $this->assertSame(2, count($actualConfiguration->replicationTrees()));

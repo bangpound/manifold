@@ -1,7 +1,6 @@
 <?php
 namespace Icecave\Manifold\Connection\Container;
 
-use Icecave\Collections\Vector;
 use Phake;
 use PHPUnit_Framework_TestCase;
 
@@ -9,11 +8,9 @@ class ConnectionPoolTest extends PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        $this->connections = new Vector(
-            array(
-                Phake::mock('Icecave\Manifold\Connection\ConnectionInterface'),
-                Phake::mock('Icecave\Manifold\Connection\ConnectionInterface'),
-            )
+        $this->connections = array(
+            Phake::mock('Icecave\Manifold\Connection\ConnectionInterface'),
+            Phake::mock('Icecave\Manifold\Connection\ConnectionInterface'),
         );
         $this->pool = new ConnectionPool('name', $this->connections);
     }
@@ -28,6 +25,6 @@ class ConnectionPoolTest extends PHPUnit_Framework_TestCase
     {
         $this->setExpectedException(__NAMESPACE__ . '\Exception\EmptyConnectionContainerException');
 
-        new ConnectionPool('name', new Vector);
+        new ConnectionPool('name', array());
     }
 }

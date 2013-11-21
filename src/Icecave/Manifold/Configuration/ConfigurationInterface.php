@@ -22,7 +22,7 @@ interface ConfigurationInterface
     /**
      * Get the defined connection pools.
      *
-     * @return Map<string,ConnectionPoolInterface> The defined connection pools.
+     * @return array<string,ConnectionPoolInterface> The defined connection pools.
      */
     public function connectionPools();
 

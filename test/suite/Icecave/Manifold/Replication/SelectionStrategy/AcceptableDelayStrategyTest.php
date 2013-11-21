@@ -2,7 +2,6 @@
 namespace Icecave\Manifold\Replication\SelectionStrategy;
 
 use Icecave\Chrono\TimeSpan\Duration;
-use Icecave\Collections\Vector;
 use Icecave\Manifold\Connection\Container\ConnectionPool;
 use Icecave\Manifold\Replication\Exception\NoConnectionAvailableException;
 use PHPUnit_Framework_TestCase;
@@ -29,12 +28,10 @@ class AcceptableDelayStrategyTest extends PHPUnit_Framework_TestCase
         Phake::when($this->connectionC)->name()->thenReturn('C');
         $this->container = new ConnectionPool(
             'container',
-            new Vector(
-                array(
-                    $this->connectionA,
-                    $this->connectionB,
-                    $this->connectionC,
-                )
+            array(
+                $this->connectionA,
+                $this->connectionB,
+                $this->connectionC,
             )
         );
 

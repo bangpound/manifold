@@ -12,7 +12,10 @@ class ConfigurationTest extends PHPUnit_Framework_TestCase
         parent::setUp();
 
         $this->connections = new Map;
-        $this->connectionPools = new Map;
+        $this->connectionPools = array(
+            Phake::mock('Icecave\Manifold\Connection\Container\ConnectionPoolInterface'),
+            Phake::mock('Icecave\Manifold\Connection\Container\ConnectionPoolInterface'),
+        );
         $this->connectionContainerSelector = Phake::mock(
             'Icecave\Manifold\Connection\Container\ConnectionContainerSelectorInterface'
         );

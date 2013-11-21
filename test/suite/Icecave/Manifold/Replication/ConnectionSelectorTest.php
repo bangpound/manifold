@@ -1,7 +1,6 @@
 <?php
 namespace Icecave\Manifold\Replication;
 
-use Icecave\Collections\Vector;
 use Icecave\Manifold\Connection\ConnectionPair;
 use Icecave\Manifold\Connection\Container\ConnectionPool;
 use PHPUnit_Framework_TestCase;
@@ -45,29 +44,23 @@ class ConnectionSelectorTest extends PHPUnit_Framework_TestCase
 
         $this->containerA = new ConnectionPool(
             'A',
-            new Vector(
-                array(
-                    $this->connectionA1,
-                    $this->connectionA2,
-                )
+            array(
+                $this->connectionA1,
+                $this->connectionA2,
             )
         );
         $this->containerB = new ConnectionPool(
             'B',
-            new Vector(
-                array(
-                    $this->connectionB1,
-                    $this->connectionB2,
-                )
+            array(
+                $this->connectionB1,
+                $this->connectionB2,
             )
         );
         $this->containerC = new ConnectionPool(
             'C',
-            new Vector(
-                array(
-                    $this->connectionC1,
-                    $this->connectionC2,
-                )
+            array(
+                $this->connectionC1,
+                $this->connectionC2,
             )
         );
     }

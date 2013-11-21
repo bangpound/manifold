@@ -106,35 +106,44 @@ class ConfigurationCacheGenerator implements
     protected function generatePools(
         ConfigurationInterface $configuration
     ) {
-        $source = "\$connectionPools = new Icecave\Collections\Map;\n";
+        if (count($configuration->connectionPools()) < 1) {
+            return "\$connectionPools = array();\n";
+        }
 
+        $connectionPools = '';
         foreach ($configuration->connectionPools() as $pool) {
-            $nameString = var_export($pool->name(), true);
+            if (count($pool->connections()) < 1) {
+                $poolConnections = 'array()';
+            } else {
+                $poolConnections = '';
 
-            $source .= "\$poolConnections = new Icecave\Collections\Vector;\n";
+                foreach ($pool->connections() as $connection) {
+                    $poolConnections .= sprintf(
+                        "%s,\n",
+                        $this->generateConnectionGet($connection)
+                    );
+                }
 
-            foreach ($pool->connections() as $connection) {
-                $source .= sprintf(
-                    "\$poolConnections->pushBack(%s);\n",
-                    $this->generateConnectionGet($connection)
+                $poolConnections = sprintf(
+                    "array(\n%s)",
+                    $this->indent($poolConnections)
                 );
             }
 
-            $source .= sprintf(
-                "\$connectionPools->set(\n%s,\n%s\n);\n",
+            $nameString = var_export($pool->name(), true);
+            $connectionPools .= sprintf(
+                "%s => new %s(\n%s,\n%s\n),\n",
+                $nameString,
+                'Icecave\Manifold\Connection\Container\ConnectionPool',
                 $this->indent($nameString),
-                $this->indent(
-                    sprintf(
-                        "new %s(\n%s,\n%s\n)",
-                        'Icecave\Manifold\Connection\Container\ConnectionPool',
-                        $this->indent($nameString),
-                        $this->indent('$poolConnections')
-                    )
-                )
+                $this->indent($poolConnections)
             );
         }
 
-        return $source;
+        return sprintf(
+            "\$connectionPools = array(\n%s);\n",
+            $this->indent($connectionPools)
+        );
     }
 
     /**
@@ -310,7 +319,7 @@ EOD;
     protected function generatePoolGet(ConnectionPoolInterface $connectionPool)
     {
         return sprintf(
-            "\$connectionPools->get(%s)",
+            "\$connectionPools[%s]",
             var_export($connectionPool->name(), true)
         );
     }

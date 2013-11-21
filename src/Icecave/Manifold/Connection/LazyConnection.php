@@ -1,7 +1,6 @@
 <?php
 namespace Icecave\Manifold\Connection;
 
-use Icecave\Collections\Vector;
 use Icecave\Manifold\Authentication\CredentialsProvider;
 use Icecave\Manifold\Authentication\CredentialsProviderInterface;
 use Icecave\Manifold\Connection\PdoConnectionAttribute;
@@ -465,14 +464,11 @@ class LazyConnection extends PDO implements ConnectionInterface
     /**
      * Get the connections.
      *
-     * @return Vector<ConnectionInterface> The connections.
+     * @return array<ConnectionInterface> The connections.
      */
     public function connections()
     {
-        $connections = new Vector;
-        $connections->pushBack($this);
-
-        return $connections;
+        return array($this);
     }
 
     // Implementation details ==================================================

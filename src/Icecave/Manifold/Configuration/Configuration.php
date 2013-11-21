@@ -15,14 +15,14 @@ class Configuration implements ConfigurationInterface
     /**
      * Construct a new configuration.
      *
-     * @param Map<string,ConnectionInterface>      $connections                 The defined connections.
-     * @param Map<string,ConnectionPoolInterface>  $connectionPools             The defined connection pools.
-     * @param ConnectionContainerSelectorInterface $connectionContainerSelector The connection container selector.
-     * @param array<ReplicationTreeInterface>      $replicationTrees            The replication trees.
+     * @param Map<string,ConnectionInterface>       $connections                 The defined connections.
+     * @param array<string,ConnectionPoolInterface> $connectionPools             The defined connection pools.
+     * @param ConnectionContainerSelectorInterface  $connectionContainerSelector The connection container selector.
+     * @param array<ReplicationTreeInterface>       $replicationTrees            The replication trees.
      */
     public function __construct(
         Map $connections,
-        Map $connectionPools,
+        array $connectionPools,
         ConnectionContainerSelectorInterface $connectionContainerSelector,
         array $replicationTrees
     ) {
@@ -45,7 +45,7 @@ class Configuration implements ConfigurationInterface
     /**
      * Get the defined connection pools.
      *
-     * @return Map<string,ConnectionPoolInterface> The defined connection pools.
+     * @return array<string,ConnectionPoolInterface> The defined connection pools.
      */
     public function connectionPools()
     {
