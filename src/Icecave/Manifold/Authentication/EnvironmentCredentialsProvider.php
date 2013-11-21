@@ -1,7 +1,6 @@
 <?php
 namespace Icecave\Manifold\Authentication;
 
-use Icecave\Collections\Map;
 use Icecave\Isolator\Isolator;
 use Icecave\Manifold\Connection\ConnectionInterface;
 
@@ -13,13 +12,13 @@ class EnvironmentCredentialsProvider extends AbstractCredentialsProvider
     /**
      * Construct a new credentials provider.
      *
-     * @param CredentialsInterface             $defaultCredentials    The default credentials.
-     * @param Map<string,CredentialsInterface> $connectionCredentials A map of connection name to credentials.
-     * @param Isolator|null                    $isolator              The isolator to use.
+     * @param CredentialsInterface               $defaultCredentials    The default credentials.
+     * @param array<string,CredentialsInterface> $connectionCredentials A map of connection name to credentials.
+     * @param Isolator|null                      $isolator              The isolator to use.
      */
     public function __construct(
         CredentialsInterface $defaultCredentials = null,
-        Map $connectionCredentials = null,
+        array $connectionCredentials = null,
         Isolator $isolator = null
     ) {
         parent::__construct($defaultCredentials, $connectionCredentials);
@@ -38,10 +37,11 @@ class EnvironmentCredentialsProvider extends AbstractCredentialsProvider
      */
     public function forConnection(ConnectionInterface $connection)
     {
-        if (
-            !$this->connectionCredentials()
-                ->tryGet($connection->name(), $credentials)
-        ) {
+        $connectionCredentials = $this->connectionCredentials();
+
+        if (array_key_exists($connection->name(), $connectionCredentials)) {
+            $credentials = $connectionCredentials[$connection->name()];
+        } else {
             $credentials = $this->defaultCredentials();
         }
 

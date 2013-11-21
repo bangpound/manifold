@@ -11,8 +11,6 @@ use Eloquent\Schemer\Value\ArrayValue;
 use Eloquent\Schemer\Value\NullValue;
 use Eloquent\Schemer\Value\ObjectValue;
 use Eloquent\Schemer\Value\ValueInterface;
-use Icecave\Collections\Map;
-use Icecave\Collections\Vector;
 use Icecave\Manifold\Connection\ConnectionFactory;
 use Icecave\Manifold\Connection\ConnectionFactoryInterface;
 use Icecave\Manifold\Connection\ConnectionInterface;
@@ -178,7 +176,7 @@ class ConfigurationReader implements ConfigurationReaderInterface
      * @param ObjectValue                     $value             The raw configuration data.
      * @param ConnectionFactoryInterface|null $connectionFactory The connection factory to use.
      *
-     * @return tuple<Map<string,ConnectionInterface>,ConnectionInterface> A tuple of the connection map, and the default connection.
+     * @return tuple<array<string,ConnectionInterface>,ConnectionInterface> A tuple of the connection map, and the default connection.
      */
     protected function createConnections(
         ObjectValue $value,
@@ -188,14 +186,14 @@ class ConfigurationReader implements ConfigurationReaderInterface
             $connectionFactory = $this->defaultConnectionFactory();
         }
 
-        $connections = new Map;
+        $connections = array();
         $defaultConnection = null;
         foreach ($value->get('connections') as $name => $dsn) {
             $connection = $connectionFactory->create(
                 $name,
                 $dsn->value()
             );
-            $connections->add($name, $connection);
+            $connections[$name] = $connection;
 
             if (null === $defaultConnection) {
                 $defaultConnection = $connection;
@@ -208,21 +206,19 @@ class ConfigurationReader implements ConfigurationReaderInterface
     /**
      * Creates a map of connection pools from raw configuration data.
      *
-     * @param ObjectValue                     $value       The raw configuration data.
-     * @param Map<string,ConnectionInterface> $connections The connection map.
+     * @param ObjectValue                       $value       The raw configuration data.
+     * @param array<string,ConnectionInterface> $connections The connection map.
      *
-     * @return Map<string,ConnectionPoolInterface> The connection pool map.
+     * @return array<string,ConnectionPoolInterface> The connection pool map.
      */
     protected function createPools(
         ObjectValue $value,
-        Map $connections
+        array $connections
     ) {
-        $pools = new Map;
+        $pools = array();
         foreach ($value->get('pools') as $poolName => $connectionNames) {
-            $pools->add(
-                $poolName,
-                $this->createPool($poolName, $connectionNames, $connections)
-            );
+            $pools[$poolName] =
+                $this->createPool($poolName, $connectionNames, $connections);
         }
 
         return $pools;
@@ -231,20 +227,20 @@ class ConfigurationReader implements ConfigurationReaderInterface
     /**
      * Creates a new connection container selector from raw configuration data.
      *
-     * @param ObjectValue                         $value             The raw configuration data.
-     * @param Map<string,ConnectionInterface>     $connections       The connection map.
-     * @param Map<string,ConnectionPoolInterface> $pools             The connection pool map.
-     * @param ConnectionInterface                 $defaultConnection The default connection.
+     * @param ObjectValue                           $value             The raw configuration data.
+     * @param array<string,ConnectionInterface>     $connections       The connection map.
+     * @param array<string,ConnectionPoolInterface> $pools             The connection pool map.
+     * @param ConnectionInterface                   $defaultConnection The default connection.
      *
      * @return ConnectionContainerSelectorInterface The new connection container selector.
      */
     protected function createSelector(
         ObjectValue $value,
-        Map $connections,
-        Map $pools,
+        array $connections,
+        array $pools,
         ConnectionInterface $defaultConnection
     ) {
-        $databases = new Map;
+        $databases = array();
         $defaultPair = null;
 
         $selection = $value->get('selection');
@@ -264,13 +260,10 @@ class ConfigurationReader implements ConfigurationReaderInterface
         }
 
         foreach ($selection->get('databases') as $name => $pair) {
-            $databases->add(
-                $name,
-                $this->createConnectionContainerPair(
-                    $pair,
-                    $connections,
-                    $pools
-                )
+            $databases[$name] = $this->createConnectionContainerPair(
+                $pair,
+                $connections,
+                $pools
             );
         }
 
@@ -278,22 +271,22 @@ class ConfigurationReader implements ConfigurationReaderInterface
     }
 
     /**
-     * Creates a vector of replication trees from raw configuration data.
+     * Creates an array of replication trees from raw configuration data.
      *
-     * @param ObjectValue                         $value             The raw configuration data.
-     * @param Map<string,ConnectionInterface>     $connections       The connection map.
-     * @param Map<string,ConnectionPoolInterface> $pools             The connection pool map.
-     * @param ConnectionInterface                 $defaultConnection The default connection.
+     * @param ObjectValue                           $value             The raw configuration data.
+     * @param array<string,ConnectionInterface>     $connections       The connection map.
+     * @param array<string,ConnectionPoolInterface> $pools             The connection pool map.
+     * @param ConnectionInterface                   $defaultConnection The default connection.
      *
-     * @return Vector<ReplicationTreeInterface> The new replication trees.
+     * @return array<ReplicationTreeInterface> The new replication trees.
      */
     protected function createReplicationTrees(
         ObjectValue $value,
-        Map $connections,
-        Map $pools,
+        array $connections,
+        array $pools,
         ConnectionInterface $defaultConnection
     ) {
-        $replicationTrees = new Vector;
+        $replicationTrees = array();
 
         foreach ($value->get('replication') as $name => $treeNodes) {
             $masterConnection = $this->findConnection($name, $connections);
@@ -307,13 +300,11 @@ class ConfigurationReader implements ConfigurationReaderInterface
                 $masterConnection
             );
 
-            $replicationTrees->pushBack($replicationTree);
+            $replicationTrees[] = $replicationTree;
         }
 
-        if ($replicationTrees->count() < 1) {
-            $replicationTrees->pushBack(
-                new ReplicationTree($defaultConnection)
-            );
+        if (count($replicationTrees) < 1) {
+            $replicationTrees[] = new ReplicationTree($defaultConnection);
         }
 
         return $replicationTrees;
@@ -322,22 +313,21 @@ class ConfigurationReader implements ConfigurationReaderInterface
     /**
      * Creates a new connection pool from raw configuration data.
      *
-     * @param string                          $poolName        The connection pool name.
-     * @param ArrayValue                      $connectionNames The raw configuration data.
-     * @param Map<string,ConnectionInterface> $connections     The connection map.
+     * @param string                            $poolName        The connection pool name.
+     * @param ArrayValue                        $connectionNames The raw configuration data.
+     * @param array<string,ConnectionInterface> $connections     The connection map.
      *
      * @return ConnectionPoolInterface The new connection pool.
      */
     protected function createPool(
         $poolName,
         ArrayValue $connectionNames,
-        Map $connections
+        array $connections
     ) {
-        $poolConnections = new Vector;
+        $poolConnections = array();
         foreach ($connectionNames as $connectionName) {
-            $poolConnections->pushBack(
-                $this->findConnection($connectionName->value(), $connections)
-            );
+            $poolConnections[] =
+                $this->findConnection($connectionName->value(), $connections);
         }
 
         return new ConnectionPool($poolName, $poolConnections);
@@ -347,17 +337,17 @@ class ConfigurationReader implements ConfigurationReaderInterface
      * Creates a new read/write connection container pair from raw configuration
      * data.
      *
-     * @param ObjectValue                         $value            The raw configuration data.
-     * @param Map<string,ConnectionInterface>     $connections      The connection map.
-     * @param Map<string,ConnectionPoolInterface> $pools            The connection pool map.
-     * @param ConnectionContainerInterface|null   $defaultContainer The default connection container.
+     * @param ObjectValue                           $value            The raw configuration data.
+     * @param array<string,ConnectionInterface>     $connections      The connection map.
+     * @param array<string,ConnectionPoolInterface> $pools            The connection pool map.
+     * @param ConnectionContainerInterface|null     $defaultContainer The default connection container.
      *
      * @return ConnectionContainerPairInterface The new read/write pair.
      */
     protected function createConnectionContainerPair(
         ObjectValue $value,
-        Map $connections,
-        Map $pools,
+        array $connections,
+        array $pools,
         ConnectionContainerInterface $defaultContainer = null
     ) {
         if ($value->has('write')) {
@@ -386,16 +376,16 @@ class ConfigurationReader implements ConfigurationReaderInterface
     /**
      * Adds replication nodes to an existing tree based upon configuration data.
      *
-     * @param ValueInterface                      $treeNodes        The raw configuration data.
-     * @param Map<string,ConnectionInterface>     $connections      The connection map.
-     * @param Map<string,ConnectionPoolInterface> $pools            The connection pool map.
-     * @param ReplicationTreeInterface            $replicationTree  The replication tree to add to.
-     * @param ConnectionInterface                 $masterConnection The master connection.
+     * @param ValueInterface                        $treeNodes        The raw configuration data.
+     * @param array<string,ConnectionInterface>     $connections      The connection map.
+     * @param array<string,ConnectionPoolInterface> $pools            The connection pool map.
+     * @param ReplicationTreeInterface              $replicationTree  The replication tree to add to.
+     * @param ConnectionInterface                   $masterConnection The master connection.
      */
     protected function addReplicationNodes(
         ValueInterface $treeNodes,
-        Map $connections,
-        Map $pools,
+        array $connections,
+        array $pools,
         ReplicationTreeInterface $replicationTree,
         ConnectionInterface $masterConnection
     ) {
@@ -409,7 +399,7 @@ class ConfigurationReader implements ConfigurationReaderInterface
                 $replicationTree->addSlave($masterConnection, $slaveConnection);
             }
 
-            if ($connections->hasKey($name)) {
+            if (array_key_exists($name, $connections)) {
                 $this->addReplicationNodes(
                     $subNodes,
                     $connections,
@@ -424,16 +414,16 @@ class ConfigurationReader implements ConfigurationReaderInterface
     /**
      * Finds a connection by name.
      *
-     * @param string                          $name        The connection name.
-     * @param Map<string,ConnectionInterface> $connections The connection map.
+     * @param string                            $name        The connection name.
+     * @param array<string,ConnectionInterface> $connections The connection map.
      *
      * @return ConnectionInterface                    The connection.
      * @throws Exception\UndefinedConnectionException If no associated connection is found.
      */
-    protected function findConnection($name, Map $connections)
+    protected function findConnection($name, array $connections)
     {
-        if ($connections->hasKey($name)) {
-            return $connections->get($name);
+        if (array_key_exists($name, $connections)) {
+            return $connections[$name];
         }
 
         throw new Exception\UndefinedConnectionException($name);
@@ -445,17 +435,17 @@ class ConfigurationReader implements ConfigurationReaderInterface
      * If the name refers to a connection rather than a pool, the connection is
      * placed in a pool by itself and returned.
      *
-     * @param string                              $name        The pool or connection name.
-     * @param Map<string,ConnectionInterface>     $connections The connection map.
-     * @param Map<string,ConnectionPoolInterface> $pools       The connection pool map.
+     * @param string                                $name        The pool or connection name.
+     * @param array<string,ConnectionInterface>     $connections The connection map.
+     * @param array<string,ConnectionPoolInterface> $pools       The connection pool map.
      *
      * @return ConnectionContainerInterface           The connection container.
      * @throws Exception\UndefinedConnectionException If no associated connection or pool is found.
      */
-    protected function findContainer($name, Map $connections, Map $pools)
+    protected function findContainer($name, array $connections, array $pools)
     {
-        if ($pools->hasKey($name)) {
-            return $pools->get($name);
+        if (array_key_exists($name, $pools)) {
+            return $pools[$name];
         }
 
         return $this->findConnection($name, $connections);

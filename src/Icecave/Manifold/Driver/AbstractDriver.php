@@ -1,7 +1,6 @@
 <?php
 namespace Icecave\Manifold\Driver;
 
-use Icecave\Collections\Vector;
 use Icecave\Manifold\Configuration\ConfigurationInterface;
 use Icecave\Manifold\Configuration\Exception\UndefinedConnectionException;
 use Icecave\Manifold\Connection\Facade\ConnectionFacadeInterface;
@@ -17,20 +16,18 @@ abstract class AbstractDriver implements DriverInterface
      * @param ConfigurationInterface    $configuration The configuration to use.
      * @param array<integer,mixed>|null $attributes    The connection attributes to use.
      *
-     * @return Vector<ConnectionFacadeInterface> The newly created connection facades.
+     * @return array<ConnectionFacadeInterface> The newly created connection facades.
      */
     public function createConnections(
         ConfigurationInterface $configuration,
         array $attributes = null
     ) {
-        $connections = new Vector;
+        $connections = array();
         foreach ($configuration->replicationTrees() as $replicationTree) {
-            $connections->pushBack(
-                $this->createConnection(
-                    $configuration,
-                    $replicationTree,
-                    $attributes
-                )
+            $connections[] = $this->createConnection(
+                $configuration,
+                $replicationTree,
+                $attributes
             );
         }
 

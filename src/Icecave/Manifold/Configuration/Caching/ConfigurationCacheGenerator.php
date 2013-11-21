@@ -75,25 +75,25 @@ class ConfigurationCacheGenerator implements
     protected function generateConnections(
         ConfigurationInterface $configuration
     ) {
-        $source = "\$connections = new Icecave\Collections\Map;\n";
-
+        $connections = '';
         foreach ($configuration->connections() as $connection) {
             $nameString = var_export($connection->name(), true);
 
-            $source .= sprintf(
-                "\$connections->set(\n%s,\n%s\n);\n",
-                $this->indent($nameString),
-                $this->indent(
-                    sprintf(
-                        "\$factory->create(\n%s,\n%s\n)",
-                        $this->indent($nameString),
-                        $this->indent(var_export($connection->dsn(), true))
-                    )
+            $connections .= sprintf(
+                "%s => %s,\n",
+                $nameString,
+                sprintf(
+                    "\$factory->create(\n%s,\n%s\n)",
+                    $this->indent($nameString),
+                    $this->indent(var_export($connection->dsn(), true))
                 )
             );
         }
 
-        return $source;
+        return sprintf(
+            "\$connections = array(\n%s);\n",
+            $this->indent($connections)
+        );
     }
 
     /**
@@ -106,35 +106,40 @@ class ConfigurationCacheGenerator implements
     protected function generatePools(
         ConfigurationInterface $configuration
     ) {
-        $source = "\$connectionPools = new Icecave\Collections\Map;\n";
+        if (count($configuration->connectionPools()) < 1) {
+            return "\$connectionPools = array();\n";
+        }
 
+        $connectionPools = '';
         foreach ($configuration->connectionPools() as $pool) {
-            $nameString = var_export($pool->name(), true);
-
-            $source .= "\$poolConnections = new Icecave\Collections\Vector;\n";
+            $poolConnections = '';
 
             foreach ($pool->connections() as $connection) {
-                $source .= sprintf(
-                    "\$poolConnections->pushBack(%s);\n",
+                $poolConnections .= sprintf(
+                    "%s,\n",
                     $this->generateConnectionGet($connection)
                 );
             }
 
-            $source .= sprintf(
-                "\$connectionPools->set(\n%s,\n%s\n);\n",
+            $poolConnections = sprintf(
+                "array(\n%s)",
+                $this->indent($poolConnections)
+            );
+
+            $nameString = var_export($pool->name(), true);
+            $connectionPools .= sprintf(
+                "%s => new %s(\n%s,\n%s\n),\n",
+                $nameString,
+                'Icecave\Manifold\Connection\Container\ConnectionPool',
                 $this->indent($nameString),
-                $this->indent(
-                    sprintf(
-                        "new %s(\n%s,\n%s\n)",
-                        'Icecave\Manifold\Connection\Container\ConnectionPool',
-                        $this->indent($nameString),
-                        $this->indent('$poolConnections')
-                    )
-                )
+                $this->indent($poolConnections)
             );
         }
 
-        return $source;
+        return sprintf(
+            "\$connectionPools = array(\n%s);\n",
+            $this->indent($connectionPools)
+        );
     }
 
     /**
@@ -147,39 +152,44 @@ class ConfigurationCacheGenerator implements
     protected function generateSelector(
         ConfigurationInterface $configuration
     ) {
-        $source = "\$databasePairs = new Icecave\Collections\Map;\n";
-
-        foreach (
-            $configuration->connectionContainerSelector()->databases() as
-                $databaseName =>
-                $databasePair
+        if (
+            count($configuration->connectionContainerSelector()->databases())
+            < 1
         ) {
-            $source .= sprintf(
-                "\$databasePairs->set(\n%s,\n%s\n);\n",
-                $this->indent(var_export($databaseName, true)),
-                $this->indent($this->generateContainerPair($databasePair))
+            $databasePairs = 'array()';
+        } else {
+            $databasePairs = '';
+
+            foreach (
+                $configuration->connectionContainerSelector()->databases() as
+                    $databaseName =>
+                    $databasePair
+            ) {
+                $databasePairs .= sprintf(
+                    "%s => %s,\n",
+                    var_export($databaseName, true),
+                    $this->generateContainerPair($databasePair)
+                );
+            }
+
+            $databasePairs = sprintf(
+                "array(\n%s)",
+                $this->indent($databasePairs)
             );
         }
 
-        $source .= sprintf(
-            "\$selector =\n%s\n",
+        return sprintf(
+            "\$selector = new %s(\n%s,\n%s\n);\n",
+            'Icecave\Manifold\Connection\Container' .
+                '\ConnectionContainerSelector',
             $this->indent(
-                sprintf(
-                    "new %s(\n%s,\n%s\n);",
-                    'Icecave\Manifold\Connection\Container' .
-                        '\ConnectionContainerSelector',
-                    $this->indent(
-                        $this->generateContainerPair(
-                            $configuration->connectionContainerSelector()
-                                ->defaults()
-                        )
-                    ),
-                    $this->indent('$databasePairs')
+                $this->generateContainerPair(
+                    $configuration->connectionContainerSelector()
+                        ->defaults()
                 )
-            )
+            ),
+            $this->indent($databasePairs)
         );
-
-        return $source;
     }
 
     /**
@@ -192,7 +202,7 @@ class ConfigurationCacheGenerator implements
     protected function generateReplicationTrees(
         ConfigurationInterface $configuration
     ) {
-        $source = "\$replicationTrees = new Icecave\Collections\Vector;\n";
+        $source = "\$replicationTrees = array();\n";
 
         foreach ($configuration->replicationTrees() as $replicationTree) {
             $source .= $this->generateReplicationTree($replicationTree);
@@ -226,7 +236,7 @@ class ConfigurationCacheGenerator implements
             $replicationTree->replicationRoot()
         );
 
-        $source .= "\$replicationTrees->pushBack(\$replicationTree);\n";
+        $source .= "\$replicationTrees[] = \$replicationTree;\n";
 
         return $source;
     }
@@ -265,16 +275,9 @@ EOD;
     ) {
         $source = '';
 
-        $slaveConnections = $replicationTree
-            ->slavesOf($masterConnection)->elements();
-        usort(
-            $slaveConnections,
-            function (ConnectionInterface $left, ConnectionInterface $right) {
-                return strcmp($left->name(), $right->name());
-            }
-        );
-
-        foreach ($slaveConnections as $slaveConnection) {
+        foreach (
+            $replicationTree->slavesOf($masterConnection) as $slaveConnection
+        ) {
             $source .= sprintf(
                 "\$replicationTree->addSlave(\n%s,\n%s\n);\n",
                 $this->indent($this->generateConnectionGet($masterConnection)),
@@ -301,7 +304,7 @@ EOD;
     protected function generateConnectionGet(ConnectionInterface $connection)
     {
         return sprintf(
-            "\$connections->get(%s)",
+            "\$connections[%s]",
             var_export($connection->name(), true)
         );
     }
@@ -317,7 +320,7 @@ EOD;
     protected function generatePoolGet(ConnectionPoolInterface $connectionPool)
     {
         return sprintf(
-            "\$connectionPools->get(%s)",
+            "\$connectionPools[%s]",
             var_export($connectionPool->name(), true)
         );
     }

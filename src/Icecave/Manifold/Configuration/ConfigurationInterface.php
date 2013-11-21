@@ -1,7 +1,6 @@
 <?php
 namespace Icecave\Manifold\Configuration;
 
-use Icecave\Collections\Map;
 use Icecave\Manifold\Connection\ConnectionInterface;
 use Icecave\Manifold\Connection\ConnectionPoolInterface;
 use Icecave\Manifold\Connection\Container\ConnectionContainerSelectorInterface;
@@ -15,14 +14,14 @@ interface ConfigurationInterface
     /**
      * Get the defined connections.
      *
-     * @return Map<string,ConnectionInterface> The defined connections.
+     * @return array<string,ConnectionInterface> The defined connections.
      */
     public function connections();
 
     /**
      * Get the defined connection pools.
      *
-     * @return Map<string,ConnectionPoolInterface> The defined connection pools.
+     * @return array<string,ConnectionPoolInterface> The defined connection pools.
      */
     public function connectionPools();
 
@@ -36,7 +35,7 @@ interface ConfigurationInterface
     /**
      * Get the replication trees.
      *
-     * @return Vector<ReplicationTreeInterface> The replication trees.
+     * @return array<ReplicationTreeInterface> The replication trees.
      */
     public function replicationTrees();
 }

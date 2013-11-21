@@ -1,7 +1,6 @@
 <?php
 namespace Icecave\Manifold\Replication;
 
-use Icecave\Collections\Set;
 use Icecave\Manifold\Connection\ConnectionInterface;
 
 /**
@@ -80,7 +79,7 @@ interface ReplicationTreeInterface
      *
      * @param ConnectionInterface $connection The master connection.
      *
-     * @return Set<ConnectionInterface>             The replication slaves for the given master.
+     * @return array<ConnectionInterface>           The replication slaves for the given master.
      * @throws Exception\UnknownConnectionException If the connection is not found in this tree.
      */
     public function slavesOf(ConnectionInterface $connection);

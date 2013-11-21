@@ -1,8 +1,6 @@
 <?php
 namespace Icecave\Manifold\Connection;
 
-use Icecave\Collections\Map;
-use Icecave\Collections\Vector;
 use Icecave\Manifold\Authentication\Credentials;
 use Icecave\Manifold\Authentication\CredentialsProvider;
 use PDO;
@@ -15,10 +13,8 @@ class LazyConnectionTest extends PHPUnit_Framework_TestCase
     {
         $this->credentialsProvider = new CredentialsProvider(
             new Credentials('username', 'password'),
-            new Map(
-                array(
-                    'foo' => new Credentials('fooUsername', 'fooPassword'),
-                )
+            array(
+                'foo' => new Credentials('fooUsername', 'fooPassword'),
             )
         );
         $this->logger = Phake::mock('Psr\Log\LoggerInterface');
@@ -359,6 +355,6 @@ class LazyConnectionTest extends PHPUnit_Framework_TestCase
 
     public function testConnections()
     {
-        $this->assertEquals(new Vector(array($this->connection)), $this->connection->connections());
+        $this->assertSame(array($this->connection), $this->connection->connections());
     }
 }

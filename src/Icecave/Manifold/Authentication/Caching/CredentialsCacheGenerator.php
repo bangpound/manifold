@@ -38,34 +38,7 @@ class CredentialsCacheGenerator implements CredentialsCacheGeneratorInterface
     protected function generateBody(
         StaticCredentialsProviderInterface $provider
     ) {
-        return sprintf(
-            "%s\nreturn %s;\n",
-            $this->generateConnectionCredentials($provider),
-            $this->generateProvider($provider)
-        );
-    }
-
-    /**
-     * Generate the connection credentials creation code.
-     *
-     * @param StaticCredentialsProviderInterface $provider The credentials provider to generate code for.
-     *
-     * @return string The connection credentials creation source code.
-     */
-    protected function generateConnectionCredentials(
-        StaticCredentialsProviderInterface $provider
-    ) {
-        $source = "\$connectionCredentials = new Icecave\Collections\Map;\n";
-
-        foreach ($provider->connectionCredentials() as $name => $credentials) {
-            $source .= sprintf(
-                "\$connectionCredentials->set(\n%s,\n%s\n);\n",
-                $this->indent(var_export($name, true)),
-                $this->indent($this->generateCredentials($credentials))
-            );
-        }
-
-        return $source;
+        return sprintf("return %s;\n", $this->generateProvider($provider));
     }
 
     /**
@@ -84,7 +57,37 @@ class CredentialsCacheGenerator implements CredentialsCacheGeneratorInterface
             $this->indent(
                 $this->generateCredentials($provider->defaultCredentials())
             ),
-            $this->indent('$connectionCredentials')
+            $this->indent($this->generateConnectionCredentials($provider))
+        );
+    }
+
+    /**
+     * Generate the connection credentials creation code.
+     *
+     * @param StaticCredentialsProviderInterface $provider The credentials provider to generate code for.
+     *
+     * @return string The connection credentials creation source code.
+     */
+    protected function generateConnectionCredentials(
+        StaticCredentialsProviderInterface $provider
+    ) {
+        if (count($provider->connectionCredentials()) < 1) {
+            return 'array()';
+        }
+
+        $connectionCredentials = '';
+
+        foreach ($provider->connectionCredentials() as $name => $credentials) {
+            $connectionCredentials .= sprintf(
+                "%s => %s,\n",
+                var_export($name, true),
+                $this->generateCredentials($credentials)
+            );
+        }
+
+        return sprintf(
+            "array(\n%s)",
+            $this->indent($connectionCredentials)
         );
     }
 

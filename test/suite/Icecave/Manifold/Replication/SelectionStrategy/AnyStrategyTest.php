@@ -1,7 +1,6 @@
 <?php
 namespace Icecave\Manifold\Replication\SelectionStrategy;
 
-use Icecave\Collections\Vector;
 use Icecave\Manifold\Connection\Container\ConnectionPool;
 use PHPUnit_Framework_TestCase;
 use Phake;
@@ -19,11 +18,9 @@ class AnyStrategyTest extends PHPUnit_Framework_TestCase
         Phake::when($this->connectionB)->name()->thenReturn('B');
         $this->container = new ConnectionPool(
             'container',
-            new Vector(
-                array(
-                    $this->connectionA,
-                    $this->connectionB,
-                )
+            array(
+                $this->connectionA,
+                $this->connectionB,
             )
         );
 

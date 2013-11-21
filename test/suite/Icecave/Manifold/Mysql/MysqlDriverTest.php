@@ -1,8 +1,6 @@
 <?php
 namespace Icecave\Manifold\Mysql;
 
-use Icecave\Collections\Map;
-use Icecave\Collections\Vector;
 use Icecave\Manifold\Configuration\Configuration;
 use Icecave\Manifold\Connection\Facade\ConnectionFacade;
 use Icecave\Manifold\Replication\ConnectionSelector;
@@ -29,10 +27,10 @@ class MysqlDriverTest extends PHPUnit_Framework_TestCase
         $this->replicationTreeA = Phake::mock('Icecave\Manifold\Replication\ReplicationTreeInterface');
         $this->replicationTreeB = Phake::mock('Icecave\Manifold\Replication\ReplicationTreeInterface');
         $this->configuration = new Configuration(
-            new Map,
-            new Map,
+            array(),
+            array(),
             $this->connectionContainerSelector,
-            new Vector(array($this->replicationTreeA, $this->replicationTreeB))
+            array($this->replicationTreeA, $this->replicationTreeB)
         );
 
         $this->connectionSelector = Phake::mock('Icecave\Manifold\Replication\ConnectionSelectorInterface');
@@ -59,29 +57,27 @@ class MysqlDriverTest extends PHPUnit_Framework_TestCase
 
     public function testCreateConnections()
     {
-        $expected = new Vector(
-            array(
-                new ConnectionFacade(
-                    new QueryConnectionSelector(
-                        new ConnectionSelector(
-                            $this->connectionContainerSelector,
-                            new MysqlReplicationManager($this->replicationTreeA)
-                        ),
-                        new MysqlQueryDiscriminator
+        $expected = array(
+            new ConnectionFacade(
+                new QueryConnectionSelector(
+                    new ConnectionSelector(
+                        $this->connectionContainerSelector,
+                        new MysqlReplicationManager($this->replicationTreeA)
                     ),
-                    $this->expectedAttributes
+                    new MysqlQueryDiscriminator
                 ),
-                new ConnectionFacade(
-                    new QueryConnectionSelector(
-                        new ConnectionSelector(
-                            $this->connectionContainerSelector,
-                            new MysqlReplicationManager($this->replicationTreeB)
-                        ),
-                        new MysqlQueryDiscriminator
+                $this->expectedAttributes
+            ),
+            new ConnectionFacade(
+                new QueryConnectionSelector(
+                    new ConnectionSelector(
+                        $this->connectionContainerSelector,
+                        new MysqlReplicationManager($this->replicationTreeB)
                     ),
-                    $this->expectedAttributes
+                    new MysqlQueryDiscriminator
                 ),
-            )
+                $this->expectedAttributes
+            ),
         );
         $actual = $this->driver->createConnections($this->configuration, $this->attributes);
 
@@ -94,29 +90,27 @@ class MysqlDriverTest extends PHPUnit_Framework_TestCase
 
     public function testCreateConnectionsDefaults()
     {
-        $expected = new Vector(
-            array(
-                new ConnectionFacade(
-                    new QueryConnectionSelector(
-                        new ConnectionSelector(
-                            $this->connectionContainerSelector,
-                            new MysqlReplicationManager($this->replicationTreeA)
-                        ),
-                        new MysqlQueryDiscriminator
+        $expected = array(
+            new ConnectionFacade(
+                new QueryConnectionSelector(
+                    new ConnectionSelector(
+                        $this->connectionContainerSelector,
+                        new MysqlReplicationManager($this->replicationTreeA)
                     ),
-                    $this->defaultAttributes
+                    new MysqlQueryDiscriminator
                 ),
-                new ConnectionFacade(
-                    new QueryConnectionSelector(
-                        new ConnectionSelector(
-                            $this->connectionContainerSelector,
-                            new MysqlReplicationManager($this->replicationTreeB)
-                        ),
-                        new MysqlQueryDiscriminator
+                $this->defaultAttributes
+            ),
+            new ConnectionFacade(
+                new QueryConnectionSelector(
+                    new ConnectionSelector(
+                        $this->connectionContainerSelector,
+                        new MysqlReplicationManager($this->replicationTreeB)
                     ),
-                    $this->defaultAttributes
+                    new MysqlQueryDiscriminator
                 ),
-            )
+                $this->defaultAttributes
+            ),
         );
         $actual = $this->driver->createConnections($this->configuration);
 
