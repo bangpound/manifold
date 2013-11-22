@@ -11,6 +11,7 @@ use Eloquent\Schemer\Value\ArrayValue;
 use Eloquent\Schemer\Value\NullValue;
 use Eloquent\Schemer\Value\ObjectValue;
 use Eloquent\Schemer\Value\ValueInterface;
+use Icecave\Isolator\Isolator;
 use Icecave\Manifold\Connection\ConnectionFactory;
 use Icecave\Manifold\Connection\ConnectionFactoryInterface;
 use Icecave\Manifold\Connection\ConnectionInterface;
@@ -34,10 +35,12 @@ class ConfigurationReader implements ConfigurationReaderInterface
      *
      * @param ConnectionFactoryInterface|null $defaultConnectionFactory The default connection factory to use.
      * @param ReaderInterface|null            $reader                   The internal reader to use.
+     * @param Isolator|null $isolator The isolator to use.
      */
     public function __construct(
         ConnectionFactoryInterface $defaultConnectionFactory = null,
-        ReaderInterface $reader = null
+        ReaderInterface $reader = null,
+        Isolator $isolator = null
     ) {
         if (null === $defaultConnectionFactory) {
             $defaultConnectionFactory = new ConnectionFactory;
@@ -45,6 +48,7 @@ class ConfigurationReader implements ConfigurationReaderInterface
 
         $this->defaultConnectionFactory = $defaultConnectionFactory;
         $this->reader = $reader;
+        $this->isolator = Isolator::get($isolator);
     }
 
     /**
@@ -99,7 +103,10 @@ class ConfigurationReader implements ConfigurationReaderInterface
         }
 
         try {
-            $data = $this->reader()->readPath($path, $mimeType);
+            $data = $this->reader()->readPath(
+                $this->isolator()->realpath($path),
+                $mimeType
+            );
         } catch (LoadException $e) {
             throw new Exception\ConfigurationReadException($path, $e);
         }
@@ -451,6 +458,17 @@ class ConfigurationReader implements ConfigurationReaderInterface
         return $this->findConnection($name, $connections);
     }
 
+    /**
+     * Get the isolator.
+     *
+     * @return Isolator The isolator.
+     */
+    protected function isolator()
+    {
+        return $this->isolator;
+    }
+
     private $defaultConnectionFactory;
     private $reader;
+    private $isolator;
 }

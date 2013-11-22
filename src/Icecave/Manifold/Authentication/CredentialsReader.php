@@ -8,6 +8,7 @@ use Eloquent\Schemer\Reader\ReaderInterface;
 use Eloquent\Schemer\Reader\ValidatingReader;
 use Eloquent\Schemer\Validation\BoundConstraintValidator;
 use Eloquent\Schemer\Value\ObjectValue;
+use Icecave\Isolator\Isolator;
 use Icecave\Manifold\Authentication\Credentials;
 
 /**
@@ -19,10 +20,14 @@ class CredentialsReader implements CredentialsReaderInterface
      * Construct a new credentials reader.
      *
      * @param ReaderInterface|null $reader The internal reader to use.
+     * @param Isolator|null $isolator The isolator to use.
      */
-    public function __construct(ReaderInterface $reader = null)
-    {
+    public function __construct(
+        ReaderInterface $reader = null,
+        Isolator $isolator = null
+    ) {
         $this->reader = $reader;
+        $this->isolator = Isolator::get($isolator);
     }
 
     /**
@@ -65,7 +70,10 @@ class CredentialsReader implements CredentialsReaderInterface
         }
 
         try {
-            $data = $this->reader()->readPath($path, $mimeType);
+            $data = $this->reader()->readPath(
+                $this->isolator()->realpath($path),
+                $mimeType
+            );
         } catch (LoadException $e) {
             throw new Exception\CredentialsReadException($path, $e);
         }
@@ -138,5 +146,16 @@ class CredentialsReader implements CredentialsReaderInterface
         );
     }
 
+    /**
+     * Get the isolator.
+     *
+     * @return Isolator The isolator.
+     */
+    protected function isolator()
+    {
+        return $this->isolator;
+    }
+
     private $reader;
+    private $isolator;
 }
