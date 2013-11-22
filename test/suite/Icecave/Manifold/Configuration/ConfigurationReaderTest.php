@@ -3,7 +3,6 @@ namespace Icecave\Manifold\Configuration;
 
 use Eloquent\Schemer\Loader\Exception\LoadException;
 use Eloquent\Schemer\Uri\Uri;
-use Icecave\Isolator\Isolator;
 use Icecave\Manifold\Authentication\Credentials;
 use Icecave\Manifold\Authentication\CredentialsProvider;
 use Icecave\Manifold\Connection\ConnectionFactory;
@@ -22,11 +21,10 @@ class ConfigurationReaderTest extends PHPUnit_Framework_TestCase
     {
         parent::setUp();
 
-        $this->isolator = Phake::mock(Isolator::className());
-        $this->innerReader = Phake::mock('Eloquent\Schemer\Reader\ReaderInterface');
         $this->defaultConnectionFactory = new ConnectionFactory;
+        $this->innerReader = Phake::mock('Eloquent\Schemer\Reader\ReaderInterface');
 
-        $this->reader = new ConfigurationReader(null, $this->defaultConnectionFactory);
+        $this->reader = new ConfigurationReader($this->defaultConnectionFactory);
 
         $this->fixturePath = __DIR__ . '/../../../../fixture/config';
 
@@ -36,21 +34,21 @@ class ConfigurationReaderTest extends PHPUnit_Framework_TestCase
 
     public function testConstructor()
     {
-        $this->reader = new ConfigurationReader($this->innerReader, $this->defaultConnectionFactory);
+        $this->reader = new ConfigurationReader($this->defaultConnectionFactory, $this->innerReader);
 
-        $this->assertSame($this->innerReader, $this->reader->reader());
         $this->assertSame($this->defaultConnectionFactory, $this->reader->defaultConnectionFactory());
+        $this->assertSame($this->innerReader, $this->reader->reader());
     }
 
     public function testConstructorDefaults()
     {
         $this->reader = new ConfigurationReader;
 
-        $this->assertInstanceOf('Eloquent\Schemer\Reader\ValidatingReader', $this->reader->reader());
         $this->assertInstanceOf(
             'Icecave\Manifold\Connection\ConnectionFactory',
             $this->reader->defaultConnectionFactory()
         );
+        $this->assertInstanceOf('Eloquent\Schemer\Reader\ValidatingReader', $this->reader->reader());
     }
 
     public function testConfigurationFromString()
@@ -364,7 +362,7 @@ EOD;
 
     public function testConfigurationFileReadFailure()
     {
-        $this->reader = new ConfigurationReader($this->innerReader);
+        $this->reader = new ConfigurationReader(null, $this->innerReader);
         Phake::when($this->innerReader)->readPath(Phake::anyParameters())
             ->thenThrow(new LoadException(new Uri('file:///foo')));
 

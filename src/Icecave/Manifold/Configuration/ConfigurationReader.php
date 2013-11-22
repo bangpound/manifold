@@ -32,19 +32,29 @@ class ConfigurationReader implements ConfigurationReaderInterface
     /**
      * Construct a new configuration reader.
      *
-     * @param ReaderInterface|null            $reader                   The internal reader to use.
      * @param ConnectionFactoryInterface|null $defaultConnectionFactory The default connection factory to use.
+     * @param ReaderInterface|null            $reader                   The internal reader to use.
      */
     public function __construct(
-        ReaderInterface $reader = null,
-        ConnectionFactoryInterface $defaultConnectionFactory = null
+        ConnectionFactoryInterface $defaultConnectionFactory = null,
+        ReaderInterface $reader = null
     ) {
         if (null === $defaultConnectionFactory) {
             $defaultConnectionFactory = new ConnectionFactory;
         }
 
-        $this->reader = $reader;
         $this->defaultConnectionFactory = $defaultConnectionFactory;
+        $this->reader = $reader;
+    }
+
+    /**
+     * Get the default connection factory.
+     *
+     * @return ConnectionFactoryInterface The default connection factory.
+     */
+    public function defaultConnectionFactory()
+    {
+        return $this->defaultConnectionFactory;
     }
 
     /**
@@ -67,16 +77,6 @@ class ConfigurationReader implements ConfigurationReaderInterface
         }
 
         return $this->reader;
-    }
-
-    /**
-     * Get the default connection factory.
-     *
-     * @return ConnectionFactoryInterface The default connection factory.
-     */
-    public function defaultConnectionFactory()
-    {
-        return $this->defaultConnectionFactory;
     }
 
     /**
@@ -451,6 +451,6 @@ class ConfigurationReader implements ConfigurationReaderInterface
         return $this->findConnection($name, $connections);
     }
 
-    private $reader;
     private $defaultConnectionFactory;
+    private $reader;
 }
