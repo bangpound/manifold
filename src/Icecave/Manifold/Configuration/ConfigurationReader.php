@@ -35,7 +35,7 @@ class ConfigurationReader implements ConfigurationReaderInterface
      *
      * @param ConnectionFactoryInterface|null $defaultConnectionFactory The default connection factory to use.
      * @param ReaderInterface|null            $reader                   The internal reader to use.
-     * @param Isolator|null $isolator The isolator to use.
+     * @param Isolator|null                   $isolator                 The isolator to use.
      */
     public function __construct(
         ConnectionFactoryInterface $defaultConnectionFactory = null,

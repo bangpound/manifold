@@ -19,8 +19,8 @@ class CredentialsReader implements CredentialsReaderInterface
     /**
      * Construct a new credentials reader.
      *
-     * @param ReaderInterface|null $reader The internal reader to use.
-     * @param Isolator|null $isolator The isolator to use.
+     * @param ReaderInterface|null $reader   The internal reader to use.
+     * @param Isolator|null        $isolator The isolator to use.
      */
     public function __construct(
         ReaderInterface $reader = null,

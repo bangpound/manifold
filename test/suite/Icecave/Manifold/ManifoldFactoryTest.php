@@ -18,11 +18,17 @@ class ManifoldFactoryTest extends PHPUnit_Framework_TestCase
         $this->driver = Phake::mock('Icecave\Manifold\Driver\DriverInterface');
         $this->configurationReader = Phake::mock('Icecave\Manifold\Configuration\ConfigurationReaderInterface');
         $this->credentialsReader = Phake::mock('Icecave\Manifold\Authentication\CredentialsReaderInterface');
-        $this->factory = new ManifoldFactory($this->driver, $this->configurationReader, $this->credentialsReader);
+        $this->logger = Phake::mock('Psr\Log\LoggerInterface');
+        $this->factory = new ManifoldFactory(
+            $this->driver,
+            $this->configurationReader,
+            $this->credentialsReader,
+            $this->logger
+        );
 
         $this->configuration = Phake::mock('Icecave\Manifold\Configuration\ConfigurationInterface');
         $this->credentialsProvider = Phake::mock('Icecave\Manifold\Authentication\CredentialsProviderInterface');
-        $this->connectionFactory = new ConnectionFactory($this->credentialsProvider);
+        $this->connectionFactory = new ConnectionFactory($this->credentialsProvider, null, $this->logger);
         $this->attributes = array(PDO::ATTR_PERSISTENT => false, PDO::ATTR_AUTOCOMMIT => false);
         $this->facade = Phake::mock('Icecave\Manifold\Connection\Facade\ConnectionFacadeInterface');
     }
@@ -32,6 +38,7 @@ class ManifoldFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->driver, $this->factory->driver());
         $this->assertSame($this->configurationReader, $this->factory->configurationReader());
         $this->assertSame($this->credentialsReader, $this->factory->credentialsReader());
+        $this->assertSame($this->logger, $this->factory->logger());
     }
 
     public function testConstructorDefaults()
@@ -41,6 +48,15 @@ class ManifoldFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(new MysqlDriver, $this->factory->driver());
         $this->assertEquals(new CachingConfigurationReader, $this->factory->configurationReader());
         $this->assertEquals(new CachingCredentialsReader, $this->factory->credentialsReader());
+        $this->assertNull($this->factory->logger());
+    }
+
+    public function testSetLogger()
+    {
+        $this->logger = Phake::mock('Psr\Log\LoggerInterface');
+        $this->factory->setLogger($this->logger);
+
+        $this->assertSame($this->logger, $this->factory->logger());
     }
 
     public function testCreateWithPathStrings()
@@ -59,16 +75,19 @@ class ManifoldFactoryTest extends PHPUnit_Framework_TestCase
         );
 
         $this->assertSame($this->facade, $actual);
+        Phake::verify($this->facade)->setLogger($this->logger);
     }
 
     public function testCreateWithPathStringsDefaults()
     {
-        Phake::when($this->configurationReader)->readFile('/path/to/manifold.yml', null, new ConnectionFactory)
+        Phake::when($this->configurationReader)
+            ->readFile('/path/to/manifold.yml', null, new ConnectionFactory(null, null, $this->logger))
             ->thenReturn($this->configuration);
         Phake::when($this->driver)->createFirstConnection($this->configuration, null)->thenReturn($this->facade);
         $actual = $this->factory->create('/path/to/manifold.yml');
 
         $this->assertSame($this->facade, $actual);
+        Phake::verify($this->facade)->setLogger($this->logger);
     }
 
     public function testCreateWithObjects()
@@ -83,6 +102,7 @@ class ManifoldFactoryTest extends PHPUnit_Framework_TestCase
         );
 
         $this->assertSame($this->facade, $actual);
+        Phake::verify($this->facade)->setLogger($this->logger);
     }
 
     public function testCreateWithObjectsDefaults()
@@ -93,5 +113,6 @@ class ManifoldFactoryTest extends PHPUnit_Framework_TestCase
         );
 
         $this->assertSame($this->facade, $actual);
+        Phake::verify($this->facade)->setLogger($this->logger);
     }
 }

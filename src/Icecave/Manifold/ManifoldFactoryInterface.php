@@ -3,11 +3,13 @@ namespace Icecave\Manifold;
 
 use Icecave\Manifold\Authentication\CredentialsProviderInterface;
 use Icecave\Manifold\Connection\Facade\ConnectionFacadeInterface;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * The interface implemented by the primary Manifold factory.
  */
-interface ManifoldFactoryInterface
+interface ManifoldFactoryInterface extends LoggerAwareInterface
 {
     /**
      * Create a Manifold connection facade.
@@ -25,4 +27,11 @@ interface ManifoldFactoryInterface
         $connectionName = null,
         array $attributes = null
     );
+
+    /**
+     * Get the logger.
+     *
+     * @return LoggerInterface|null The logger, or null if no logger is in use.
+     */
+    public function logger();
 }

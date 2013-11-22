@@ -13,6 +13,7 @@ use Icecave\Manifold\Connection\ConnectionFactoryInterface;
 use Icecave\Manifold\Connection\Facade\ConnectionFacadeInterface;
 use Icecave\Manifold\Driver\DriverInterface;
 use Icecave\Manifold\Mysql\MysqlDriver;
+use Psr\Log\LoggerInterface;
 
 /**
  * Creates Manifold connection facades from typical inputs.
@@ -25,11 +26,13 @@ class ManifoldFactory implements ManifoldFactoryInterface
      * @param DriverInterface|null              $driver              The driver to use.
      * @param ConfigurationReaderInterface|null $configurationReader The configuration reader to use.
      * @param CredentialsReaderInterface|null   $credentialsReader   The credentials reader to use.
+     * @param LoggerInterface|null              $logger              The logger to use.
      */
     public function __construct(
         DriverInterface $driver = null,
         ConfigurationReaderInterface $configurationReader = null,
-        CredentialsReaderInterface $credentialsReader = null
+        CredentialsReaderInterface $credentialsReader = null,
+        LoggerInterface $logger = null
     ) {
         if (null === $driver) {
             $driver = new MysqlDriver;
@@ -44,6 +47,7 @@ class ManifoldFactory implements ManifoldFactoryInterface
         $this->driver = $driver;
         $this->configurationReader = $configurationReader;
         $this->credentialsReader = $credentialsReader;
+        $this->logger = $logger;
     }
 
     /**
@@ -77,6 +81,26 @@ class ManifoldFactory implements ManifoldFactoryInterface
     }
 
     /**
+     * Set the logger.
+     *
+     * @param LoggerInterface|null $logger The logger to use, or null to remove the current logger.
+     */
+    public function setLogger(LoggerInterface $logger = null)
+    {
+        $this->logger = $logger;
+    }
+
+    /**
+     * Get the logger.
+     *
+     * @return LoggerInterface|null The logger, or null if no logger is in use.
+     */
+    public function logger()
+    {
+        return $this->logger;
+    }
+
+    /**
      * Create a Manifold connection facade.
      *
      * @param string|ConfigurationInterface            $configuration  The configuration, or a path to the configuration file.
@@ -98,17 +122,23 @@ class ManifoldFactory implements ManifoldFactoryInterface
         );
 
         if (null === $connectionName) {
-            return $this->driver()->createFirstConnection(
+            $facade = $this->driver()->createFirstConnection(
                 $configuration,
+                $attributes
+            );
+        } else {
+            $facade = $this->driver()->createConnectionByName(
+                $configuration,
+                $connectionName,
                 $attributes
             );
         }
 
-        return $this->driver()->createConnectionByName(
-            $configuration,
-            $connectionName,
-            $attributes
-        );
+        if (null !== $this->logger()) {
+            $facade->setLogger($this->logger());
+        }
+
+        return $facade;
     }
 
     /**
@@ -166,10 +196,11 @@ class ManifoldFactory implements ManifoldFactoryInterface
     protected function createConnectionFactory(
         CredentialsProviderInterface $credentialsProvider
     ) {
-        return new ConnectionFactory($credentialsProvider);
+        return new ConnectionFactory($credentialsProvider, null, $this->logger);
     }
 
     private $driver;
     private $configurationReader;
     private $credentialsReader;
+    private $logger;
 }
