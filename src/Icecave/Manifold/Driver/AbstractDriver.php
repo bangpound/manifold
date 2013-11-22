@@ -35,6 +35,31 @@ abstract class AbstractDriver implements DriverInterface
     }
 
     /**
+     * Create the first PDO connection facade defined in the supplied
+     * configuration.
+     *
+     * @param ConfigurationInterface    $configuration The configuration to use.
+     * @param array<integer,mixed>|null $attributes    The connection attributes to use.
+     *
+     * @return ConnectionFacadeInterface The newly created connection facade.
+     */
+    public function createFirstConnection(
+        ConfigurationInterface $configuration,
+        array $attributes = null
+    ) {
+        $replicationTree = null;
+        foreach ($configuration->replicationTrees() as $replicationTree) {
+            break;
+        }
+
+        return $this->createConnection(
+            $configuration,
+            $replicationTree,
+            $attributes
+        );
+    }
+
+    /**
      * Create a PDO connection facade using the supplied configuration and
      * replication tree root connection name.
      *

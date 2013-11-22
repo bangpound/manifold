@@ -117,6 +117,25 @@ class MysqlDriverTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $actual);
     }
 
+    public function testCreateFirstConnection()
+    {
+        $expected = new ConnectionFacade(
+            new QueryConnectionSelector(
+                new ConnectionSelector(
+                    $this->connectionContainerSelector,
+                    new MysqlReplicationManager($this->replicationTreeA)
+                ),
+                new MysqlQueryDiscriminator
+            ),
+            $this->expectedAttributes
+        );
+        $actual = $this->driver->createFirstConnection($this->configuration, $this->attributes);
+
+        $this->assertEquals($expected, $actual);
+        $this->assertSame($this->connectionContainerSelector, $actual->connectionSelector()->containerSelector());
+        $this->assertSame($this->replicationTreeA, $actual->connectionSelector()->replicationManager()->tree());
+    }
+
     public function testCreateConnectionByName()
     {
         $expected = new ConnectionFacade(

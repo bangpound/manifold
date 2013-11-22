@@ -22,7 +22,7 @@ interface ConnectionFactoryInterface extends LoggerAwareInterface
      * @param string $name The connection name.
      * @param string $dsn  The data source name.
      *
-     * @return PDO The newly created connection.
+     * @return ConnectionInterface The newly created connection.
      */
     public function create($name, $dsn);
 }
