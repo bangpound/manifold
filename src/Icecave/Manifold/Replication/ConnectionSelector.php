@@ -5,7 +5,6 @@ use Icecave\Manifold\Connection\ConnectionInterface;
 use Icecave\Manifold\Connection\ConnectionPair;
 use Icecave\Manifold\Connection\ConnectionPairInterface;
 use Icecave\Manifold\Connection\Container\ConnectionContainerSelectorInterface;
-use Icecave\Manifold\Replication\ReplicationManagerInterface;
 use Psr\Log\LoggerInterface;
 
 /**

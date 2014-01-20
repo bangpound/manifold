@@ -1,45 +1,78 @@
 <?php
 namespace Icecave\Manifold\Connection;
 
-use Icecave\Manifold\Authentication\CredentialsProvider;
-use Icecave\Manifold\Authentication\CredentialsProviderInterface;
-use InvalidArgumentException;
+use Icecave\Manifold\Replication\ReplicationManagerInterface;
+use Icecave\Manifold\Replication\SelectionStrategy\AnyStrategy;
+use Icecave\Manifold\Replication\SelectionStrategy\SelectionStrategyInterface;
 use PDO;
+use PDOException;
 use Psr\Log\LoggerInterface;
 
 /**
- * A PDO connection with lazy-connection semantics.
+ * A PDO connection with lazy-connection semantics, where the actual connection
+ * is chosen from a specific connection container.
  */
-class LazyConnection extends PDO implements ConnectionInterface
+class LazyConnectionFromContainer extends PDO implements ConnectionInterface
 {
     /**
-     * Construct a new lazy PDO connection.
+     * Construct a new lazy PDO connection that selects from a specific
+     * container.
      *
-     * @param string                            $name                The connection name.
-     * @param string                            $dsn                 The connection data source name.
-     * @param CredentialsProviderInterface|null $credentialsProvider The credentials provider to use.
-     * @param array<integer,mixed>|null         $attributes          The connection attributes to use.
-     * @param LoggerInterface|null              $logger              The logger to use.
+     * @param Container\ConnectionContainerInterface $container          The container to select from.
+     * @param ReplicationManagerInterface            $replicationManager The replication manager to use.
+     * @param SelectionStrategyInterface|null        $strategy           The connection selection strategy to use.
+     * @param array<integer,mixed>|null              $attributes         The connection attributes to use.
+     * @param LoggerInterface|null                   $logger             The logger to use.
      */
     public function __construct(
-        $name,
-        $dsn,
-        CredentialsProviderInterface $credentialsProvider = null,
+        Container\ConnectionContainerInterface $container,
+        ReplicationManagerInterface $replicationManager,
+        SelectionStrategyInterface $strategy = null,
         array $attributes = null,
         LoggerInterface $logger = null
     ) {
-        if (null === $credentialsProvider) {
-            $credentialsProvider = new CredentialsProvider;
+        if (null === $strategy) {
+            $strategy = new AnyStrategy;
         }
         if (null === $attributes) {
             $attributes = array();
         }
 
-        $this->name = $name;
-        $this->dsn = $dsn;
-        $this->credentialsProvider = $credentialsProvider;
+        $this->container = $container;
+        $this->replicationManager = $replicationManager;
+        $this->strategy = $strategy;
         $this->attributes = $attributes;
         $this->logger = $logger;
+    }
+
+    /**
+     * Get the connection container.
+     *
+     * @return Container\ConnectionContainerInterface The connection container.
+     */
+    public function container()
+    {
+        return $this->container;
+    }
+
+    /**
+     * Get the replication manager.
+     *
+     * @return ReplicationManagerInterface The replication manager.
+     */
+    public function replicationManager()
+    {
+        return $this->replicationManager;
+    }
+
+    /**
+     * Get the selection strategy.
+     *
+     * @return SelectionStrategyInterface The selection strategy.
+     */
+    public function strategy()
+    {
+        return $this->strategy;
     }
 
     /**
@@ -63,25 +96,15 @@ class LazyConnection extends PDO implements ConnectionInterface
             return;
         }
 
-        $this->beforeConnect();
-
-        if (null !== $this->logger()) {
-            $this->logger()->debug(
-                'Establishing connection {connection} to {dsn}.',
-                array('connection' => $this->name(), 'dsn' => $this->dsn())
-            );
-        }
-
-        $credentials = $this->credentialsProvider()->forConnection($this);
-
-        $this->connection = $this->createConnection(
-            $this->dsn(),
-            $credentials->username(),
-            $credentials->password(),
-            $this->attributes()
+        $this->connection = $this->strategy()->select(
+            $this->replicationManager(),
+            $this->container(),
+            $this->logger()
         );
 
-        $this->afterConnect();
+        foreach ($this->attributes() as $attribute => $value) {
+            $this->connection->setAttribute($attribute, $value);
+        }
     }
 
     /**
@@ -97,16 +120,6 @@ class LazyConnection extends PDO implements ConnectionInterface
         return $this->connection;
     }
 
-    /**
-     * Get the credentials provider.
-     *
-     * @return CredentialsProviderInterface The credentials provider.
-     */
-    public function credentialsProvider()
-    {
-        return $this->credentialsProvider;
-    }
-
     // Implementation of ConnectionInterface ===================================
 
     /**
@@ -116,7 +129,7 @@ class LazyConnection extends PDO implements ConnectionInterface
      */
     public function name()
     {
-        return $this->name;
+        return $this->container()->name();
     }
 
     /**
@@ -126,7 +139,7 @@ class LazyConnection extends PDO implements ConnectionInterface
      */
     public function dsn()
     {
-        return $this->dsn;
+        return $this->connection()->dsn();
     }
 
     /**
@@ -174,13 +187,6 @@ class LazyConnection extends PDO implements ConnectionInterface
      */
     public function prepare($statement, $attributes = array())
     {
-        if (null !== $this->logger()) {
-            $this->logger()->debug(
-                'Preparing statement {statement} on {connection}.',
-                array('statement' => $statement, 'connection' => $this->name())
-            );
-        }
-
         return $this->connection()->prepare($statement, $attributes);
     }
 
@@ -199,23 +205,6 @@ class LazyConnection extends PDO implements ConnectionInterface
      */
     public function query()
     {
-        $arguments = func_get_args();
-        if (!array_key_exists(0, $arguments)) {
-            throw new InvalidArgumentException(
-                'PDO::query() expects at least 1 parameter, 0 given'
-            );
-        }
-
-        if (null !== $this->logger()) {
-            $this->logger()->debug(
-                'Executing statement {statement} on {connection}.',
-                array(
-                    'statement' => $arguments[0],
-                    'connection' => $this->name(),
-                )
-            );
-        }
-
         return call_user_func_array(
             array($this->connection(), 'query'),
             func_get_args()
@@ -234,13 +223,6 @@ class LazyConnection extends PDO implements ConnectionInterface
      */
     public function exec($statement)
     {
-        if (null !== $this->logger()) {
-            $this->logger()->debug(
-                'Executing statement {statement} on {connection}.',
-                array('statement' => $statement, 'connection' => $this->name())
-            );
-        }
-
         return $this->connection()->exec($statement);
     }
 
@@ -270,13 +252,6 @@ class LazyConnection extends PDO implements ConnectionInterface
      */
     public function beginTransaction()
     {
-        if (null !== $this->logger()) {
-            $this->logger()->debug(
-                'Beginning transaction on {connection}.',
-                array('connection' => $this->name())
-            );
-        }
-
         return $this->connection()->beginTransaction();
     }
 
@@ -290,13 +265,6 @@ class LazyConnection extends PDO implements ConnectionInterface
      */
     public function commit()
     {
-        if (null !== $this->logger()) {
-            $this->logger()->debug(
-                'Committing transaction on {connection}.',
-                array('connection' => $this->name())
-            );
-        }
-
         return $this->connection()->commit();
     }
 
@@ -310,13 +278,6 @@ class LazyConnection extends PDO implements ConnectionInterface
      */
     public function rollBack()
     {
-        if (null !== $this->logger()) {
-            $this->logger()->debug(
-                'Rolling back transaction on {connection}.',
-                array('connection' => $this->name())
-            );
-        }
-
         return $this->connection()->rollBack();
     }
 
@@ -472,48 +433,9 @@ class LazyConnection extends PDO implements ConnectionInterface
 
     // Implementation details ==================================================
 
-    /**
-     * Called before establishing a connection.
-     *
-     * The default implementation is a no-op, this method may be overridden to
-     * provide custom behaviour.
-     */
-    protected function beforeConnect()
-    {
-    }
-
-    /**
-     * Called after establishing a connection.
-     *
-     * The default implementation is a no-op, this method may be overridden to
-     * provide custom behaviour.
-     */
-    protected function afterConnect()
-    {
-    }
-
-    /**
-     * Creates a real PDO connection.
-     *
-     * @param string               $dsn        The data source name.
-     * @param string|null          $username   The username, or null if no username should be specified.
-     * @param string|null          $password   The password, or null if no password should be specified.
-     * @param array<integer,mixed> $attributes The connection attributes to use.
-     *
-     * @return PDO          The newly created connection.
-     * @throws PDOException If the connection could not be established.
-     */
-    protected function createConnection(
-        $dsn,
-        $username,
-        $password,
-        array $attributes
-    ) {
-        return new PDO($dsn, $username, $password, $attributes);
-    }
-
-    private $dsn;
-    private $credentialsProvider;
+    private $container;
+    private $replicationManager;
+    private $strategy;
     private $attributes;
     private $logger;
     private $connection;

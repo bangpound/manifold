@@ -9,7 +9,6 @@ use Eloquent\Schemer\Reader\ValidatingReader;
 use Eloquent\Schemer\Validation\BoundConstraintValidator;
 use Eloquent\Schemer\Value\ObjectValue;
 use Icecave\Isolator\Isolator;
-use Icecave\Manifold\Authentication\Credentials;
 
 /**
  * Reads credentials from files and strings.

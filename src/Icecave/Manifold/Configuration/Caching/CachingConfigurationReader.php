@@ -3,7 +3,6 @@ namespace Icecave\Manifold\Configuration\Caching;
 
 use ErrorException;
 use Icecave\Isolator\Isolator;
-use Icecave\Manifold\Configuration\Caching\ConfigurationCacheFileGeneratorInterface;
 use Icecave\Manifold\Configuration\ConfigurationInterface;
 use Icecave\Manifold\Configuration\ConfigurationReader;
 use Icecave\Manifold\Configuration\ConfigurationReaderInterface;
