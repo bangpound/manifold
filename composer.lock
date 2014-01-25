@@ -270,38 +270,30 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/IcecaveStudios/chrono.git",
-                "reference": "f0e36bcf5985030780cb3dd526898316fd619514"
+                "reference": "e9cf97ea6aeffbdc7e0919807aa6887f12b09f8d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/IcecaveStudios/chrono/zipball/f0e36bcf5985030780cb3dd526898316fd619514",
-                "reference": "f0e36bcf5985030780cb3dd526898316fd619514",
+                "url": "https://api.github.com/repos/IcecaveStudios/chrono/zipball/e9cf97ea6aeffbdc7e0919807aa6887f12b09f8d",
+                "reference": "e9cf97ea6aeffbdc7e0919807aa6887f12b09f8d",
                 "shasum": ""
             },
             "require": {
-                "icecave/parity": "~1@dev",
+                "icecave/isolator": "~2",
+                "icecave/parity": "~1",
                 "php": ">=5.3"
             },
             "require-dev": {
                 "eloquent/liberator": "~1",
-                "eloquent/typhoon": "~0.9.0",
                 "icecave/archer": "~1"
             },
             "suggest": {
                 "eloquent/asplode": "Drop-in exception-based error handling."
             },
             "type": "library",
-            "extra": {
-                "typhoon": {
-                    "output-path": "src-typhoon",
-                    "validator-namespace": "Icecave\\Chrono\\TypeCheck",
-                    "use-native-callable": false
-                }
-            },
             "autoload": {
                 "psr-0": {
-                    "Icecave\\Chrono": "src",
-                    "Icecave\\Chrono\\TypeCheck": "src-typhoon"
+                    "Icecave\\Chrono": "src"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -330,7 +322,7 @@
                 "time",
                 "timer"
             ],
-            "time": "2013-10-23 23:42:41"
+            "time": "2014-01-25 22:57:56"
         },
         {
             "name": "icecave/isolator",
@@ -1052,16 +1044,16 @@
         },
         {
             "name": "icecave/archer",
-            "version": "1.1.1",
+            "version": "1.1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/IcecaveStudios/archer.git",
-                "reference": "d1a4d745bf1616be1e8e81ce844521eeaed76428"
+                "reference": "c8f777640f216f75d10905619135d4f92bb0223f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/IcecaveStudios/archer/zipball/d1a4d745bf1616be1e8e81ce844521eeaed76428",
-                "reference": "d1a4d745bf1616be1e8e81ce844521eeaed76428",
+                "url": "https://api.github.com/repos/IcecaveStudios/archer/zipball/c8f777640f216f75d10905619135d4f92bb0223f",
+                "reference": "c8f777640f216f75d10905619135d4f92bb0223f",
                 "shasum": ""
             },
             "require": {
@@ -1120,7 +1112,7 @@
                 "testing",
                 "unit"
             ],
-            "time": "2014-01-08 03:00:20"
+            "time": "2014-01-21 01:56:19"
         },
         {
             "name": "nikic/php-parser",

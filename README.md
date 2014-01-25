@@ -461,11 +461,11 @@ $reader = new CachingConfigurationReader(new ConnectionFactory($provider));
 [YAML]: http://en.wikipedia.org/wiki/YAML
 
 [API documentation]: http://icecavestudios.github.io/manifold/artifacts/documentation/api/
-[Build status]: https://travis-ci.org/IcecaveStudios/manifold.png?branch=develop
+[Build status]: https://b.adge.me/travis/IcecaveStudios/manifold/develop.svg
 [Composer]: http://getcomposer.org
 [icecave/manifold]: https://packagist.org/packages/icecave/manifold
 [Latest build]: https://travis-ci.org/IcecaveStudios/manifold
 [Semantic version number]: http://b.repl.ca/v1/semver-0.0.0-red.png
 [SemVer]: http://semver.org/
 [Test coverage report]: https://coveralls.io/r/IcecaveStudios/manifold?branch=develop
-[Test coverage]: https://coveralls.io/repos/IcecaveStudios/manifold/badge.png?branch=develop
+[Test coverage]: https://b.adge.me/coveralls/IcecaveStudios/manifold/develop.svg
