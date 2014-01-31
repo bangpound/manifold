@@ -22,7 +22,7 @@
         "eloquent/asplode": "~1",
         "eloquent/constance": "dev-develop@dev",
         "eloquent/schemer": "dev-develop@dev",
-        "icecave/chrono": "dev-develop@dev",
+        "icecave/chrono": "~0.3.0",
         "psr/log": "~1",
         "symfony/yaml": "~2"
     },

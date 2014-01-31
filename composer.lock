@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "4bf20d32e41b76988fe07578275094ae",
+    "hash": "cd8847483f470905f51688aa814f7b9c",
     "packages": [
         {
             "name": "eloquent/asplode",
@@ -62,12 +62,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/eloquent/constance.git",
-                "reference": "6161b0ba70b612e1a7a6af7b876add6dcae7aeec"
+                "reference": "4af52e02bb4b074201003b952bb0269cd9e536d5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/eloquent/constance/zipball/6161b0ba70b612e1a7a6af7b876add6dcae7aeec",
-                "reference": "6161b0ba70b612e1a7a6af7b876add6dcae7aeec",
+                "url": "https://api.github.com/repos/eloquent/constance/zipball/4af52e02bb4b074201003b952bb0269cd9e536d5",
+                "reference": "4af52e02bb4b074201003b952bb0269cd9e536d5",
                 "shasum": ""
             },
             "require": {
@@ -80,8 +80,8 @@
             },
             "type": "library",
             "autoload": {
-                "psr-0": {
-                    "Eloquent\\Constance": "src"
+                "psr-4": {
+                    "Eloquent\\Constance\\": "src"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -104,20 +104,20 @@
                 "name",
                 "value"
             ],
-            "time": "2013-11-11 05:39:36"
+            "time": "2014-01-29 12:38:03"
         },
         {
             "name": "eloquent/enumeration",
-            "version": "5.0.0",
+            "version": "5.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/eloquent/enumeration.git",
-                "reference": "f5a1d326221dfef3694fe960ed4bdca96ae5c900"
+                "reference": "01f345694623081da288b108881d97960dcd898a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/eloquent/enumeration/zipball/f5a1d326221dfef3694fe960ed4bdca96ae5c900",
-                "reference": "f5a1d326221dfef3694fe960ed4bdca96ae5c900",
+                "url": "https://api.github.com/repos/eloquent/enumeration/zipball/01f345694623081da288b108881d97960dcd898a",
+                "reference": "01f345694623081da288b108881d97960dcd898a",
                 "shasum": ""
             },
             "require": {
@@ -128,8 +128,8 @@
             },
             "type": "library",
             "autoload": {
-                "psr-0": {
-                    "Eloquent\\Enumeration": "src"
+                "psr-4": {
+                    "Eloquent\\Enumeration\\": "src"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -153,7 +153,7 @@
                 "set",
                 "type"
             ],
-            "time": "2013-11-11 02:48:55"
+            "time": "2014-01-29 09:28:17"
         },
         {
             "name": "eloquent/equality",
@@ -266,16 +266,16 @@
         },
         {
             "name": "icecave/chrono",
-            "version": "dev-develop",
+            "version": "0.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/IcecaveStudios/chrono.git",
-                "reference": "e9cf97ea6aeffbdc7e0919807aa6887f12b09f8d"
+                "reference": "ad8bc4bf1bd5ee0de98722653e2902ed8b4680b1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/IcecaveStudios/chrono/zipball/e9cf97ea6aeffbdc7e0919807aa6887f12b09f8d",
-                "reference": "e9cf97ea6aeffbdc7e0919807aa6887f12b09f8d",
+                "url": "https://api.github.com/repos/IcecaveStudios/chrono/zipball/ad8bc4bf1bd5ee0de98722653e2902ed8b4680b1",
+                "reference": "ad8bc4bf1bd5ee0de98722653e2902ed8b4680b1",
                 "shasum": ""
             },
             "require": {
@@ -322,7 +322,7 @@
                 "time",
                 "timer"
             ],
-            "time": "2014-01-25 22:57:56"
+            "time": "2014-01-24 03:33:48"
         },
         {
             "name": "icecave/isolator",
@@ -952,16 +952,16 @@
         },
         {
             "name": "guzzle/guzzle",
-            "version": "v3.8.0",
+            "version": "v3.8.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/guzzle.git",
-                "reference": "b4a3ce8c05e777fa18b802956d5d0e38ad338a69"
+                "reference": "4de0618a01b34aa1c8c33a3f13f396dcd3882eba"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/b4a3ce8c05e777fa18b802956d5d0e38ad338a69",
-                "reference": "b4a3ce8c05e777fa18b802956d5d0e38ad338a69",
+                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/4de0618a01b34aa1c8c33a3f13f396dcd3882eba",
+                "reference": "4de0618a01b34aa1c8c33a3f13f396dcd3882eba",
                 "shasum": ""
             },
             "require": {
@@ -999,8 +999,8 @@
                 "phpunit/phpunit": "3.7.*",
                 "psr/log": "1.0.*",
                 "symfony/class-loader": "*",
-                "zendframework/zend-cache": "2.0.*",
-                "zendframework/zend-log": "2.0.*"
+                "zendframework/zend-cache": "<2.3",
+                "zendframework/zend-log": "<2.3"
             },
             "type": "library",
             "extra": {
@@ -1010,8 +1010,8 @@
             },
             "autoload": {
                 "psr-0": {
-                    "Guzzle\\Tests": "tests/",
-                    "Guzzle": "src/"
+                    "Guzzle": "src/",
+                    "Guzzle\\Tests": "tests/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -1040,7 +1040,7 @@
                 "rest",
                 "web service"
             ],
-            "time": "2013-12-05 23:39:20"
+            "time": "2014-01-28 22:29:15"
         },
         {
             "name": "icecave/archer",
@@ -1772,8 +1772,7 @@
     "minimum-stability": "dev",
     "stability-flags": {
         "eloquent/constance": 20,
-        "eloquent/schemer": 20,
-        "icecave/chrono": 20
+        "eloquent/schemer": 20
     },
     "platform": {
         "php": ">=5.3",
