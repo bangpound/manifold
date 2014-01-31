@@ -1,30 +1,30 @@
 # Manifold
 
-[![Build status]][Latest build]
-[![Test coverage]][Test coverage report]
-[![Semantic version number]][SemVer]
+[![Build Status]](https://travis-ci.org/IcecaveStudios/manifold)
+[![Test Coverage]](https://coveralls.io/r/IcecaveStudios/manifold?branch=develop)
+[![SemVer]](http://semver.org)
 
-* Install via [Composer] package [icecave/manifold]
-* Read the [API documentation]
+**Manifold** is a PDO compatible facade for multi-tiered [MySQL] replication
+sets.
 
-## What is *Manifold*?
-
-*Manifold* is a PDO compatible facade for multi-tiered [MySQL] replication sets.
-
-*Manifold* provides proxy PDO objects that automatically select the most
+**Manifold** provides proxy PDO objects that automatically select the most
 appropriate database connection to use by inspecting SQL queries and analyzing
-query type and table usage. Typically *Manifold* is used in an environment where
-one or more replication masters are written to depending on the tables being
-used, and reads are performed on pools of multiple identical replication slaves.
+query type and table usage. Typically **Manifold** is used in an environment
+where one or more replication masters are written to depending on the tables
+being used, and reads are performed on pools of multiple identical replication
+slaves.
 
-*Manifold* was originally designed for use with [Doctrine's object relational
+**Manifold** was originally designed for use with [Doctrine's object relational
 mapper], but should be suitable in most situations where a single `PDO` instance
 is used.
 
+* Install via [Composer](http://getcomposer.org) package [icecave/manifold](https://packagist.org/packages/icecave/manifold)
+* Read the [API documentation](http://icecavestudios.github.io/manifold/artifacts/documentation/api/)
+
 ## Table of contents
 
-- [Configuring *Manifold*](#configuring-manifold)
-    - [The *Manifold* configuration file](#the-manifold-configuration-file)
+- [Configuring Manifold](#configuring-manifold)
+    - [The Manifold configuration file](#the-manifold-configuration-file)
         - [The 'connections' section](#the-connections-section)
         - [The 'pools' section](#the-pools-section)
         - [The 'selection' section](#the-selection-section)
@@ -39,19 +39,19 @@ is used.
         - [Connecting without credentials](#connecting-without-credentials)
         - [Injecting the credentials provider](#injecting-the-credentials-provider)
 
-## Configuring *Manifold*
+## Configuring Manifold
 
-*Manifold* features a simple configuration system for defining the structure of
+**Manifold** features a simple configuration system for defining the structure of
 a replication hierarchy, as well as which connections should be used for each
 database, and connection credentials.
 
-### The *Manifold* configuration file
+### The Manifold configuration file
 
 The default configuration file format is [YAML], but any format supported by
 [Schemer][] (i.e. [JSON] or [TOML]) will work fine. The following examples all
 use [YAML].
 
-For a detailed description of the configuration file, see the *Manifold*
+For a detailed description of the configuration file, see the
 [configuration schema].
 
 #### The 'connections' section
@@ -108,7 +108,7 @@ reading and writing from each database.
 For each entry in the `databases` section, the key is the name of a database,
 and the value is a hash. The `read` and `write` keys of this hash can be either
 a connection name, or a pool name. If either `read` or `write` is omitted,
-*Manifold* will fall back to using the defined default.
+**Manifold** will fall back to using the defined default.
 
 The `default` key contains a hash that defines what to use when no overrides
 exist for a particular database. If the `default` key is specified, both `read`
@@ -169,12 +169,12 @@ $configuration = $reader->readFile('/path/to/manifold.yml');
 The caching configuration reader will look for a PHP file at
 `<configuration-filename>.cache.php` containing an opcode-cacheable version of
 the configuration file, and create one if it does not exist. This file allows
-*Manifold* to avoid any disk I/O and validation overhead to vastly reduce load
+**Manifold** to avoid any disk I/O and validation overhead to vastly reduce load
 times.
 
 #### Complete example configuration
 
-The following example illustrates a complete *Manifold* configuration file in
+The following example illustrates a complete **Manifold** configuration file in
 [YAML] format:
 
 ```yaml
@@ -234,7 +234,7 @@ replication:
 
 #### Multi-file example configuration
 
-*Manifold* also allows for configuration to be split across multiple files using
+**Manifold** also allows for configuration to be split across multiple files using
 [JSON Reference] syntax. The following example is equivalent to the previous
 single-file example:
 
@@ -314,12 +314,12 @@ master1:
 master3: null
 ```
 
-### Configuring *Manifold* credentials
+### Configuring Manifold credentials
 
-*Manifold* uses a credentials *provider* system to manage the usernames and
+**Manifold** uses a credentials *provider* system to manage the usernames and
 passwords used to connect to each server specified in the main configuration
 file. Any object implementing [CredentialsProviderInterface] can be used, but
-*Manifold* comes with a couple of providers by default:
+**Manifold** comes with a couple of providers by default:
 
 #### Environment variable credentials
 
@@ -336,7 +336,7 @@ $provider = new EnvironmentCredentialsProvider(
 ```
 
 In the above example, `DB_USERNAME` and `DB_PASSWORD` are environment variable
-names containing the actual credentials. *Manifold* will retrieve the actual
+names containing the actual credentials. **Manifold** will retrieve the actual
 credentials at run-time in order to establish a connection.
 
 In order to use different credentials for specific connections, simply provide
@@ -366,7 +366,7 @@ $provider = new EnvironmentCredentialsProvider(new Credentials('DB_USERNAME'));
 
 #### File-based credentials
 
-*Manifold* supports a simple configuration file for defining credentials.
+**Manifold** supports a simple configuration file for defining credentials.
 Similar to the main configuration file, the credentials file is capable of
 supporting multiple formats, and even being split across multiple files. The
 following is a simple example using [YAML] format:
@@ -393,8 +393,8 @@ username and password to use when connecting.
 The `default` key defines the username and password to use when an entry is not
 defined for a specific connection.
 
-In all cases, the username or password can be omitted, which tells *Manifold* to
-connect without explicitly using that credential.
+In all cases, the username or password can be omitted, which tells **Manifold**
+to connect without explicitly using that credential.
 
 ##### Reading a credentials file
 
@@ -410,13 +410,13 @@ $provider = $reader->readFile('/path/to/manifold-credentials.yml');
 Using the caching credentials reader will look for a PHP file at
 `<credentials-filename>.cache.php` containing an opcode-cacheable version of the
 credentials file, and create one if it does not exist. This file allows
-*Manifold* to avoid any disk I/O and validation overhead to vastly reduce load
+**Manifold** to avoid any disk I/O and validation overhead to vastly reduce load
 times.
 
 #### Connecting without credentials
 
-To make *Manifold* connect without using explicit credentials, simply create an
-instance of [CredentialsProvider] with no arguments:
+To make **Manifold** connect without using explicit credentials, simply create
+an instance of [CredentialsProvider] with no arguments:
 
 ```php
 use Icecave\Manifold\Authentication\CredentialsProvider;
@@ -426,9 +426,9 @@ $provider = new CredentialsProvider;
 
 #### Injecting the credentials provider
 
-*Manifold*'s configuration reader requires that the credentials provider be
-present before the configuration is loaded. This example demonstrates the
-process of creating a configuration reader with a custom credentials provider:
+The configuration reader requires that the credentials provider be present
+before the configuration is loaded. This example demonstrates the process of
+creating a configuration reader with a custom credentials provider:
 
 ```php
 use Icecave\Manifold\Authentication\Credentials;
@@ -443,15 +443,18 @@ $reader = new CachingConfigurationReader(new ConnectionFactory($provider));
 ```
 
 <!-- References -->
+[Build Status]: http://img.shields.io/travis/IcecaveStudios/manifold/develop.svg
+[Test Coverage]: http://img.shields.io/coveralls/IcecaveStudios/manifold/develop.svg
+[SemVer]: http://img.shields.io/:semver-0.0.0-red.svg
 
-[CachingConfigurationReader]: http://icecave.com.au/manifold/artifacts/documentation/api/Icecave/Manifold/Configuration/Caching/CachingConfigurationReader.html
-[CachingCredentialsReader]: http://icecave.com.au/manifold/artifacts/documentation/api/Icecave/Manifold/Authentication/Caching/CachingCredentialsReader.html
+[CachingConfigurationReader]: src/Icecave/Manifold/Configuration/Caching/CachingConfigurationReader.html
+[CachingCredentialsReader]: src/Icecave/Manifold/Authentication/Caching/CachingCredentialsReader.html
 [configuration schema]: res/schema/manifold-configuration-schema.yml
 [credentials schema]: res/schema/manifold-credentials-schema.yml
-[CredentialsProvider]: http://icecave.com.au/manifold/artifacts/documentation/api/Icecave/Manifold/Authentication/CredentialsProvider.html
-[CredentialsProviderInterface]: http://icecave.com.au/manifold/artifacts/documentation/api/Icecave/Manifold/Authentication/CredentialsProviderInterface.html
+[CredentialsProvider]: src/Icecave/Manifold/Authentication/CredentialsProvider.html
+[CredentialsProviderInterface]: src/Icecave/Manifold/Authentication/CredentialsProviderInterface.html
 [Doctrine's object relational mapper]: http://www.doctrine-project.org/projects/orm.html
-[EnvironmentCredentialsProvider]: http://icecave.com.au/manifold/artifacts/documentation/api/Icecave/Manifold/Authentication/EnvironmentCredentialsProvider.html
+[EnvironmentCredentialsProvider]: src/Icecave/Manifold/Authentication/EnvironmentCredentialsProvider.html
 [JSON Reference]: http://tools.ietf.org/html/draft-pbryan-zyp-json-ref-03
 [JSON]: http://en.wikipedia.org/wiki/JSON
 [MySQL]: http://www.mysql.com/
@@ -459,13 +462,3 @@ $reader = new CachingConfigurationReader(new ConnectionFactory($provider));
 [Schemer]: https://github.com/eloquent/schemer
 [TOML]: https://github.com/mojombo/toml
 [YAML]: http://en.wikipedia.org/wiki/YAML
-
-[API documentation]: http://icecavestudios.github.io/manifold/artifacts/documentation/api/
-[Build status]: http://img.shields.io/travis/IcecaveStudios/manifold/develop.svg
-[Composer]: http://getcomposer.org
-[icecave/manifold]: https://packagist.org/packages/icecave/manifold
-[Latest build]: https://travis-ci.org/IcecaveStudios/manifold
-[Semantic version number]: http://b.repl.ca/v1/semver-0.0.0-red.png
-[SemVer]: http://semver.org/
-[Test coverage report]: https://coveralls.io/r/IcecaveStudios/manifold?branch=develop
-[Test coverage]: http://img.shields.io/coveralls/IcecaveStudios/manifold/develop.svg
