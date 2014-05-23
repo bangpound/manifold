@@ -40,6 +40,12 @@ class LazyConnection extends PDO implements ConnectionInterface
         $this->credentialsProvider = $credentialsProvider;
         $this->attributes = $attributes;
         $this->logger = $logger;
+
+        if (preg_match('/^([a-zA-Z][a-zA-Z0-9+.-]*):/', $dsn, $matches)) {
+            $this->driverName = $matches[1];
+        } else {
+            $this->driverName = 'mysql';
+        }
     }
 
     /**
@@ -447,6 +453,11 @@ class LazyConnection extends PDO implements ConnectionInterface
      */
     public function getAttribute($attribute)
     {
+        switch ($attribute) {
+            case PDO::ATTR_DRIVER_NAME:
+                return $this->driverName;
+        }
+
         if ($this->isConnected()) {
             return $this->connection()->getAttribute($attribute);
         }
@@ -516,5 +527,6 @@ class LazyConnection extends PDO implements ConnectionInterface
     private $credentialsProvider;
     private $attributes;
     private $logger;
+    private $driverName;
     private $connection;
 }
