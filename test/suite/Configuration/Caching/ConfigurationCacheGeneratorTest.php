@@ -12,7 +12,7 @@ class ConfigurationCacheGeneratorTest extends PHPUnit_Framework_TestCase
 
         $this->generator = new ConfigurationCacheGenerator;
         $this->reader = new ConfigurationReader;
-        $this->fixturePath = __DIR__ . '/../../../../../fixture/config';
+        $this->fixturePath = __DIR__ . '/../../../fixture/config';
     }
 
     public function testMinimalConfiguration()

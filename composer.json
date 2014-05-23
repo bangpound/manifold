@@ -32,8 +32,8 @@
         "phake/phake": "1.0.3"
     },
     "autoload": {
-        "psr-0": {
-            "Icecave\\Manifold": "src"
+        "psr-4": {
+            "Icecave\\Manifold\\": "src"
         }
     },
     "minimum-stability": "dev",

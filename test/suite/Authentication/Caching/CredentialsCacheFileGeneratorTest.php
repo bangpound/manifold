@@ -23,7 +23,7 @@ class CredentialsCacheFileGeneratorTest extends PHPUnit_Framework_TestCase
         );
 
         $this->provider = Phake::mock('Icecave\Manifold\Authentication\StaticCredentialsProviderInterface');
-        $this->fixturePath = __DIR__ . '/../../../../../fixture/config';
+        $this->fixturePath = __DIR__ . '/../../../fixture/config';
     }
 
     public function testConstructor()

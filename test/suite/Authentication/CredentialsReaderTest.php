@@ -16,7 +16,7 @@ class CredentialsReaderTest extends PHPUnit_Framework_TestCase
 
         $this->innerReader = Phake::mock('Eloquent\Schemer\Reader\ReaderInterface');
 
-        $this->fixturePath = __DIR__ . '/../../../../fixture/credentials';
+        $this->fixturePath = __DIR__ . '/../../fixture/credentials';
     }
 
     public function testConstructor()

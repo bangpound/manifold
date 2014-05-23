@@ -41,8 +41,7 @@ class CredentialsReader implements CredentialsReaderInterface
         if (null === $this->reader) {
             $schemaReader = new SchemaReader;
             $schema = $schemaReader->readPath(
-                __DIR__ .
-                    '/../../../../res/schema/manifold-credentials-schema.yml'
+                __DIR__ . '/../../res/schema/manifold-credentials-schema.yml'
             );
 
             $this->reader = new ValidatingReader(

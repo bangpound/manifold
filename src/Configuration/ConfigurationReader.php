@@ -71,8 +71,7 @@ class ConfigurationReader implements ConfigurationReaderInterface
         if (null === $this->reader) {
             $schemaReader = new SchemaReader;
             $schema = $schemaReader->readPath(
-                __DIR__ .
-                    '/../../../../res/schema/manifold-configuration-schema.yml'
+                __DIR__ . '/../../res/schema/manifold-configuration-schema.yml'
             );
 
             $this->reader = new ValidatingReader(

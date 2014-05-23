@@ -24,7 +24,7 @@ class ConfigurationCacheFileGeneratorTest extends PHPUnit_Framework_TestCase
 
         $this->configuration = Phake::mock('Icecave\Manifold\Configuration\ConfigurationInterface');
         $this->connectionFactory = Phake::mock('Icecave\Manifold\Connection\ConnectionFactoryInterface');
-        $this->fixturePath = __DIR__ . '/../../../../../fixture/config';
+        $this->fixturePath = __DIR__ . '/../../../fixture/config';
     }
 
     public function testConstructor()

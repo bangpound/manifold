@@ -26,7 +26,7 @@ class ConfigurationReaderTest extends PHPUnit_Framework_TestCase
 
         $this->reader = new ConfigurationReader($this->defaultConnectionFactory);
 
-        $this->fixturePath = __DIR__ . '/../../../../fixture/config';
+        $this->fixturePath = __DIR__ . '/../../fixture/config';
 
         $this->credentialsProvider = new CredentialsProvider(new Credentials('username', 'password'));
         $this->connectionFactory = new ConnectionFactory($this->credentialsProvider);
