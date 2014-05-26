@@ -19,7 +19,6 @@
     "require": {
         "php": ">=5.3",
         "ext-pdo": "*",
-        "eloquent/asplode": "~1",
         "eloquent/constance": "~0.1.0",
         "eloquent/schemer": "dev-develop@dev",
         "icecave/chrono": "~0.4.0",

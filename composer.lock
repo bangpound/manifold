@@ -1,61 +1,11 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
+        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "This file is @generated automatically"
     ],
-    "hash": "9910470f94a9c91d739e1aa49e5b80de",
+    "hash": "c9ec9dba49cc55a29ed52fc83881bb97",
     "packages": [
-        {
-            "name": "eloquent/asplode",
-            "version": "1.1.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/eloquent/asplode.git",
-                "reference": "34591a5919625bc49f86ac4b7a473593c2b8e95e"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/eloquent/asplode/zipball/34591a5919625bc49f86ac4b7a473593c2b8e95e",
-                "reference": "34591a5919625bc49f86ac4b7a473593c2b8e95e",
-                "shasum": ""
-            },
-            "require": {
-                "icecave/isolator": "~2",
-                "php": ">=5.3.0"
-            },
-            "require-dev": {
-                "icecave/archer": "1.0.0-alpha.2"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "Eloquent\\Asplode": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Erin Millard",
-                    "email": "ezzatron@gmail.com",
-                    "homepage": "http://ezzatron.com/"
-                }
-            ],
-            "description": "Drop-in exception-based error handling for PHP.",
-            "homepage": "https://github.com/eloquent/asplode",
-            "keywords": [
-                "error",
-                "errorexception",
-                "exception",
-                "failure",
-                "fault",
-                "handler",
-                "handling"
-            ],
-            "time": "2013-08-01 10:46:05"
-        },
         {
             "name": "eloquent/constance",
             "version": "0.1.1",
