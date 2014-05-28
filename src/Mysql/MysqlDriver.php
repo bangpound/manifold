@@ -57,7 +57,6 @@ class MysqlDriver extends AbstractDriver
         }
 
         $attributes[PDO::ATTR_ERRMODE] = PDO::ERRMODE_EXCEPTION;
-        $attributes[PDO::ATTR_AUTOCOMMIT] = false;
 
         return new ConnectionFacade(
             new QueryConnectionSelector(
