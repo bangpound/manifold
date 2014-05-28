@@ -1052,12 +1052,18 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
         $this->facade->commit();
         $this->facade->exec($queryE);
 
+        $transactionWriteLog = Phake::verify($this->logger, Phake::times(2))->debug(
+            'Connection {connection} selected because an existing write transaction is in effect.',
+            array('connection' => 'B')
+        );
         Phake::inOrder(
             Phake::verify($this->connectionA)->beginTransaction(),
             Phake::verify($this->connectionA)->exec($queryA),
             Phake::verify($this->connectionB)->beginTransaction(),
             Phake::verify($this->connectionB)->exec($queryB),
+            $transactionWriteLog,
             Phake::verify($this->connectionB)->exec($queryC),
+            $transactionWriteLog,
             Phake::verify($this->connectionB)->exec($queryD),
             Phake::verify($this->connectionA)->commit(),
             Phake::verify($this->connectionB)->commit(),

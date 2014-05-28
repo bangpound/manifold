@@ -797,9 +797,17 @@ class ConnectionFacade extends PDO implements ConnectionFacadeInterface
     ) {
         if (
             $this->inTransaction() &&
-            null !== $this->transactionWriteConnection()
+            $connection = $this->transactionWriteConnection()
         ) {
-            return $this->transactionWriteConnection();
+            if (null !== $this->logger()) {
+                $this->logger()->debug(
+                    'Connection {connection} selected because an existing ' .
+                        'write transaction is in effect.',
+                    array('connection' => $connection->name())
+                );
+            }
+
+            return $connection;
         }
 
         try {
@@ -833,9 +841,17 @@ class ConnectionFacade extends PDO implements ConnectionFacadeInterface
     ) {
         if (
             $this->inTransaction() &&
-            null !== $this->transactionWriteConnection()
+            $connection = $this->transactionWriteConnection()
         ) {
-            return $this->transactionWriteConnection();
+            if (null !== $this->logger()) {
+                $this->logger()->debug(
+                    'Connection {connection} selected because an existing ' .
+                        'write transaction is in effect.',
+                    array('connection' => $connection->name())
+                );
+            }
+
+            return $connection;
         }
 
         try {
@@ -866,9 +882,17 @@ class ConnectionFacade extends PDO implements ConnectionFacadeInterface
     ) {
         if (
             $this->inTransaction() &&
-            null !== $this->transactionWriteConnection()
+            $connection = $this->transactionWriteConnection()
         ) {
-            return $this->transactionWriteConnection();
+            if (null !== $this->logger()) {
+                $this->logger()->debug(
+                    'Connection {connection} selected because an existing ' .
+                        'write transaction is in effect.',
+                    array('connection' => $connection->name())
+                );
+            }
+
+            return $connection;
         }
 
         try {
