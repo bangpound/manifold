@@ -10,7 +10,7 @@ use Psr\Log\LoggerInterface;
 /**
  * A PDO connection with lazy-connection semantics.
  */
-class LazyConnection extends PDO implements ConnectionInterface
+class LazyConnection extends PDO implements CloneableConnectionInterface
 {
     /**
      * Construct a new lazy PDO connection.
@@ -179,6 +179,16 @@ class LazyConnection extends PDO implements ConnectionInterface
     public function logger()
     {
         return $this->logger;
+    }
+
+    // Implementation of CloneableConnectionInterface ===================================
+
+    /**
+     * Called after cloning.
+     */
+    public function __clone()
+    {
+        $this->connection = null;
     }
 
     // Implementation of PdoConnectionInterface ================================

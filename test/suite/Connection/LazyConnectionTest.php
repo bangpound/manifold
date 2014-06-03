@@ -46,6 +46,23 @@ class LazyConnectionTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->logger, $this->connection->logger());
     }
 
+    public function testClone()
+    {
+        $this->connection->connection();
+        $clone = clone $this->connection;
+        $clone->setAttribute(PDO::ATTR_CURSOR_NAME, 'bar');
+
+        $this->assertFalse($clone->isConnected());
+        $this->assertSame('name', $clone->name());
+        $this->assertSame('driver:host=host', $clone->dsn());
+        $this->assertSame($this->credentialsProvider, $clone->credentialsProvider());
+        $this->assertSame(array(PDO::ATTR_TIMEOUT => 'foo', PDO::ATTR_CURSOR_NAME => 'bar'), $clone->attributes());
+        $this->assertSame($this->pdoConnectionFactory, $clone->pdoConnectionFactory());
+        $this->assertSame($this->logger, $clone->logger());
+
+        $this->assertSame(array(PDO::ATTR_TIMEOUT => 'foo'), $this->connection->attributes());
+    }
+
     public function testConstructorDefaults()
     {
         $this->connection = new LazyConnection('name', 'driver:host=host');
