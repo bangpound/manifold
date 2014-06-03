@@ -7,7 +7,9 @@ namespace Icecave\Manifold\Connection;
 interface CloneableConnectionInterface extends ConnectionInterface
 {
     /**
-     * Called after cloning.
+     * Create a clone of this connection.
+     *
+     * @return CloneableConnectionInterface The cloned connection.
      */
-    public function __clone();
+    public function cloneConnection();
 }

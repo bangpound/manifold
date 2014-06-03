@@ -49,7 +49,7 @@ class LazyConnectionTest extends PHPUnit_Framework_TestCase
     public function testClone()
     {
         $this->connection->connection();
-        $clone = clone $this->connection;
+        $clone = $this->connection->cloneConnection();
         $clone->setAttribute(PDO::ATTR_CURSOR_NAME, 'bar');
 
         $this->assertFalse($clone->isConnected());

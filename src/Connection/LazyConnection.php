@@ -184,11 +184,20 @@ class LazyConnection extends PDO implements CloneableConnectionInterface
     // Implementation of CloneableConnectionInterface ===================================
 
     /**
-     * Called after cloning.
+     * Create a clone of this connection.
+     *
+     * @return CloneableConnectionInterface The cloned connection.
      */
-    public function __clone()
+    public function cloneConnection()
     {
-        $this->connection = null;
+        return new static(
+            $this->name(),
+            $this->dsn(),
+            $this->credentialsProvider(),
+            $this->attributes(),
+            $this->pdoConnectionFactory(),
+            $this->logger()
+        );
     }
 
     // Implementation of PdoConnectionInterface ================================
