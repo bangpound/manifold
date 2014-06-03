@@ -12,14 +12,21 @@ class ConnectionFactoryTest extends PHPUnit_Framework_TestCase
     {
         $this->credentialsProvider = new CredentialsProvider;
         $this->attributes = array('foo' => 'bar');
+        $this->pdoConnectionFactory = Phake::mock('Icecave\Manifold\Connection\PdoConnectionFactoryInterface');
         $this->logger = Phake::mock('Psr\Log\LoggerInterface');
-        $this->factory = new ConnectionFactory($this->credentialsProvider, $this->attributes, $this->logger);
+        $this->factory = new ConnectionFactory(
+            $this->credentialsProvider,
+            $this->attributes,
+            $this->pdoConnectionFactory,
+            $this->logger
+        );
     }
 
     public function testConstructor()
     {
         $this->assertSame($this->credentialsProvider, $this->factory->credentialsProvider());
         $this->assertSame($this->attributes, $this->factory->attributes());
+        $this->assertSame($this->pdoConnectionFactory, $this->factory->pdoConnectionFactory());
         $this->assertSame($this->logger, $this->factory->logger());
     }
 
@@ -29,6 +36,7 @@ class ConnectionFactoryTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals($this->credentialsProvider, $this->factory->credentialsProvider());
         $this->assertSame(array(PDO::ATTR_PERSISTENT => false), $this->factory->attributes());
+        $this->assertEquals(new PdoConnectionFactory, $this->factory->pdoConnectionFactory());
         $this->assertNull($this->factory->logger());
     }
 
@@ -42,7 +50,14 @@ class ConnectionFactoryTest extends PHPUnit_Framework_TestCase
 
     public function testCreate()
     {
-        $expected = new LazyConnection('name', 'dsn', $this->credentialsProvider, array('foo' => 'bar'), $this->logger);
+        $expected = new LazyConnection(
+            'name',
+            'dsn',
+            $this->credentialsProvider,
+            array('foo' => 'bar'),
+            $this->pdoConnectionFactory,
+            $this->logger
+        );
 
         $this->assertEquals($expected, $this->factory->create('name', 'dsn', 'username', 'password'));
     }

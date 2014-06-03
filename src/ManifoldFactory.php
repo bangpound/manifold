@@ -196,7 +196,12 @@ class ManifoldFactory implements ManifoldFactoryInterface
     protected function createConnectionFactory(
         CredentialsProviderInterface $credentialsProvider
     ) {
-        return new ConnectionFactory($credentialsProvider, null, $this->logger);
+        return new ConnectionFactory(
+            $credentialsProvider,
+            null,
+            null,
+            $this->logger()
+        );
     }
 
     private $driver;

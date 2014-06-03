@@ -17,19 +17,21 @@ class LazyConnectionTest extends PHPUnit_Framework_TestCase
                 'foo' => new Credentials('fooUsername', 'fooPassword'),
             )
         );
+        $this->pdoConnectionFactory = Phake::mock('Icecave\Manifold\Connection\PdoConnectionFactoryInterface');
         $this->logger = Phake::mock('Psr\Log\LoggerInterface');
-        $this->connection = Phake::partialMock(
-            __NAMESPACE__ . '\LazyConnection',
+        $this->connection = new LazyConnection(
             'name',
             'driver:host=host',
             $this->credentialsProvider,
             array(PDO::ATTR_TIMEOUT => 'foo'),
+            $this->pdoConnectionFactory,
             $this->logger
         );
 
-        $this->innerConnection = Phake::mock('PDO');
-        Phake::when($this->innerConnection)->setAttribute(Phake::anyParameters())->thenReturn(true);
-        Phake::when($this->connection)->createConnection(Phake::anyParameters())->thenReturn($this->innerConnection);
+        $this->pdoConnection = Phake::mock('PDO');
+        Phake::when($this->pdoConnection)->setAttribute(Phake::anyParameters())->thenReturn(true);
+        Phake::when($this->pdoConnectionFactory)->createConnection(Phake::anyParameters())
+            ->thenReturn($this->pdoConnection);
 
         $this->statement = Phake::mock('PDOStatement');
     }
@@ -40,6 +42,7 @@ class LazyConnectionTest extends PHPUnit_Framework_TestCase
         $this->assertSame('driver:host=host', $this->connection->dsn());
         $this->assertSame($this->credentialsProvider, $this->connection->credentialsProvider());
         $this->assertSame(array(PDO::ATTR_TIMEOUT => 'foo'), $this->connection->attributes());
+        $this->assertSame($this->pdoConnectionFactory, $this->connection->pdoConnectionFactory());
         $this->assertSame($this->logger, $this->connection->logger());
     }
 
@@ -49,6 +52,7 @@ class LazyConnectionTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals(new CredentialsProvider, $this->connection->credentialsProvider());
         $this->assertSame(array(), $this->connection->attributes());
+        $this->assertEquals(new PdoConnectionFactory, $this->connection->pdoConnectionFactory());
         $this->assertNull($this->connection->logger());
     }
 
@@ -69,26 +73,35 @@ class LazyConnectionTest extends PHPUnit_Framework_TestCase
 
         $this->assertTrue($this->connection->isConnected());
         $this->assertTrue($this->connection->isConnected());
-        Phake::verify($this->connection)
+        Phake::verify($this->pdoConnectionFactory)
             ->createConnection('driver:host=host', 'username', 'password', array(PDO::ATTR_TIMEOUT => 'foo'));
     }
 
     public function testConnect()
     {
+        $this->connection = Phake::partialMock(
+            __NAMESPACE__ . '\LazyConnection',
+            'name',
+            'driver:host=host',
+            $this->credentialsProvider,
+            array(PDO::ATTR_TIMEOUT => 'foo'),
+            $this->pdoConnectionFactory,
+            $this->logger
+        );
         $this->connection->connect();
 
-        $this->assertSame($this->innerConnection, $this->connection->connection());
+        $this->assertSame($this->pdoConnection, $this->connection->connection());
 
         $this->connection->connect();
 
-        $this->assertSame($this->innerConnection, $this->connection->connection());
+        $this->assertSame($this->pdoConnection, $this->connection->connection());
         Phake::inOrder(
             Phake::verify($this->connection)->beforeConnect(),
             Phake::verify($this->logger)->debug(
                 'Establishing connection {connection} to {dsn}.',
                 array('connection' => 'name', 'dsn' => 'driver:host=host')
             ),
-            Phake::verify($this->connection)
+            Phake::verify($this->pdoConnectionFactory)
                 ->createConnection('driver:host=host', 'username', 'password', array(PDO::ATTR_TIMEOUT => 'foo')),
             Phake::verify($this->connection)->afterConnect()
         );
@@ -96,55 +109,53 @@ class LazyConnectionTest extends PHPUnit_Framework_TestCase
 
     public function testConnectCredentialsOverride()
     {
-        $this->connection = Phake::partialMock(
-            __NAMESPACE__ . '\LazyConnection',
+        $this->connection = new LazyConnection(
             'foo',
             'driver:host=host',
-            $this->credentialsProvider
+            $this->credentialsProvider,
+            null,
+            $this->pdoConnectionFactory
         );
-        Phake::when($this->connection)->createConnection(Phake::anyParameters())->thenReturn($this->innerConnection);
         $this->connection->connect();
 
-        $this->assertSame($this->innerConnection, $this->connection->connection());
+        $this->assertSame($this->pdoConnection, $this->connection->connection());
 
         $this->connection->connect();
 
-        $this->assertSame($this->innerConnection, $this->connection->connection());
-        Phake::verify($this->connection)
+        $this->assertSame($this->pdoConnection, $this->connection->connection());
+        Phake::verify($this->pdoConnectionFactory)
             ->createConnection('driver:host=host', 'fooUsername', 'fooPassword', array());
     }
 
     public function testConnectDefaults()
     {
-        $this->connection = Phake::partialMock(__NAMESPACE__ . '\LazyConnection', 'name', 'driver:host=host');
-        Phake::when($this->connection)->createConnection(Phake::anyParameters())->thenReturn($this->innerConnection);
+        $this->connection = Phake::partialMock(
+            __NAMESPACE__ . '\LazyConnection',
+            'name',
+            'driver:host=host',
+            null,
+            null,
+            $this->pdoConnectionFactory
+        );
         $this->connection->connect();
 
-        $this->assertSame($this->innerConnection, $this->connection->connection());
+        $this->assertSame($this->pdoConnection, $this->connection->connection());
 
         $this->connection->connect();
 
-        $this->assertSame($this->innerConnection, $this->connection->connection());
+        $this->assertSame($this->pdoConnection, $this->connection->connection());
         Phake::inOrder(
             Phake::verify($this->connection)->beforeConnect(),
-            Phake::verify($this->connection)->createConnection('driver:host=host', null, null, array()),
+            Phake::verify($this->pdoConnectionFactory)->createConnection('driver:host=host', null, null, array()),
             Phake::verify($this->connection)->afterConnect()
         );
     }
 
-    public function testConnectFailureReal()
-    {
-        Phake::when($this->connection)->createConnection(Phake::anyParameters())->thenCallParent();
-
-        $this->setExpectedException('PDOException', 'could not find driver');
-        $this->connection->connect();
-    }
-
     public function testConnection()
     {
-        $this->assertSame($this->innerConnection, $this->connection->connection());
-        $this->assertSame($this->innerConnection, $this->connection->connection());
-        Phake::verify($this->connection)
+        $this->assertSame($this->pdoConnection, $this->connection->connection());
+        $this->assertSame($this->pdoConnection, $this->connection->connection());
+        Phake::verify($this->pdoConnectionFactory)
             ->createConnection('driver:host=host', 'username', 'password', array(PDO::ATTR_TIMEOUT => 'foo'));
     }
 
@@ -152,7 +163,7 @@ class LazyConnectionTest extends PHPUnit_Framework_TestCase
     {
         $statement = 'SELECT * FROM foo.bar';
         $attributes = array(456 => 'bar');
-        Phake::when($this->innerConnection)->prepare($statement, $attributes)->thenReturn($this->statement);
+        Phake::when($this->pdoConnection)->prepare($statement, $attributes)->thenReturn($this->statement);
 
         $this->assertSame($this->statement, $this->connection->prepare($statement, $attributes));
         Phake::inOrder(
@@ -160,14 +171,14 @@ class LazyConnectionTest extends PHPUnit_Framework_TestCase
                 'Preparing statement {statement} on {connection}.',
                 array('statement' => $statement, 'connection' => 'name')
             ),
-            Phake::verify($this->innerConnection)->prepare($statement, $attributes)
+            Phake::verify($this->pdoConnection)->prepare($statement, $attributes)
         );
     }
 
     public function testQuery()
     {
         $statement = 'SELECT * FROM foo.bar';
-        Phake::when($this->innerConnection)->query($statement, 'one', 'two')->thenReturn($this->statement);
+        Phake::when($this->pdoConnection)->query($statement, 'one', 'two')->thenReturn($this->statement);
 
         $this->assertSame($this->statement, $this->connection->query($statement, 'one', 'two'));
         Phake::inOrder(
@@ -175,7 +186,7 @@ class LazyConnectionTest extends PHPUnit_Framework_TestCase
                 'Executing statement {statement} on {connection}.',
                 array('statement' => $statement, 'connection' => 'name')
             ),
-            Phake::verify($this->innerConnection)->query($statement, 'one', 'two')
+            Phake::verify($this->pdoConnection)->query($statement, 'one', 'two')
         );
     }
 
@@ -188,7 +199,7 @@ class LazyConnectionTest extends PHPUnit_Framework_TestCase
     public function testExec()
     {
         $statement = 'SELECT * FROM foo.bar';
-        Phake::when($this->innerConnection)->exec($statement)->thenReturn(111);
+        Phake::when($this->pdoConnection)->exec($statement)->thenReturn(111);
 
         $this->assertSame(111, $this->connection->exec($statement));
         Phake::inOrder(
@@ -196,13 +207,13 @@ class LazyConnectionTest extends PHPUnit_Framework_TestCase
                 'Executing statement {statement} on {connection}.',
                 array('statement' => $statement, 'connection' => 'name')
             ),
-            Phake::verify($this->innerConnection)->exec($statement)
+            Phake::verify($this->pdoConnection)->exec($statement)
         );
     }
 
     public function testInTransaction()
     {
-        Phake::when($this->innerConnection)->inTransaction()->thenReturn(true)->thenReturn(false);
+        Phake::when($this->pdoConnection)->inTransaction()->thenReturn(true)->thenReturn(false);
 
         $this->assertFalse($this->connection->inTransaction());
 
@@ -214,7 +225,7 @@ class LazyConnectionTest extends PHPUnit_Framework_TestCase
 
     public function testBeginTransaction()
     {
-        Phake::when($this->innerConnection)->beginTransaction()->thenReturn(true);
+        Phake::when($this->pdoConnection)->beginTransaction()->thenReturn(true);
 
         $this->assertTrue($this->connection->beginTransaction());
         Phake::inOrder(
@@ -222,13 +233,13 @@ class LazyConnectionTest extends PHPUnit_Framework_TestCase
                 'Beginning transaction on {connection}.',
                 array('connection' => 'name')
             ),
-            Phake::verify($this->innerConnection)->beginTransaction()
+            Phake::verify($this->pdoConnection)->beginTransaction()
         );
     }
 
     public function testCommit()
     {
-        Phake::when($this->innerConnection)->commit()->thenReturn(true);
+        Phake::when($this->pdoConnection)->commit()->thenReturn(true);
 
         $this->assertTrue($this->connection->commit());
         Phake::inOrder(
@@ -236,13 +247,13 @@ class LazyConnectionTest extends PHPUnit_Framework_TestCase
                 'Committing transaction on {connection}.',
                 array('connection' => 'name')
             ),
-            Phake::verify($this->innerConnection)->commit()
+            Phake::verify($this->pdoConnection)->commit()
         );
     }
 
     public function testRollBack()
     {
-        Phake::when($this->innerConnection)->rollBack()->thenReturn(true);
+        Phake::when($this->pdoConnection)->rollBack()->thenReturn(true);
 
         $this->assertTrue($this->connection->rollBack());
         Phake::inOrder(
@@ -250,13 +261,13 @@ class LazyConnectionTest extends PHPUnit_Framework_TestCase
                 'Rolling back transaction on {connection}.',
                 array('connection' => 'name')
             ),
-            Phake::verify($this->innerConnection)->rollBack()
+            Phake::verify($this->pdoConnection)->rollBack()
         );
     }
 
     public function testLastInsertId()
     {
-        Phake::when($this->innerConnection)->lastInsertId('foo')->thenReturn('111');
+        Phake::when($this->pdoConnection)->lastInsertId('foo')->thenReturn('111');
 
         $this->assertSame('0', $this->connection->lastInsertId('foo'));
 
@@ -267,7 +278,7 @@ class LazyConnectionTest extends PHPUnit_Framework_TestCase
 
     public function testErrorCode()
     {
-        Phake::when($this->innerConnection)->errorCode()->thenReturn('11111');
+        Phake::when($this->pdoConnection)->errorCode()->thenReturn('11111');
 
         $this->assertNull($this->connection->errorCode());
 
@@ -278,7 +289,7 @@ class LazyConnectionTest extends PHPUnit_Framework_TestCase
 
     public function testErrorInfo()
     {
-        Phake::when($this->innerConnection)->errorInfo()->thenReturn(array('11111', 222, 'foo'));
+        Phake::when($this->pdoConnection)->errorInfo()->thenReturn(array('11111', 222, 'foo'));
 
         $this->assertSame(array('', null, null), $this->connection->errorInfo());
 
@@ -289,8 +300,8 @@ class LazyConnectionTest extends PHPUnit_Framework_TestCase
 
     public function testQuote()
     {
-        Phake::when($this->innerConnection)->quote('foo', 111)->thenReturn('bar');
-        Phake::when($this->innerConnection)->quote('foo', PDO::PARAM_STR)->thenReturn('baz');
+        Phake::when($this->pdoConnection)->quote('foo', 111)->thenReturn('bar');
+        Phake::when($this->pdoConnection)->quote('foo', PDO::PARAM_STR)->thenReturn('baz');
 
         $this->assertSame('bar', $this->connection->quote('foo', 111));
         $this->assertSame('baz', $this->connection->quote('foo'));
@@ -308,7 +319,7 @@ class LazyConnectionTest extends PHPUnit_Framework_TestCase
                 'connection' => 'name',
             )
         );
-        Phake::verify($this->connection, Phake::never())->createConnection(Phake::anyParameters());
+        Phake::verify($this->pdoConnectionFactory, Phake::never())->createConnection(Phake::anyParameters());
     }
 
     public function testSetAttributeBeforeConnected()
@@ -317,7 +328,7 @@ class LazyConnectionTest extends PHPUnit_Framework_TestCase
 
         $this->connection->connect();
 
-        Phake::verify($this->connection)
+        Phake::verify($this->pdoConnectionFactory)
             ->createConnection('driver:host=host', 'username', 'password', array(PDO::ATTR_TIMEOUT => 'bar'));
     }
 
@@ -326,28 +337,28 @@ class LazyConnectionTest extends PHPUnit_Framework_TestCase
         $this->connection->connect();
 
         $this->assertTrue($this->connection->setAttribute(PDO::ATTR_TIMEOUT, 'bar'));
-        Phake::verify($this->innerConnection)->setAttribute(PDO::ATTR_TIMEOUT, 'bar');
+        Phake::verify($this->pdoConnection)->setAttribute(PDO::ATTR_TIMEOUT, 'bar');
     }
 
     public function testSetAttributeWhenConnectedFailure()
     {
-        Phake::when($this->innerConnection)->setAttribute(Phake::anyParameters())->thenReturn(false);
+        Phake::when($this->pdoConnection)->setAttribute(Phake::anyParameters())->thenReturn(false);
         $this->connection->connect();
 
         $this->assertFalse($this->connection->setAttribute(PDO::ATTR_TIMEOUT, 'bar'));
-        Phake::verify($this->innerConnection)->setAttribute(PDO::ATTR_TIMEOUT, 'bar');
+        Phake::verify($this->pdoConnection)->setAttribute(PDO::ATTR_TIMEOUT, 'bar');
     }
 
     public function testGetAttribute()
     {
         $this->assertSame('foo', $this->connection->getAttribute(PDO::ATTR_TIMEOUT));
         $this->assertNull($this->connection->getAttribute(20202));
-        Phake::verify($this->connection, Phake::never())->createConnection(Phake::anyParameters());
+        Phake::verify($this->pdoConnectionFactory, Phake::never())->createConnection(Phake::anyParameters());
     }
 
     public function testGetAttributeWhenConnected()
     {
-        Phake::when($this->innerConnection)->getAttribute(PDO::ATTR_TIMEOUT)->thenReturn('bar');
+        Phake::when($this->pdoConnection)->getAttribute(PDO::ATTR_TIMEOUT)->thenReturn('bar');
         $this->connection->connect();
 
         $this->assertSame('bar', $this->connection->getAttribute(PDO::ATTR_TIMEOUT));

@@ -28,7 +28,7 @@ class ManifoldFactoryTest extends PHPUnit_Framework_TestCase
 
         $this->configuration = Phake::mock('Icecave\Manifold\Configuration\ConfigurationInterface');
         $this->credentialsProvider = Phake::mock('Icecave\Manifold\Authentication\CredentialsProviderInterface');
-        $this->connectionFactory = new ConnectionFactory($this->credentialsProvider, null, $this->logger);
+        $this->connectionFactory = new ConnectionFactory($this->credentialsProvider, null, null, $this->logger);
         $this->attributes = array(PDO::ATTR_PERSISTENT => false, PDO::ATTR_AUTOCOMMIT => false);
         $this->facade = Phake::mock('Icecave\Manifold\Connection\Facade\ConnectionFacadeInterface');
     }
@@ -81,7 +81,7 @@ class ManifoldFactoryTest extends PHPUnit_Framework_TestCase
     public function testCreateWithPathStringsDefaults()
     {
         Phake::when($this->configurationReader)
-            ->readFile('/path/to/manifold.yml', null, new ConnectionFactory(null, null, $this->logger))
+            ->readFile('/path/to/manifold.yml', null, new ConnectionFactory(null, null, null, $this->logger))
             ->thenReturn($this->configuration);
         Phake::when($this->driver)->createFirstConnection($this->configuration, null)->thenReturn($this->facade);
         $actual = $this->factory->create('/path/to/manifold.yml');

@@ -15,17 +15,19 @@ class LazyConnection extends PDO implements ConnectionInterface
     /**
      * Construct a new lazy PDO connection.
      *
-     * @param string                            $name                The connection name.
-     * @param string                            $dsn                 The connection data source name.
-     * @param CredentialsProviderInterface|null $credentialsProvider The credentials provider to use.
-     * @param array<integer,mixed>|null         $attributes          The connection attributes to use.
-     * @param LoggerInterface|null              $logger              The logger to use.
+     * @param string                             $name                 The connection name.
+     * @param string                             $dsn                  The connection data source name.
+     * @param CredentialsProviderInterface|null  $credentialsProvider  The credentials provider to use.
+     * @param array<integer,mixed>|null          $attributes           The connection attributes to use.
+     * @param PdoConnectionFactoryInterface|null $pdoConnectionFactory The PDO conneciton factory to use.
+     * @param LoggerInterface|null               $logger               The logger to use.
      */
     public function __construct(
         $name,
         $dsn,
         CredentialsProviderInterface $credentialsProvider = null,
         array $attributes = null,
+        PdoConnectionFactoryInterface $pdoConnectionFactory = null,
         LoggerInterface $logger = null
     ) {
         if (null === $credentialsProvider) {
@@ -34,11 +36,15 @@ class LazyConnection extends PDO implements ConnectionInterface
         if (null === $attributes) {
             $attributes = array();
         }
+        if (null === $pdoConnectionFactory) {
+            $pdoConnectionFactory = new PdoConnectionFactory;
+        }
 
         $this->name = $name;
         $this->dsn = $dsn;
         $this->credentialsProvider = $credentialsProvider;
         $this->attributes = $attributes;
+        $this->pdoConnectionFactory = $pdoConnectionFactory;
         $this->logger = $logger;
 
         if (preg_match('/^([a-zA-Z][a-zA-Z0-9+.-]*):/', $dsn, $matches)) {
@@ -46,6 +52,16 @@ class LazyConnection extends PDO implements ConnectionInterface
         } else {
             $this->driverName = 'mysql';
         }
+    }
+
+    /**
+     * Get the PDO connection factory.
+     *
+     * @return PdoConnectionFactoryInterface The PDO connection factory.
+     */
+    public function pdoConnectionFactory()
+    {
+        return $this->pdoConnectionFactory;
     }
 
     /**
@@ -80,7 +96,7 @@ class LazyConnection extends PDO implements ConnectionInterface
 
         $credentials = $this->credentialsProvider()->forConnection($this);
 
-        $this->connection = $this->createConnection(
+        $this->connection = $this->pdoConnectionFactory()->createConnection(
             $this->dsn(),
             $credentials->username(),
             $credentials->password(),
@@ -503,29 +519,10 @@ class LazyConnection extends PDO implements ConnectionInterface
     {
     }
 
-    /**
-     * Creates a real PDO connection.
-     *
-     * @param string               $dsn        The data source name.
-     * @param string|null          $username   The username, or null if no username should be specified.
-     * @param string|null          $password   The password, or null if no password should be specified.
-     * @param array<integer,mixed> $attributes The connection attributes to use.
-     *
-     * @return PDO          The newly created connection.
-     * @throws PDOException If the connection could not be established.
-     */
-    protected function createConnection(
-        $dsn,
-        $username,
-        $password,
-        array $attributes
-    ) {
-        return new PDO($dsn, $username, $password, $attributes);
-    }
-
     private $dsn;
     private $credentialsProvider;
     private $attributes;
+    private $pdoConnectionFactory;
     private $logger;
     private $driverName;
     private $connection;

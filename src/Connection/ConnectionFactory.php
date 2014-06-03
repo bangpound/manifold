@@ -14,28 +14,30 @@ class ConnectionFactory implements ConnectionFactoryInterface
     /**
      * Construct a new connection factory.
      *
-     * @param CredentialsProviderInterface|null $credentialsProvider The credentials provider to use.
-     * @param array<integer,mixed>|null         $attributes          The connection attributes to use.
-     * @param LoggerInterface|null              $logger              The logger to use.
+     * @param CredentialsProviderInterface|null  $credentialsProvider  The credentials provider to use.
+     * @param array<integer,mixed>|null          $attributes           The connection attributes to use.
+     * @param PdoConnectionFactoryInterface|null $pdoConnectionFactory The PDO conneciton factory to use.
+     * @param LoggerInterface|null               $logger               The logger to use.
      */
-    // @codeCoverageIgnoreStart
     public function __construct(
         CredentialsProviderInterface $credentialsProvider = null,
         array $attributes = null,
+        PdoConnectionFactoryInterface $pdoConnectionFactory = null,
         LoggerInterface $logger = null
     ) {
-        // @codeCoverageIgnoreEnd
         if (null === $credentialsProvider) {
             $credentialsProvider = new CredentialsProvider;
         }
         if (null === $attributes) {
-            $attributes = array(
-                PDO::ATTR_PERSISTENT => false,
-            );
+            $attributes = array(PDO::ATTR_PERSISTENT => false);
+        }
+        if (null === $pdoConnectionFactory) {
+            $pdoConnectionFactory = new PdoConnectionFactory;
         }
 
         $this->credentialsProvider = $credentialsProvider;
         $this->attributes = $attributes;
+        $this->pdoConnectionFactory = $pdoConnectionFactory;
         $this->logger = $logger;
     }
 
@@ -57,6 +59,16 @@ class ConnectionFactory implements ConnectionFactoryInterface
     public function attributes()
     {
         return $this->attributes;
+    }
+
+    /**
+     * Get the PDO connection factory.
+     *
+     * @return PdoConnectionFactoryInterface The PDO connection factory.
+     */
+    public function pdoConnectionFactory()
+    {
+        return $this->pdoConnectionFactory;
     }
 
     /**
@@ -94,11 +106,13 @@ class ConnectionFactory implements ConnectionFactoryInterface
             $dsn,
             $this->credentialsProvider(),
             $this->attributes(),
+            $this->pdoConnectionFactory(),
             $this->logger()
         );
     }
 
     private $credentialsProvider;
     private $attributes;
+    private $pdoConnectionFactory;
     private $logger;
 }
