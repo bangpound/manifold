@@ -17,5 +17,5 @@ final class PdoConnectionAttribute extends AbstractClassConstant
      * The expression used to match constant names that should be included in
      * this enumeration.
      */
-    const CONSTANCE_PATTERN = '{^ATTR_}';
+    const CONSTANCE_PATTERN = '{ATTR_}';
 }
