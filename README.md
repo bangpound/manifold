@@ -443,9 +443,9 @@ $reader = new CachingConfigurationReader(new ConnectionFactory($provider));
 ```
 
 <!-- References -->
-[Build Status]: http://img.shields.io/travis/IcecaveStudios/manifold/develop.svg
-[Test Coverage]: http://img.shields.io/coveralls/IcecaveStudios/manifold/develop.svg
-[SemVer]: http://img.shields.io/:semver-0.0.0-red.svg
+[Build Status]: http://img.shields.io/travis/IcecaveStudios/manifold/develop.svg?style=flat-square
+[Test Coverage]: http://img.shields.io/coveralls/IcecaveStudios/manifold/develop.svg?style=flat-square
+[SemVer]: http://img.shields.io/:semver-0.0.0-red.svg?style=flat-square
 
 [CachingConfigurationReader]: src/Icecave/Manifold/Configuration/Caching/CachingConfigurationReader.html
 [CachingCredentialsReader]: src/Icecave/Manifold/Authentication/Caching/CachingCredentialsReader.html
