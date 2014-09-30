@@ -1,7 +1,16 @@
 {
     "name": "icecave/manifold",
     "description": "A PDO compatible facade for multi-tiered MySQL replication sets.",
-    "keywords": ["pdo", "mysql", "replication", "database", "master", "slave", "multiple", "doctrine"],
+    "keywords": [
+        "pdo",
+        "mysql",
+        "replication",
+        "database",
+        "master",
+        "slave",
+        "multiple",
+        "doctrine"
+    ],
     "homepage": "https://github.com/IcecaveStudios/manifold",
     "license": "MIT",
     "authors": [
@@ -33,6 +42,11 @@
     "autoload": {
         "psr-4": {
             "Icecave\\Manifold\\": "src"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-develop": "0.1.x-dev"
         }
     },
     "minimum-stability": "dev",
