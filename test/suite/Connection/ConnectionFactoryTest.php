@@ -10,7 +10,7 @@ class ConnectionFactoryTest extends PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        $this->credentialsProvider = new CredentialsProvider;
+        $this->credentialsProvider = new CredentialsProvider();
         $this->attributes = array('foo' => 'bar');
         $this->pdoConnectionFactory = Phake::mock('Icecave\Manifold\Connection\PdoConnectionFactoryInterface');
         $this->logger = Phake::mock('Psr\Log\LoggerInterface');
@@ -32,11 +32,11 @@ class ConnectionFactoryTest extends PHPUnit_Framework_TestCase
 
     public function testConstructorDefaults()
     {
-        $this->factory = new ConnectionFactory;
+        $this->factory = new ConnectionFactory();
 
         $this->assertEquals($this->credentialsProvider, $this->factory->credentialsProvider());
         $this->assertSame(array(PDO::ATTR_PERSISTENT => false), $this->factory->attributes());
-        $this->assertEquals(new PdoConnectionFactory, $this->factory->pdoConnectionFactory());
+        $this->assertEquals(new PdoConnectionFactory(), $this->factory->pdoConnectionFactory());
         $this->assertNull($this->factory->logger());
     }
 

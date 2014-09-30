@@ -10,7 +10,7 @@ class QueryNormalizerTest extends PHPUnit_Framework_TestCase
     {
         parent::setUp();
 
-        $this->normalizer = new QueryNormalizer;
+        $this->normalizer = new QueryNormalizer();
     }
 
     public function normalizeData()

@@ -21,7 +21,7 @@ class ConnectionContainerSelectorTest extends PHPUnit_Framework_TestCase
             'databaseA' => new ConnectionContainerPair($this->writeA, $this->readA),
             'databaseB' => new ConnectionContainerPair($this->writeB),
             'databaseC' => new ConnectionContainerPair(null, $this->readC),
-            'databaseD' => new ConnectionContainerPair,
+            'databaseD' => new ConnectionContainerPair(),
         );
         $this->selector = new ConnectionContainerSelector($this->defaults, $this->databases);
     }
@@ -41,7 +41,7 @@ class ConnectionContainerSelectorTest extends PHPUnit_Framework_TestCase
 
     public function testConstructorFailureInvalidDefaults()
     {
-        $this->defaults = new ConnectionContainerPair;
+        $this->defaults = new ConnectionContainerPair();
 
         $this->setExpectedException(__NAMESPACE__ . '\Exception\InvalidDefaultConnectionContainerPairException');
         new ConnectionContainerSelector($this->defaults);

@@ -18,7 +18,7 @@ abstract class AbstractCredentialsProvider implements
         array $connectionCredentials = null
     ) {
         if (null === $defaultCredentials) {
-            $defaultCredentials = new Credentials;
+            $defaultCredentials = new Credentials();
         }
         if (null === $connectionCredentials) {
             $connectionCredentials = array();

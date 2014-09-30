@@ -25,9 +25,9 @@ class MysqlReplicationManagerTest extends PHPUnit_Framework_TestCase
 
     public function testAmountBehindMaster()
     {
-        $result = new stdClass;
+        $result = new stdClass();
         $result->Seconds_Behind_Master = '111';
-        $emptyResult = new stdClass;
+        $emptyResult = new stdClass();
         $emptyResult->Seconds_Behind_Master = null;
         Phake::when($this->connection2)->query('SHOW SLAVE STATUS')->thenReturn($this->statement1);
         Phake::when($this->statement1)->fetchObject()->thenReturn($result)->thenReturn($emptyResult)->thenReturn(null);
@@ -42,14 +42,14 @@ class MysqlReplicationManagerTest extends PHPUnit_Framework_TestCase
 
     public function testDoWaitNoTimeout()
     {
-        $statusResult = new stdClass;
+        $statusResult = new stdClass();
         $statusResult->File = 'foo';
         $statusResult->Position = 'bar';
         Phake::when($this->connection1)->query('SHOW MASTER STATUS')->thenReturn($this->statement1);
         Phake::when($this->statement1)->fetchObject()->thenReturn($statusResult);
-        $waitResult = new stdClass;
+        $waitResult = new stdClass();
         $waitResult->events = '1';
-        $waitResultTimeout = new stdClass;
+        $waitResultTimeout = new stdClass();
         $waitResultTimeout->events = '-1';
         Phake::when($this->connection2)
             ->prepare('SELECT MASTER_POS_WAIT(:file, :position) AS events')
@@ -68,14 +68,14 @@ class MysqlReplicationManagerTest extends PHPUnit_Framework_TestCase
 
     public function testDoWaitWithTimeout()
     {
-        $statusResult = new stdClass;
+        $statusResult = new stdClass();
         $statusResult->File = 'foo';
         $statusResult->Position = 'bar';
         Phake::when($this->connection1)->query('SHOW MASTER STATUS')->thenReturn($this->statement1);
         Phake::when($this->statement1)->fetchObject()->thenReturn($statusResult);
-        $waitResult = new stdClass;
+        $waitResult = new stdClass();
         $waitResult->events = '1';
-        $waitResultTimeout = new stdClass;
+        $waitResultTimeout = new stdClass();
         $waitResultTimeout->events = '-1';
         Phake::when($this->connection2)
             ->prepare('SELECT MASTER_POS_WAIT(:file, :position, :timeout) AS events')
@@ -103,12 +103,12 @@ class MysqlReplicationManagerTest extends PHPUnit_Framework_TestCase
 
     public function testDoWaitFailureNotReplicating()
     {
-        $statusResult = new stdClass;
+        $statusResult = new stdClass();
         $statusResult->File = 'foo';
         $statusResult->Position = 'bar';
         Phake::when($this->connection1)->query('SHOW MASTER STATUS')->thenReturn($this->statement1);
         Phake::when($this->statement1)->fetchObject()->thenReturn($statusResult);
-        $waitResult = new stdClass;
+        $waitResult = new stdClass();
         $waitResult->events = null;
         Phake::when($this->connection2)
             ->prepare('SELECT MASTER_POS_WAIT(:file, :position) AS events')

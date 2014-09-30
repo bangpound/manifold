@@ -8,7 +8,7 @@ class UndefinedEnvironmentVariableExceptionTest extends PHPUnit_Framework_TestCa
 {
     public function testException()
     {
-        $previous = new Exception;
+        $previous = new Exception();
         $exception = new UndefinedEnvironmentVariableException('foo', $previous);
 
         $this->assertSame('foo', $exception->name());

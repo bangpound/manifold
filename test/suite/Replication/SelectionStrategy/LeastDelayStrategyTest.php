@@ -46,7 +46,7 @@ class LeastDelayStrategyTest extends PHPUnit_Framework_TestCase
 
     public function testConstructorDefaults()
     {
-        $this->strategy = new LeastDelayStrategy;
+        $this->strategy = new LeastDelayStrategy();
 
         $this->assertNull($this->strategy->threshold());
         $this->assertInstanceOf('Icecave\Chrono\Clock\SystemClock', $this->strategy->clock());
@@ -296,7 +296,7 @@ class LeastDelayStrategyTest extends PHPUnit_Framework_TestCase
 
     public function testStringWithNoThreshold()
     {
-        $this->strategy = new LeastDelayStrategy;
+        $this->strategy = new LeastDelayStrategy();
         $expected = "The connection with the least replication delay.";
 
         $this->assertSame($expected, $this->strategy->string());

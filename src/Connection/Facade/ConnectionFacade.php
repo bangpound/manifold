@@ -590,7 +590,7 @@ class ConnectionFacade extends PDO implements ConnectionFacadeInterface
     {
         $connection = $this->currentConnection();
         if (null === $connection) {
-            $connection = $this->selectConnectionForRead(null, new AnyStrategy);
+            $connection = $this->selectConnectionForRead(null, new AnyStrategy());
         }
 
         return $connection->quote($string, $parameterType);
@@ -659,7 +659,7 @@ class ConnectionFacade extends PDO implements ConnectionFacadeInterface
     {
         $connection = $this->currentConnection();
         if (null === $connection) {
-            $connection = $this->selectConnectionForRead(null, new AnyStrategy);
+            $connection = $this->selectConnectionForRead(null, new AnyStrategy());
         }
 
         return $connection->getAttribute($attribute);

@@ -21,7 +21,7 @@ class ConfigurationReaderTest extends PHPUnit_Framework_TestCase
     {
         parent::setUp();
 
-        $this->defaultConnectionFactory = new ConnectionFactory;
+        $this->defaultConnectionFactory = new ConnectionFactory();
         $this->innerReader = Phake::mock('Eloquent\Schemer\Reader\ReaderInterface');
 
         $this->reader = new ConfigurationReader($this->defaultConnectionFactory);
@@ -42,7 +42,7 @@ class ConfigurationReaderTest extends PHPUnit_Framework_TestCase
 
     public function testConstructorDefaults()
     {
-        $this->reader = new ConfigurationReader;
+        $this->reader = new ConfigurationReader();
 
         $this->assertInstanceOf(
             'Icecave\Manifold\Connection\ConnectionFactory',
@@ -62,7 +62,7 @@ EOD;
             'foo' => new LazyConnection(
                 'foo',
                 'mysql:host=foo',
-                new CredentialsProvider,
+                new CredentialsProvider(),
                 array(PDO::ATTR_PERSISTENT => false)
             ),
         );
@@ -116,7 +116,7 @@ EOD;
             'foo' => new LazyConnection(
                 'foo',
                 'mysql:host=foo',
-                new CredentialsProvider,
+                new CredentialsProvider(),
                 array(PDO::ATTR_PERSISTENT => false)
             ),
         );
@@ -171,73 +171,73 @@ EOD;
             'master1' => new LazyConnection(
                 'master1',
                 'mysql:host=master1',
-                new CredentialsProvider,
+                new CredentialsProvider(),
                 array(PDO::ATTR_PERSISTENT => false)
             ),
             'master2' => new LazyConnection(
                 'master2',
                 'mysql:host=master2',
-                new CredentialsProvider,
+                new CredentialsProvider(),
                 array(PDO::ATTR_PERSISTENT => false)
             ),
             'master3' => new LazyConnection(
                 'master3',
                 'mysql:host=master3',
-                new CredentialsProvider,
+                new CredentialsProvider(),
                 array(PDO::ATTR_PERSISTENT => false)
             ),
             'reporting1' => new LazyConnection(
                 'reporting1',
                 'mysql:host=reporting1',
-                new CredentialsProvider,
+                new CredentialsProvider(),
                 array(PDO::ATTR_PERSISTENT => false)
             ),
             'slave101' => new LazyConnection(
                 'slave101',
                 'mysql:host=slave101',
-                new CredentialsProvider,
+                new CredentialsProvider(),
                 array(PDO::ATTR_PERSISTENT => false)
             ),
             'slave102' => new LazyConnection(
                 'slave102',
                 'mysql:host=slave102',
-                new CredentialsProvider,
+                new CredentialsProvider(),
                 array(PDO::ATTR_PERSISTENT => false)
             ),
             'reporting2' => new LazyConnection(
                 'reporting2',
                 'mysql:host=reporting2',
-                new CredentialsProvider,
+                new CredentialsProvider(),
                 array(PDO::ATTR_PERSISTENT => false)
             ),
             'slave201' => new LazyConnection(
                 'slave201',
                 'mysql:host=slave201',
-                new CredentialsProvider,
+                new CredentialsProvider(),
                 array(PDO::ATTR_PERSISTENT => false)
             ),
             'slave202' => new LazyConnection(
                 'slave202',
                 'mysql:host=slave202',
-                new CredentialsProvider,
+                new CredentialsProvider(),
                 array(PDO::ATTR_PERSISTENT => false)
             ),
             'reporting3' => new LazyConnection(
                 'reporting3',
                 'mysql:host=reporting3',
-                new CredentialsProvider,
+                new CredentialsProvider(),
                 array(PDO::ATTR_PERSISTENT => false)
             ),
             'slave301' => new LazyConnection(
                 'slave301',
                 'mysql:host=slave301',
-                new CredentialsProvider,
+                new CredentialsProvider(),
                 array(PDO::ATTR_PERSISTENT => false)
             ),
             'slave302' => new LazyConnection(
                 'slave302',
                 'mysql:host=slave302',
-                new CredentialsProvider,
+                new CredentialsProvider(),
                 array(PDO::ATTR_PERSISTENT => false)
             ),
         );

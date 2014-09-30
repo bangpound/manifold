@@ -55,7 +55,7 @@ class TimePointStrategyTest extends PHPUnit_Framework_TestCase
 
     public function testConstructorDefaultClock()
     {
-        $this->strategy = new TimePointStrategy;
+        $this->strategy = new TimePointStrategy();
 
         $this->assertInstanceOf('Icecave\Chrono\Clock\SystemClock', $this->strategy->clock());
     }

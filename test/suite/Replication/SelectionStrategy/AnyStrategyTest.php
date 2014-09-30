@@ -9,7 +9,7 @@ class AnyStrategyTest extends PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        $this->strategy = new AnyStrategy;
+        $this->strategy = new AnyStrategy();
 
         $this->manager = Phake::mock('Icecave\Manifold\Replication\ReplicationManagerInterface');
         $this->connectionA = Phake::mock('Icecave\Manifold\Connection\ConnectionInterface');

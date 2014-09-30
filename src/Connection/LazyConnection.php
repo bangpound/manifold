@@ -31,13 +31,13 @@ class LazyConnection extends PDO implements CloneableConnectionInterface
         LoggerInterface $logger = null
     ) {
         if (null === $credentialsProvider) {
-            $credentialsProvider = new CredentialsProvider;
+            $credentialsProvider = new CredentialsProvider();
         }
         if (null === $attributes) {
             $attributes = array();
         }
         if (null === $pdoConnectionFactory) {
-            $pdoConnectionFactory = new PdoConnectionFactory;
+            $pdoConnectionFactory = new PdoConnectionFactory();
         }
 
         $this->name = $name;

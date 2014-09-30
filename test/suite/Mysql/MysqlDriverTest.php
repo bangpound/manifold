@@ -19,7 +19,7 @@ class MysqlDriverTest extends PHPUnit_Framework_TestCase
     {
         parent::setUp();
 
-        $this->driver = new MysqlDriver;
+        $this->driver = new MysqlDriver();
 
         $this->connectionContainerSelector = Phake::mock(
             'Icecave\Manifold\Connection\Container\ConnectionContainerSelectorInterface'
@@ -57,7 +57,7 @@ class MysqlDriverTest extends PHPUnit_Framework_TestCase
                         $this->connectionContainerSelector,
                         new MysqlReplicationManager($this->replicationTreeA)
                     ),
-                    new MysqlQueryDiscriminator
+                    new MysqlQueryDiscriminator()
                 ),
                 $this->expectedAttributes
             ),
@@ -67,7 +67,7 @@ class MysqlDriverTest extends PHPUnit_Framework_TestCase
                         $this->connectionContainerSelector,
                         new MysqlReplicationManager($this->replicationTreeB)
                     ),
-                    new MysqlQueryDiscriminator
+                    new MysqlQueryDiscriminator()
                 ),
                 $this->expectedAttributes
             ),
@@ -90,7 +90,7 @@ class MysqlDriverTest extends PHPUnit_Framework_TestCase
                         $this->connectionContainerSelector,
                         new MysqlReplicationManager($this->replicationTreeA)
                     ),
-                    new MysqlQueryDiscriminator
+                    new MysqlQueryDiscriminator()
                 ),
                 $this->defaultAttributes
             ),
@@ -100,7 +100,7 @@ class MysqlDriverTest extends PHPUnit_Framework_TestCase
                         $this->connectionContainerSelector,
                         new MysqlReplicationManager($this->replicationTreeB)
                     ),
-                    new MysqlQueryDiscriminator
+                    new MysqlQueryDiscriminator()
                 ),
                 $this->defaultAttributes
             ),
@@ -118,7 +118,7 @@ class MysqlDriverTest extends PHPUnit_Framework_TestCase
                     $this->connectionContainerSelector,
                     new MysqlReplicationManager($this->replicationTreeA)
                 ),
-                new MysqlQueryDiscriminator
+                new MysqlQueryDiscriminator()
             ),
             $this->expectedAttributes
         );
@@ -137,7 +137,7 @@ class MysqlDriverTest extends PHPUnit_Framework_TestCase
                     $this->connectionContainerSelector,
                     new MysqlReplicationManager($this->replicationTreeA)
                 ),
-                new MysqlQueryDiscriminator
+                new MysqlQueryDiscriminator()
             ),
             $this->expectedAttributes
         );
@@ -162,7 +162,7 @@ class MysqlDriverTest extends PHPUnit_Framework_TestCase
                     $this->connectionContainerSelector,
                     new MysqlReplicationManager($this->replicationTreeA)
                 ),
-                new MysqlQueryDiscriminator
+                new MysqlQueryDiscriminator()
             ),
             $this->expectedAttributes
         );
@@ -181,7 +181,7 @@ class MysqlDriverTest extends PHPUnit_Framework_TestCase
                     $this->connectionContainerSelector,
                     new MysqlReplicationManager($this->replicationTreeA)
                 ),
-                new MysqlQueryDiscriminator
+                new MysqlQueryDiscriminator()
             ),
             $this->defaultAttributes
         );
@@ -195,7 +195,7 @@ class MysqlDriverTest extends PHPUnit_Framework_TestCase
         $expected = new ConnectionFacade(
             new QueryConnectionSelector(
                 $this->connectionSelector,
-                new MysqlQueryDiscriminator
+                new MysqlQueryDiscriminator()
             ),
             $this->expectedAttributes
         );
@@ -210,7 +210,7 @@ class MysqlDriverTest extends PHPUnit_Framework_TestCase
         $expected = new ConnectionFacade(
             new QueryConnectionSelector(
                 $this->connectionSelector,
-                new MysqlQueryDiscriminator
+                new MysqlQueryDiscriminator()
             ),
             $this->defaultAttributes
         );

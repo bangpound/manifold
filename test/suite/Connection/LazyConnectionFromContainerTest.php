@@ -47,7 +47,7 @@ class LazyConnectionFromContainerTest extends PHPUnit_Framework_TestCase
             $this->replicationManager
         );
 
-        $this->assertEquals(new AnyStrategy, $this->connection->strategy());
+        $this->assertEquals(new AnyStrategy(), $this->connection->strategy());
         $this->assertSame(array(), $this->connection->attributes());
         $this->assertNull($this->connection->logger());
     }

@@ -27,7 +27,7 @@ class CachingConfigurationReader implements ConfigurationReaderInterface
         Isolator $isolator = null
     ) {
         if (null === $reader) {
-            $reader = new ConfigurationReader;
+            $reader = new ConfigurationReader();
         }
         if (null === $generator) {
             $generator = new ConfigurationCacheFileGenerator($reader);

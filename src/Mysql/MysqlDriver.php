@@ -61,7 +61,7 @@ class MysqlDriver extends AbstractDriver
         return new ConnectionFacade(
             new QueryConnectionSelector(
                 $connectionSelector,
-                new MysqlQueryDiscriminator
+                new MysqlQueryDiscriminator()
             ),
             $attributes
         );

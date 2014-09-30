@@ -27,10 +27,10 @@ class CredentialsCacheFileGenerator implements
         Isolator $isolator = null
     ) {
         if (null === $reader) {
-            $reader = new CredentialsReader;
+            $reader = new CredentialsReader();
         }
         if (null === $generator) {
-            $generator = new CredentialsCacheGenerator;
+            $generator = new CredentialsCacheGenerator();
         }
 
         $this->reader = $reader;

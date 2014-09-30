@@ -83,7 +83,7 @@ class TimePointStrategy extends AbstractSelectionStrategy
                 );
             }
 
-            throw new NoConnectionAvailableException;
+            throw new NoConnectionAvailableException();
         }
 
         foreach ($container->connections() as $connection) {
@@ -154,7 +154,7 @@ class TimePointStrategy extends AbstractSelectionStrategy
             );
         }
 
-        throw new NoConnectionAvailableException;
+        throw new NoConnectionAvailableException();
     }
 
     /**

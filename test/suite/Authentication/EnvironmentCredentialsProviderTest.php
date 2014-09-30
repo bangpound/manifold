@@ -60,9 +60,9 @@ class EnvironmentCredentialsProviderTest extends PHPUnit_Framework_TestCase
 
     public function testConstructorDefaults()
     {
-        $this->provider = new EnvironmentCredentialsProvider;
+        $this->provider = new EnvironmentCredentialsProvider();
 
-        $this->assertEquals(new Credentials, $this->provider->defaultCredentials());
+        $this->assertEquals(new Credentials(), $this->provider->defaultCredentials());
         $this->assertSame(array(), $this->provider->connectionCredentials());
     }
 

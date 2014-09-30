@@ -32,7 +32,7 @@ class CachingConfigurationReaderTest extends PHPUnit_Framework_TestCase
 
     public function testConstructorDefaults()
     {
-        $this->reader = new CachingConfigurationReader;
+        $this->reader = new CachingConfigurationReader();
 
         $this->assertInstanceOf('Icecave\Manifold\Configuration\ConfigurationReader', $this->reader->reader());
         $this->assertInstanceOf(__NAMESPACE__ . '\ConfigurationCacheFileGenerator', $this->reader->generator());
@@ -40,7 +40,7 @@ class CachingConfigurationReaderTest extends PHPUnit_Framework_TestCase
 
     public function testReadFileNotCached()
     {
-        Phake::when($this->isolator)->include('/path/to/configuration.yml.cache.php')->thenThrow(new ErrorException);
+        Phake::when($this->isolator)->include('/path/to/configuration.yml.cache.php')->thenThrow(new ErrorException());
         Phake::when($this->innerReader)->readFile('/path/to/configuration.yml', 'mimeType', $this->connectionFactory)
             ->thenReturn($this->configuration);
 

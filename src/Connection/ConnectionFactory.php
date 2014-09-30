@@ -26,13 +26,13 @@ class ConnectionFactory implements ConnectionFactoryInterface
         LoggerInterface $logger = null
     ) {
         if (null === $credentialsProvider) {
-            $credentialsProvider = new CredentialsProvider;
+            $credentialsProvider = new CredentialsProvider();
         }
         if (null === $attributes) {
             $attributes = array(PDO::ATTR_PERSISTENT => false);
         }
         if (null === $pdoConnectionFactory) {
-            $pdoConnectionFactory = new PdoConnectionFactory;
+            $pdoConnectionFactory = new PdoConnectionFactory();
         }
 
         $this->credentialsProvider = $credentialsProvider;

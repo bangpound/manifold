@@ -138,7 +138,7 @@ class AcceptableDelayStrategy extends AbstractSelectionStrategy
             );
         }
 
-        throw new NoConnectionAvailableException;
+        throw new NoConnectionAvailableException();
     }
 
     /**

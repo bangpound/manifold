@@ -10,7 +10,7 @@ class InvalidDefaultConnectionContainerPairExceptionTest extends PHPUnit_Framewo
     public function testException()
     {
         $pair = Phake::mock('Icecave\Manifold\Connection\Container\ConnectionContainerPairInterface');
-        $previous = new Exception;
+        $previous = new Exception();
         $exception = new InvalidDefaultConnectionContainerPairException($pair, $previous);
 
         $this->assertSame($pair, $exception->pair());

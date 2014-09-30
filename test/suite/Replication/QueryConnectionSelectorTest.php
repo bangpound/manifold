@@ -11,7 +11,7 @@ class QueryConnectionSelectorTest extends PHPUnit_Framework_TestCase
         parent::setUp();
 
         $this->innerSelector = Phake::mock(__NAMESPACE__ . '\ConnectionSelectorInterface');
-        $this->queryDiscriminator = new QueryDiscriminator;
+        $this->queryDiscriminator = new QueryDiscriminator();
         $this->selector = new QueryConnectionSelector($this->innerSelector, $this->queryDiscriminator);
 
         $this->strategy = Phake::mock(__NAMESPACE__ . '\SelectionStrategy\SelectionStrategyInterface');

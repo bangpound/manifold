@@ -19,7 +19,7 @@ class ConnectionPool implements ConnectionPoolInterface
     public function __construct($name, array $connections)
     {
         if (count($connections) < 1) {
-            throw new Exception\EmptyConnectionContainerException;
+            throw new Exception\EmptyConnectionContainerException();
         }
 
         $this->name = $name;

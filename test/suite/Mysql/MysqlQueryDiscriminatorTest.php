@@ -19,7 +19,7 @@ class MysqlQueryDiscriminatorTest extends PHPUnit_Framework_TestCase
 
     public function testConstructorDefaults()
     {
-        $this->discriminator = new MysqlQueryDiscriminator;
+        $this->discriminator = new MysqlQueryDiscriminator();
 
         $this->assertFalse($this->discriminator->isAnsiQuotesEnabled());
     }

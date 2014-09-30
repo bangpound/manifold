@@ -28,10 +28,10 @@ class ConfigurationCacheFileGenerator implements
         Isolator $isolator = null
     ) {
         if (null === $reader) {
-            $reader = new ConfigurationReader;
+            $reader = new ConfigurationReader();
         }
         if (null === $generator) {
-            $generator = new ConfigurationCacheGenerator;
+            $generator = new ConfigurationCacheGenerator();
         }
 
         $this->reader = $reader;

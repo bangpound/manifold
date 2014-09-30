@@ -35,7 +35,7 @@ class ConfigurationCacheFileGeneratorTest extends PHPUnit_Framework_TestCase
 
     public function testConstructorDefaults()
     {
-        $this->generator = new ConfigurationCacheFileGenerator;
+        $this->generator = new ConfigurationCacheFileGenerator();
 
         $this->assertInstanceOf('Icecave\Manifold\Configuration\ConfigurationReader', $this->generator->reader());
         $this->assertInstanceOf(__NAMESPACE__ . '\ConfigurationCacheGenerator', $this->generator->generator());
@@ -78,7 +78,7 @@ class ConfigurationCacheFileGeneratorTest extends PHPUnit_Framework_TestCase
     public function testGenerateForConfigurationFailure()
     {
         Phake::when($this->innerGenerator)->generate($this->configuration)->thenReturn('function () {}');
-        Phake::when($this->isolator)->file_put_contents(Phake::anyParameters())->thenThrow(new ErrorException);
+        Phake::when($this->isolator)->file_put_contents(Phake::anyParameters())->thenThrow(new ErrorException());
 
         $this->setExpectedException(__NAMESPACE__ . '\Exception\ConfigurationCacheWriteException');
         $this->generator->generateForConfiguration($this->configuration, '/path/to/cache.php');

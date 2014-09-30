@@ -26,7 +26,7 @@ class CachingCredentialsReader implements CredentialsReaderInterface
         Isolator $isolator = null
     ) {
         if (null === $reader) {
-            $reader = new CredentialsReader;
+            $reader = new CredentialsReader();
         }
         if (null === $generator) {
             $generator = new CredentialsCacheFileGenerator($reader);

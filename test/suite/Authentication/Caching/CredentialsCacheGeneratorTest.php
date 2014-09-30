@@ -10,8 +10,8 @@ class CredentialsCacheGeneratorTest extends PHPUnit_Framework_TestCase
     {
         parent::setUp();
 
-        $this->generator = new CredentialsCacheGenerator;
-        $this->reader = new CredentialsReader;
+        $this->generator = new CredentialsCacheGenerator();
+        $this->reader = new CredentialsReader();
         $this->fixturePath = __DIR__ . '/../../../fixture/credentials';
     }
 

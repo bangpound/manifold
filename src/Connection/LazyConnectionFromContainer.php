@@ -32,7 +32,7 @@ class LazyConnectionFromContainer extends PDO implements ConnectionInterface
         LoggerInterface $logger = null
     ) {
         if (null === $strategy) {
-            $strategy = new AnyStrategy;
+            $strategy = new AnyStrategy();
         }
         if (null === $attributes) {
             $attributes = array();

@@ -11,7 +11,7 @@ class UndefinedCredentialsExceptionTest extends PHPUnit_Framework_TestCase
     {
         $connection = Phake::mock('Icecave\Manifold\Connection\ConnectionInterface');
         Phake::when($connection)->name()->thenReturn('foo');
-        $previous = new Exception;
+        $previous = new Exception();
         $exception = new UndefinedCredentialsException($connection, $previous);
 
         $this->assertSame($connection, $exception->connection());

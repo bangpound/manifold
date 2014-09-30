@@ -78,8 +78,8 @@ class ConnectionSelectorTest extends PHPUnit_Framework_TestCase
     {
         $this->selector = new ConnectionSelector($this->containerSelector, $this->replicationManager);
 
-        $this->assertEquals(new SelectionStrategy\AnyStrategy, $this->selector->defaultWriteStrategy());
-        $this->assertEquals(new SelectionStrategy\AcceptableDelayStrategy, $this->selector->defaultReadStrategy());
+        $this->assertEquals(new SelectionStrategy\AnyStrategy(), $this->selector->defaultWriteStrategy());
+        $this->assertEquals(new SelectionStrategy\AcceptableDelayStrategy(), $this->selector->defaultReadStrategy());
         $this->assertNull($this->selector->logger());
     }
 

@@ -12,7 +12,7 @@ class CredentialsReaderTest extends PHPUnit_Framework_TestCase
     {
         parent::setUp();
 
-        $this->reader = new CredentialsReader;
+        $this->reader = new CredentialsReader();
 
         $this->innerReader = Phake::mock('Eloquent\Schemer\Reader\ReaderInterface');
 
@@ -28,7 +28,7 @@ class CredentialsReaderTest extends PHPUnit_Framework_TestCase
 
     public function testConstructorDefaults()
     {
-        $this->reader = new CredentialsReader;
+        $this->reader = new CredentialsReader();
 
         $this->assertInstanceOf('Eloquent\Schemer\Reader\ValidatingReader', $this->reader->reader());
     }
@@ -80,7 +80,7 @@ connections:
 EOD;
         $actual = $this->reader->readString($string);
         $expected = new CredentialsProvider(
-            new Credentials,
+            new Credentials(),
             array(
                 'foo' => new Credentials(null, 'fooPassword'),
             )

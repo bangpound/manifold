@@ -43,11 +43,11 @@ class ManifoldFactoryTest extends PHPUnit_Framework_TestCase
 
     public function testConstructorDefaults()
     {
-        $this->factory = new ManifoldFactory;
+        $this->factory = new ManifoldFactory();
 
-        $this->assertEquals(new MysqlDriver, $this->factory->driver());
-        $this->assertEquals(new CachingConfigurationReader, $this->factory->configurationReader());
-        $this->assertEquals(new CachingCredentialsReader, $this->factory->credentialsReader());
+        $this->assertEquals(new MysqlDriver(), $this->factory->driver());
+        $this->assertEquals(new CachingConfigurationReader(), $this->factory->configurationReader());
+        $this->assertEquals(new CachingCredentialsReader(), $this->factory->credentialsReader());
         $this->assertNull($this->factory->logger());
     }
 

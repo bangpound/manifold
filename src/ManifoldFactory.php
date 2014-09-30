@@ -35,13 +35,13 @@ class ManifoldFactory implements ManifoldFactoryInterface
         LoggerInterface $logger = null
     ) {
         if (null === $driver) {
-            $driver = new MysqlDriver;
+            $driver = new MysqlDriver();
         }
         if (null === $configurationReader) {
-            $configurationReader = new CachingConfigurationReader;
+            $configurationReader = new CachingConfigurationReader();
         }
         if (null === $credentialsReader) {
-            $credentialsReader = new CachingCredentialsReader;
+            $credentialsReader = new CachingCredentialsReader();
         }
 
         $this->driver = $driver;
@@ -152,7 +152,7 @@ class ManifoldFactory implements ManifoldFactoryInterface
     protected function adaptCredentials($credentials)
     {
         if (null === $credentials) {
-            return new CredentialsProvider;
+            return new CredentialsProvider();
         }
 
         if ($credentials instanceof CredentialsProviderInterface) {

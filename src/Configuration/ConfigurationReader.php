@@ -43,7 +43,7 @@ class ConfigurationReader implements ConfigurationReaderInterface
         Isolator $isolator = null
     ) {
         if (null === $defaultConnectionFactory) {
-            $defaultConnectionFactory = new ConnectionFactory;
+            $defaultConnectionFactory = new ConnectionFactory();
         }
 
         $this->defaultConnectionFactory = $defaultConnectionFactory;
@@ -69,7 +69,7 @@ class ConfigurationReader implements ConfigurationReaderInterface
     public function reader()
     {
         if (null === $this->reader) {
-            $schemaReader = new SchemaReader;
+            $schemaReader = new SchemaReader();
             $schema = $schemaReader->readPath(
                 __DIR__ . '/../../res/schema/manifold-configuration-schema.yml'
             );

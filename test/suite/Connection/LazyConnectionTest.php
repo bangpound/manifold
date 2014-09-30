@@ -67,9 +67,9 @@ class LazyConnectionTest extends PHPUnit_Framework_TestCase
     {
         $this->connection = new LazyConnection('name', 'driver:host=host');
 
-        $this->assertEquals(new CredentialsProvider, $this->connection->credentialsProvider());
+        $this->assertEquals(new CredentialsProvider(), $this->connection->credentialsProvider());
         $this->assertSame(array(), $this->connection->attributes());
-        $this->assertEquals(new PdoConnectionFactory, $this->connection->pdoConnectionFactory());
+        $this->assertEquals(new PdoConnectionFactory(), $this->connection->pdoConnectionFactory());
         $this->assertNull($this->connection->logger());
     }
 

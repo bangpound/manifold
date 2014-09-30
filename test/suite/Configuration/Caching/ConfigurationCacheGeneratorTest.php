@@ -10,8 +10,8 @@ class ConfigurationCacheGeneratorTest extends PHPUnit_Framework_TestCase
     {
         parent::setUp();
 
-        $this->generator = new ConfigurationCacheGenerator;
-        $this->reader = new ConfigurationReader;
+        $this->generator = new ConfigurationCacheGenerator();
+        $this->reader = new ConfigurationReader();
         $this->fixturePath = __DIR__ . '/../../../fixture/config';
     }
 

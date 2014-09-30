@@ -46,7 +46,7 @@ class AcceptableDelayStrategyTest extends PHPUnit_Framework_TestCase
 
     public function testConstructorDefaults()
     {
-        $this->strategy = new AcceptableDelayStrategy;
+        $this->strategy = new AcceptableDelayStrategy();
 
         $this->assertSame(3, $this->strategy->threshold()->totalSeconds());
         $this->assertInstanceOf('Icecave\Chrono\Clock\SystemClock', $this->strategy->clock());

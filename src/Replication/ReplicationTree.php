@@ -291,7 +291,7 @@ class ReplicationTree implements ReplicationTreeInterface
      */
     private function createEntry(ConnectionInterface $masterConnection = null)
     {
-        $entry = new stdClass;
+        $entry = new stdClass();
         $entry->master = $masterConnection;
         $entry->slaves = array();
 

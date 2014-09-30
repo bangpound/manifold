@@ -158,7 +158,7 @@ class LeastDelayStrategy extends AbstractSelectionStrategy
                 }
             }
 
-            throw new NoConnectionAvailableException;
+            throw new NoConnectionAvailableException();
         }
 
         if (null !== $logger) {

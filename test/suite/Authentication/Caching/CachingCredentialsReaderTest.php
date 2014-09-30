@@ -30,7 +30,7 @@ class CachingCredentialsReaderTest extends PHPUnit_Framework_TestCase
 
     public function testConstructorDefaults()
     {
-        $this->reader = new CachingCredentialsReader;
+        $this->reader = new CachingCredentialsReader();
 
         $this->assertInstanceOf('Icecave\Manifold\Authentication\CredentialsReader', $this->reader->reader());
         $this->assertInstanceOf(__NAMESPACE__ . '\CredentialsCacheFileGenerator', $this->reader->generator());
@@ -38,7 +38,7 @@ class CachingCredentialsReaderTest extends PHPUnit_Framework_TestCase
 
     public function testReadFileNotCached()
     {
-        Phake::when($this->isolator)->include('/path/to/credentials.yml.cache.php')->thenThrow(new ErrorException);
+        Phake::when($this->isolator)->include('/path/to/credentials.yml.cache.php')->thenThrow(new ErrorException());
         Phake::when($this->innerReader)->readFile('/path/to/credentials.yml', 'mimeType')
             ->thenReturn($this->provider);
 

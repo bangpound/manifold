@@ -23,7 +23,7 @@ class ConnectionContainerPairTest extends PHPUnit_Framework_TestCase
 
     public function testConstructorDefaults()
     {
-        $this->pair = new ConnectionContainerPair;
+        $this->pair = new ConnectionContainerPair();
 
         $this->assertNull($this->pair->write());
         $this->assertNull($this->pair->read());

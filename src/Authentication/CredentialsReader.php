@@ -39,7 +39,7 @@ class CredentialsReader implements CredentialsReaderInterface
     {
         // @codeCoverageIgnoreEnd
         if (null === $this->reader) {
-            $schemaReader = new SchemaReader;
+            $schemaReader = new SchemaReader();
             $schema = $schemaReader->readPath(
                 __DIR__ . '/../../res/schema/manifold-credentials-schema.yml'
             );
@@ -112,7 +112,7 @@ class CredentialsReader implements CredentialsReaderInterface
                 $value->get('default')
             );
         } else {
-            $defaultCredentials = new Credentials;
+            $defaultCredentials = new Credentials();
         }
 
         $connectionCredentials = array();

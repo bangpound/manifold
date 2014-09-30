@@ -727,7 +727,7 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
 
     public function testQuoteNoConnection()
     {
-        Phake::when($this->connectionSelector)->forRead(null, new AnyStrategy)->thenReturn($this->connectionA);
+        Phake::when($this->connectionSelector)->forRead(null, new AnyStrategy())->thenReturn($this->connectionA);
         Phake::when($this->connectionA)->quote(111, PDO::PARAM_INT)->thenReturn('111');
 
         $this->assertSame('111', $this->facade->quote(111, PDO::PARAM_INT));
@@ -735,7 +735,7 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
 
     public function testQuoteDefaults()
     {
-        Phake::when($this->connectionSelector)->forRead(null, new AnyStrategy)->thenReturn($this->connectionA);
+        Phake::when($this->connectionSelector)->forRead(null, new AnyStrategy())->thenReturn($this->connectionA);
         Phake::when($this->connectionA)->quote('foo', PDO::PARAM_STR)->thenReturn('foo');
 
         $this->assertSame('foo', $this->facade->quote('foo'));
@@ -845,7 +845,7 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
 
     public function testGetAttributeNoConnection()
     {
-        Phake::when($this->connectionSelector)->forRead(null, new AnyStrategy)->thenReturn($this->connectionA);
+        Phake::when($this->connectionSelector)->forRead(null, new AnyStrategy())->thenReturn($this->connectionA);
         Phake::when($this->connectionA)->getAttribute(222)->thenReturn('foo');
 
         $this->assertSame('foo', $this->facade->getAttribute(222));
@@ -874,7 +874,7 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
 
     public function testSelectConnectionForWriteFailureNoConnection()
     {
-        Phake::when($this->connectionSelector)->forWrite(null, null)->thenThrow(new NoConnectionAvailableException);
+        Phake::when($this->connectionSelector)->forWrite(null, null)->thenThrow(new NoConnectionAvailableException());
 
         $this->setExpectedException('PDOException', 'No suitable connection available.');
         Liberator::liberate($this->facade)->selectConnectionForWrite();
@@ -1013,7 +1013,7 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
     public function testQueryConnectionSelectionFailureNoConnection()
     {
         Phake::when($this->queryConnectionSelector)->select(Phake::anyParameters())
-            ->thenThrow(new NoConnectionAvailableException);
+            ->thenThrow(new NoConnectionAvailableException());
 
         $this->setExpectedException('PDOException', 'No suitable connection available.');
         $this->facade->exec('SELECT a FROM foo.bar');
@@ -1021,8 +1021,8 @@ class ConnectionFacadeTest extends PHPUnit_Framework_TestCase
 
     public function testConnectionSelectionForReadFailureNoConnection()
     {
-        Phake::when($this->connectionSelector)->forRead(null, new AnyStrategy)
-            ->thenThrow(new NoConnectionAvailableException);
+        Phake::when($this->connectionSelector)->forRead(null, new AnyStrategy())
+            ->thenThrow(new NoConnectionAvailableException());
 
         $this->setExpectedException('PDOException', 'No suitable connection available.');
         $this->facade->quote('foo');

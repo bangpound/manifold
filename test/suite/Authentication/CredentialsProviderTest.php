@@ -36,9 +36,9 @@ class CredentialsProviderTest extends PHPUnit_Framework_TestCase
 
     public function testConstructorDefaults()
     {
-        $this->provider = new CredentialsProvider;
+        $this->provider = new CredentialsProvider();
 
-        $this->assertEquals(new Credentials, $this->provider->defaultCredentials());
+        $this->assertEquals(new Credentials(), $this->provider->defaultCredentials());
         $this->assertSame(array(), $this->provider->connectionCredentials());
     }
 

@@ -8,7 +8,7 @@ class NoConnectionAvailableExceptionTest extends PHPUnit_Framework_TestCase
 {
     public function testException()
     {
-        $previous = new Exception;
+        $previous = new Exception();
         $exception = new NoConnectionAvailableException($previous);
 
         $this->assertSame('No suitable connection available.', $exception->getMessage());

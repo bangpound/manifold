@@ -10,7 +10,7 @@ class PdoConnectionFactoryTest extends PHPUnit_Framework_TestCase
     {
         parent::setUp();
 
-        $this->factory = new PdoConnectionFactory;
+        $this->factory = new PdoConnectionFactory();
     }
 
     /**

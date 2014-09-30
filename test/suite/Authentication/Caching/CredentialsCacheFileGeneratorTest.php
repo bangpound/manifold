@@ -34,7 +34,7 @@ class CredentialsCacheFileGeneratorTest extends PHPUnit_Framework_TestCase
 
     public function testConstructorDefaults()
     {
-        $this->generator = new CredentialsCacheFileGenerator;
+        $this->generator = new CredentialsCacheFileGenerator();
 
         $this->assertInstanceOf('Icecave\Manifold\Authentication\CredentialsReader', $this->generator->reader());
         $this->assertInstanceOf(__NAMESPACE__ . '\CredentialsCacheGenerator', $this->generator->generator());
@@ -71,7 +71,7 @@ class CredentialsCacheFileGeneratorTest extends PHPUnit_Framework_TestCase
     public function testGenerateForProviderFailure()
     {
         Phake::when($this->innerGenerator)->generate($this->provider)->thenReturn('function () {}');
-        Phake::when($this->isolator)->file_put_contents(Phake::anyParameters())->thenThrow(new ErrorException);
+        Phake::when($this->isolator)->file_put_contents(Phake::anyParameters())->thenThrow(new ErrorException());
 
         $this->setExpectedException(__NAMESPACE__ . '\Exception\CredentialsCacheWriteException');
         $this->generator->generateForProvider($this->provider, '/path/to/cache.php');

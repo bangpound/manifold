@@ -19,7 +19,7 @@ class QueryConnectionSelector implements QueryConnectionSelectorInterface
         QueryDiscriminatorInterface $queryDiscriminator = null
     ) {
         if (null === $queryDiscriminator) {
-            $queryDiscriminator = new QueryDiscriminator;
+            $queryDiscriminator = new QueryDiscriminator();
         }
 
         $this->selector = $selector;

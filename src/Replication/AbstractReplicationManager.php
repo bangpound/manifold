@@ -27,7 +27,7 @@ abstract class AbstractReplicationManager implements ReplicationManagerInterface
         TimerInterface $timer = null
     ) {
         if (null === $clock) {
-            $clock = new SystemClock;
+            $clock = new SystemClock();
         }
         if (null === $timer) {
             $timer = new Timer($clock);

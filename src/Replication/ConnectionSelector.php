@@ -34,11 +34,11 @@ class ConnectionSelector implements ConnectionSelectorInterface
     ) {
         // @codeCoverageIgnoreEnd
         if (null === $defaultWriteStrategy) {
-            $defaultWriteStrategy = new SelectionStrategy\AnyStrategy;
+            $defaultWriteStrategy = new SelectionStrategy\AnyStrategy();
         }
         if (null === $defaultReadStrategy) {
             $defaultReadStrategy =
-                new SelectionStrategy\AcceptableDelayStrategy;
+                new SelectionStrategy\AcceptableDelayStrategy();
         }
 
         $this->containerSelector = $containerSelector;
