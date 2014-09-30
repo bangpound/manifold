@@ -442,6 +442,11 @@ $provider = new EnvironmentCredentialsProvider(
 $reader = new CachingConfigurationReader(new ConnectionFactory($provider));
 ```
 
+## Contact us
+
+* Follow [@IcecaveStudios](https://twitter.com/IcecaveStudios) on Twitter
+* Visit the [Icecave Studios website](http://icecave.com.au)
+
 <!-- References -->
 [Build Status]: http://img.shields.io/travis/IcecaveStudios/manifold/develop.svg?style=flat-square
 [Test Coverage]: http://img.shields.io/coveralls/IcecaveStudios/manifold/develop.svg?style=flat-square
