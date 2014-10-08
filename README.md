@@ -446,6 +446,7 @@ $reader = new CachingConfigurationReader(new ConnectionFactory($provider));
 
 * Follow [@IcecaveStudios](https://twitter.com/IcecaveStudios) on Twitter
 * Visit the [Icecave Studios website](http://icecave.com.au)
+* Join `#icecave` on [irc.freenode.net](http://webchat.freenode.net?channels=icecave)
 
 <!-- References -->
 [Build Status]: http://img.shields.io/travis/IcecaveStudios/manifold/develop.svg?style=flat-square
